@@ -40,4 +40,4 @@ project/plugins/project/
 *.iws
 out
 .idea/gradle.xml
-.idea/libraries/*
+.idea/libraries
