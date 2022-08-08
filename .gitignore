@@ -39,4 +39,5 @@ project/plugins/project/
 *.ipr
 *.iws
 out
-
+.idea/gradle.xml
+.idea/libraries
