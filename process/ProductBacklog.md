@@ -29,7 +29,7 @@
     <tr>
         <td></td>
         <td>Define Event object</td>
-        <td>Bacca</td>
+        <td>Grushchak</td>
         <td>4</td>
         <td></td>
         <td></td>
@@ -101,7 +101,7 @@
     <tr>
         <td>I would like to define and use different type of terrain (standard and personalized) </td>
         <td>Define Terrain and Terrain property</td>
-        <td>Bacca</td>
+        <td>Bertoni</td>
         <td>4</td>
         <td></td>
         <td></td>
