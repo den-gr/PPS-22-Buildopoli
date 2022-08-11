@@ -1,11 +1,8 @@
 import gameSession.{GameSession, GameSessionImpl}
 import org.scalatest.funsuite.AnyFunSuite
-import todo.{GameOptions, GameTemplate}
 
 class GameSessionTest extends AnyFunSuite:
-  val gameTemplate: GameTemplate = new GameTemplate
-  val gameOption: GameOptions = new GameOptions
-  val gameSession: GameSession = GameSessionImpl(gameOption, gameTemplate)
+  val gameSession: GameSession = GameSessionImpl()
 
   test("playersList has initial size at zero") {
     assert(gameSession.getPlayersList.size === 0)
@@ -13,9 +10,7 @@ class GameSessionTest extends AnyFunSuite:
 
   test("playerList size increased after adding one element") {
     val previousSize: Int = gameSession.getPlayersList.size
-    val previousSizeBank: Int = gameSession.getGameBank.getPlayersList.size
     gameSession.addOnePlayer(Option.empty)
-    assert(gameSession.getGameBank.getPlayersList.size === (previousSizeBank + 1))
     assert(gameSession.getPlayersList.size === (previousSize + 1))
   }
 
@@ -23,4 +18,18 @@ class GameSessionTest extends AnyFunSuite:
     val previousSize: Int = gameSession.getPlayersList.size
     gameSession.addManyPlayers(5)
     assert(gameSession.getPlayersList.size === (previousSize + 5))
+  }
+
+  test("last inserted player has money of 1000 after being created") {
+    val previousSize: Int = gameSession.getPlayersList.size
+    gameSession.addOnePlayer(Option.apply(15))
+    assert(gameSession.getPlayersList.size === (previousSize + 1))
+    assert(gameSession.getPlayersList.last.getPlayerId === 15)
+    assert(gameSession.getPlayersList.last.getPlayerMoney === 1000)
+  }
+
+  test("duplicate player ID existence") {
+    val previousSize: Int = gameSession.getPlayersList.size
+    gameSession.addOnePlayer(Option.apply(2))
+    assert(gameSession.getPlayersList.size === (previousSize + 1))
   }

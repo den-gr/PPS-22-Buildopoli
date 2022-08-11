@@ -2,29 +2,35 @@ package gameSession
 
 import gameBank.{Bank, GameBankImpl}
 import player.{Player, PlayerImpl}
-import todo.*
 
 import scala.collection.mutable.ListBuffer
 
-case class GameSessionImpl(gameOptions: GameOptions, gameTemplate: GameTemplate) extends GameSession:
+// TODO: Take in input GameOptions and GameTemplate
+// TODO: Method initialize taking in input info from GameOptions
+case class GameSessionImpl() extends GameSession:
+
   var playersList: ListBuffer[Player] = ListBuffer()
   var playerIdsCounter: Int = 0
-  var gameBank: Bank = GameBankImpl(playersList)
+  val debtsManagement: Boolean = true
+  val gameBank: Bank = GameBankImpl(playersList, debtsManagement)
 
-  /** TODO: param n should be limited to max players number in gameOptions TODO: when a user is being created, bank
-    * should make a transaction to give initial money TODO: when a user is being created, his ID should be assigned to
-    * some cells that he initially owns TODO: all those parameters are specified onto gameOptions obj
-    */
   override def addManyPlayers(n: Int): Unit =
-    for _ <- 0 until n do
-      this.playersList += PlayerImpl(this.playerIdsCounter)
-      this.playerIdsCounter += 1
+    for _ <- 0 until n do this.addOnePlayer(Option.empty)
 
   override def addOnePlayer(playerId: Option[Int]): Unit = playerId match
-    case None => 
+    case None =>
+      this.checkPlayerIdCounter()
       this.playersList += PlayerImpl(this.playerIdsCounter)
       this.playerIdsCounter += 1
-    case Some(id) => this.playersList += PlayerImpl(id)
+    case Some(id) =>
+      var player: Int = id
+      while playerIdAlreadyExist(id) do player += 1
+      this.playersList += PlayerImpl(player)
+
+  def checkPlayerIdCounter(): Unit = while playerIdAlreadyExist(this.playerIdsCounter) do this.playerIdsCounter += 1
+
+  def playerIdAlreadyExist(playerId: Int): Boolean =
+    this.playersList.exists(p => p.getPlayerId.equals(playerId))
 
   override def getPlayersList: ListBuffer[Player] = this.playersList
 
