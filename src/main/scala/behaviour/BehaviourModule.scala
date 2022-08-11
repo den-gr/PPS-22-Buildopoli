@@ -23,4 +23,6 @@ object BehaviourModule extends App:
 //        val stories = List()
         initialEvents.map(eventGroup => eventGroup.map(m => m.eventStory))
 
-      override def chooseEvent(choose: Choose): Unit = ???
+      override def chooseEvent(choose: Choose): Unit =
+        try println(s"exists: ${initialEvents(choose._1)(choose._2)}")
+        catch case e: IndexOutOfBoundsException => throw IllegalArgumentException("Player chose not existing event")

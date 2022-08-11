@@ -42,5 +42,8 @@ class BehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     val story = EventStory(s"You are imprisoned for $BLOCKING_TIME turns", Seq("Wait liberation", "Prison break"))
     val imprisonEvent = Event(Scenario(imprisonStrategy, None, story))
     val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent)))
-    println(behaviour.currentStories.head.head)
+    println(behaviour.currentStories)
+    behaviour.chooseEvent((0, 0))
+    assertThrows[IllegalArgumentException](behaviour.chooseEvent(1, 0))
+    assertThrows[IllegalArgumentException](behaviour.chooseEvent(0, 1))
   }
