@@ -1,5 +1,0 @@
-package todo
-
-class GameOptions {
-
-}
