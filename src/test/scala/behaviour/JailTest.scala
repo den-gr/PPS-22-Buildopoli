@@ -1,6 +1,6 @@
 package behaviour
 
-import behaviour.BehaviourModule.{Behaviour, StoryGroup}
+import behaviour.BehaviourModule.{Behaviour, BehaviourPrinter, EventGroup, StoryGroup}
 import events.EventModule
 import events.EventModule.*
 import helper.TestMocks.JailMock
@@ -47,7 +47,7 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
     Event(Scenario(imprisonStrategy, None, story), imprisonEventPredicate)
 
   test("Behaviour with single Jail event that imprison a player") {
-    val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent)))
+    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
     println(behaviour.startBehaviour(PLAYER_1))
     assertThrows[IllegalArgumentException](behaviour.chooseEvent(PLAYER_1, (1, 0)))
     assertThrows[IllegalArgumentException](behaviour.chooseEvent(PLAYER_1, (0, 1)))
@@ -57,7 +57,7 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("On the next turns player must be released from the Jail") {
 
-    val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent)))
+    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
     behaviour.startBehaviour(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
     behaviour.chooseEvent(PLAYER_1, (0, 0))
@@ -78,7 +78,7 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
   val escapeEvent: ConditionalEvent = Event(Scenario(escapeStrategy, None, escapeStory), escapePrecondition)
 
   test("Escape event allow to player escape from prison") {
-    val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent, escapeEvent)))
+    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
     behaviour.startBehaviour(PLAYER_1)
     behaviour.chooseEvent(PLAYER_1, (0, 0))
 
@@ -89,8 +89,8 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
 
-  test("Some event may have precondition for to be available to player") {
-    val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent, escapeEvent)))
+  test("Some event may need a precondition before to be available to players") {
+    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
     var stories: Seq[StoryGroup] = behaviour.startBehaviour(PLAYER_1)
     assert(stories.length == 1)
     assert(stories.head.length == 1)
