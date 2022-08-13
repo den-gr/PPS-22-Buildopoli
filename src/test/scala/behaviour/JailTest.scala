@@ -69,25 +69,34 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
 
-  test("Some event may have precondition for to be available to player") {
-    val escapeStrategy: Int => Unit =
-      // This version has 100% probability to escape successfully
-      jail.liberatePlayer(_)
-      // TODO start new movement
-    val escapeStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
-    val escapePrecondition: EventPrecondition = jail.getRemainingBlockedMovements(_).nonEmpty
-    val escapeEvent = Event(Scenario(escapeStrategy, None, escapeStory), escapePrecondition)
+  val escapeStrategy: Int => Unit =
+    // This version has 100% probability to escape successfully
+    jail.liberatePlayer(_)
+  // TODO start new movement
+  val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
+  val escapePrecondition: EventPrecondition = jail.getRemainingBlockedMovements(_).nonEmpty
+  val escapeEvent: ConditionalEvent = Event(Scenario(escapeStrategy, None, escapeStory), escapePrecondition)
 
+  test("Escape event allow to player escape from prison") {
     val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent, escapeEvent)))
-    var stories = behaviour.startBehaviour(PLAYER_1)
-    println(stories)
+    behaviour.startBehaviour(PLAYER_1)
+    behaviour.chooseEvent(PLAYER_1, (0, 0))
+
+    jail.doTurn()
+    behaviour.startBehaviour(PLAYER_1)
+    assert(jail.getRemainingBlockedMovements(PLAYER_1).nonEmpty)
+    behaviour.chooseEvent(PLAYER_1, (0, 1))
+    assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
+  }
+
+  test("Some event may have precondition for to be available to player") {
+    val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent, escapeEvent)))
+    var stories: Seq[StoryGroup] = behaviour.startBehaviour(PLAYER_1)
     assert(stories.length == 1)
     assert(stories.head.length == 1)
     behaviour.chooseEvent(PLAYER_1, (0, 0))
     jail.doTurn()
     stories = behaviour.startBehaviour(PLAYER_1)
-    println(stories)
     assert(stories.length == 1)
     assert(stories.head.length == 2)
-
   }
