@@ -1,5 +1,7 @@
 package helper
 
+import scala.collection.mutable
+
 object TestMocks extends App:
   trait BankMock:
     def money: Int
@@ -18,7 +20,7 @@ object TestMocks extends App:
       override def decrement(qty: Int): Unit = money -= qty
 
   trait JailMock:
-    def howManyTurnsPlayerIsBlocked(playerId: Int): Int
+    def getRemainingBlockedMovements(playerId: Int): Option[Int]
     def blockPlayer(playerId: Int, turns: Int): Unit
     def liberatePlayer(playerId: Int): Unit
     def doTurn(): Unit
@@ -26,18 +28,21 @@ object TestMocks extends App:
   object JailMock:
     def apply(): JailMock = new JailMock:
       var blockingList: Map[Int, Int] = Map()
-      override def howManyTurnsPlayerIsBlocked(playerId: Int): Int =
-        blockingList.getOrElse(playerId, 0)
+      override def getRemainingBlockedMovements(playerId: Int): Option[Int] =
+        blockingList.get(playerId)
 
       override def blockPlayer(playerId: Int, turns: Int): Unit =
         blockingList = blockingList + (playerId -> turns)
 
       override def liberatePlayer(playerId: Int): Unit =
-        blockingList = blockingList + (playerId -> 0)
+        blockingList = blockingList - playerId
 
       override def doTurn(): Unit =
-        if !blockingList.values.forall(_ == 0) then
+        if blockingList.nonEmpty then
           blockingList.toList.foreach(_ match
-            case (key: Int, value: Int) if value > 0 => blockingList = blockingList + (key -> (value - 1))
-            case _ =>
+            case (key: Int, value: Int) if value >= 0 => blockingList = blockingList + (key -> (value - 1))
           )
+          blockingList = blockingList.filter(_._2 >= 0)
+          
+  
+
