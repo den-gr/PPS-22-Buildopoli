@@ -31,7 +31,7 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
 
   import EventModule.*
   import EventStory.*
-  val ev: Event = Event(Scenario(eventStrategy, None))
+  val ev: Event = Event(Scenario(eventStrategy, None), _ => true)
   test("I want an event that can change balance of a bank") {
     ev.run(MAIN_ACTION)
     assert(bank.money == BANK_MONEY - TAX)
@@ -41,7 +41,7 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("I want to have two consecutive events") {
     assert(bank.money == BANK_MONEY)
-    val ev2: Event = Event(Scenario(_ => bank.decrement(TAX * 2), Some(ev)))
+    val ev2: Event = Event(Scenario(_ => bank.decrement(TAX * 2), Some(ev)), _ => true)
     var nextEvent = ev2.run(MAIN_ACTION)
     while nextEvent.nonEmpty do
       if nextEvent.get.eventStory.isSingleAction then nextEvent = nextEvent.get.run(MAIN_ACTION)

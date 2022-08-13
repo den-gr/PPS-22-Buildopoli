@@ -1,5 +1,6 @@
 package events
 
+
 object EventModule:
   trait EventStory:
     def description: String
@@ -9,13 +10,21 @@ object EventModule:
   trait Event:
     def run(playerId: Int): Option[Event]
     def eventStory: EventStory
+    
+  trait Condition[T]:
+    def hasToRun(playerId: T): Boolean
+  
+  trait ConditionalEvent extends Event with Condition[Int]
+    
+  
 
 //  enum EventResult:
-//    case OKwolf
+//    case OK
 //    case INTERRUPT(msg: String)
 
 //  type NextEvent = Option[Event]
   type EventStrategy = Int => Unit
+  type EventPrecondition = Int => Boolean
 
   trait Scenario:
     def eventStrategy: EventStrategy
@@ -52,12 +61,14 @@ object EventModule:
     ) extends Scenario
 
   object Event:
-    def apply(scenario: Scenario): Event = EventImpl(scenario)
+    def apply(scenario: Scenario, condition: Int => Boolean): ConditionalEvent = EventImpl(scenario,condition)
 
-    class EventImpl(scenario: Scenario) extends Event:
+    class EventImpl(scenario: Scenario, condition: Int => Boolean) extends ConditionalEvent:
       override def run(playerId: Int): Option[Event] =
 //        if actionIndex < 0 then throw new IllegalArgumentException("The action index can not be a negative number")
         scenario.eventStrategy(playerId)
         scenario.nextEvent
 
       override def eventStory: EventStory = scenario.eventStory
+
+      override def hasToRun(playerId: Int): Boolean = condition(playerId)

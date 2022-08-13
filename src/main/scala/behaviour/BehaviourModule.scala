@@ -3,7 +3,7 @@ package behaviour
 import events.EventModule.*
 
 object BehaviourModule extends App:
-  type EventGroup = Seq[Event]
+  type EventGroup = Seq[ConditionalEvent]
   type StoryGroup = Seq[EventStory]
 
   /** A choose of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
@@ -11,7 +11,7 @@ object BehaviourModule extends App:
   type Choice = (Int, Int)
 
   trait Behaviour:
-    def startBehaviour(): Seq[StoryGroup]
+    def startBehaviour(playerId: Int): Seq[StoryGroup]
 
     /** Allow to choose an available event of this behaviour
       *
@@ -25,8 +25,8 @@ object BehaviourModule extends App:
 
     case class BehaviourImpl(initialEvents: Seq[EventGroup]) extends Behaviour:
       var currentEvents: Seq[EventGroup] = Seq()
-      override def startBehaviour(): Seq[StoryGroup] =
-        currentEvents = initialEvents
+      override def startBehaviour(playerId: Int): Seq[StoryGroup] =
+        currentEvents = initialEvents.map(_.filter(_.hasToRun(playerId))).filter(_.nonEmpty)
         getStories
 
       override def chooseEvent(playerId: Int, choice: Choice): Seq[StoryGroup] =
@@ -39,7 +39,9 @@ object BehaviourModule extends App:
           println(s"After $currentEvents")
 
           // insert next EventGroup
-          if nextOpEvent.nonEmpty then currentEvents = currentEvents :+ Seq(nextOpEvent.get)
+          if nextOpEvent.nonEmpty && nextOpEvent.get.isInstanceOf[ConditionalEvent] then
+            val nextCondEvent = nextOpEvent.get.asInstanceOf[ConditionalEvent]
+            if nextCondEvent.hasToRun(playerId) then currentEvents = currentEvents :+ Seq(nextCondEvent)
         catch case _: IndexOutOfBoundsException => throw IllegalArgumentException("Player chose not existing event")
         getStories
 
