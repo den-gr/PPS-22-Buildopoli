@@ -42,7 +42,7 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
       println("Automatic end of turn") // TODO
     val imprisonEvent = Event(Scenario(imprisonStrategy, None, story))
     val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent)))
-    println(behaviour.startBehaviour)
+    println(behaviour.startBehaviour())
     assertThrows[IllegalArgumentException](behaviour.chooseEvent(PLAYER_1, (1, 0)))
     assertThrows[IllegalArgumentException](behaviour.chooseEvent(PLAYER_1, (0, 1)))
     val nextStories: Seq[StoryGroup] = behaviour.chooseEvent(PLAYER_1, (0, 0))
@@ -59,7 +59,7 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
 
     val imprisonEvent = Event(Scenario(imprisonStrategy, None, story))
     val behaviour: Behaviour = Behaviour(Seq(Seq(imprisonEvent)))
-    behaviour.startBehaviour
+    behaviour.startBehaviour()
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
     behaviour.chooseEvent(PLAYER_1, (0, 0))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
