@@ -6,38 +6,39 @@ object BehaviourModule extends App:
   type EventGroup = Seq[Event]
   type StoryGroup = Seq[EventStory]
 
-  /** A choose of a event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
+  /** A choose of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
     */
-  type Choose = (Int, Int)
+  type Choice = (Int, Int)
 
   trait Behaviour:
-    def startBehaviour: Seq[StoryGroup]
+    def startBehaviour(): Seq[StoryGroup]
 
     /** Allow to choose an available event of this behaviour
-      * @param choose
-      *   see [[Choose]]
+      *
+      * @param choice
+      *   see [[Choice]]
       */
-    def chooseEvent(playerId: Int, choose: Choose): Seq[StoryGroup]
+    def chooseEvent(playerId: Int, choice: Choice): Seq[StoryGroup]
 
   object Behaviour:
     def apply(initialEvents: Seq[EventGroup]): Behaviour = BehaviourImpl(initialEvents)
 
     case class BehaviourImpl(initialEvents: Seq[EventGroup]) extends Behaviour:
       var currentEvents: Seq[EventGroup] = Seq()
-      override def startBehaviour: Seq[StoryGroup] =
+      override def startBehaviour(): Seq[StoryGroup] =
         currentEvents = initialEvents
         getStories
 
-      override def chooseEvent(playerId: Int, choose: Choose): Seq[StoryGroup] =
+      override def chooseEvent(playerId: Int, choice: Choice): Seq[StoryGroup] =
         try
-          val nextOpEvent = currentEvents(choose._1)(choose._2).run(playerId)
+          val nextOpEvent = currentEvents(choice._1)(choice._2).run(playerId)
           println(s"Before $currentEvents")
 
-          // remove used EventGroup
-          currentEvents = currentEvents.patch(choose._1, Nil, 1)
+          // remove chose EventGroup
+          currentEvents = currentEvents.patch(choice._1, Nil, 1)
           println(s"After $currentEvents")
 
-          // insert new event Group
+          // insert next EventGroup
           if nextOpEvent.nonEmpty then currentEvents = currentEvents :+ Seq(nextOpEvent.get)
         catch case _: IndexOutOfBoundsException => throw IllegalArgumentException("Player chose not existing event")
         getStories
