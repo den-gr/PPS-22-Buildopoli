@@ -1,8 +1,9 @@
+import gameOptions.GameOptions
 import gameSession.{GameSession, GameSessionImpl}
 import org.scalatest.funsuite.AnyFunSuite
 
 class GameSessionTest extends AnyFunSuite:
-  val gameSession: GameSession = GameSessionImpl()
+  val gameSession: GameSession = GameSessionImpl(GameOptions(1000, 2))
 
   test("playersList has initial size at zero") {
     assert(gameSession.getPlayersList.size === 0)
@@ -12,6 +13,7 @@ class GameSessionTest extends AnyFunSuite:
     val previousSize: Int = gameSession.getPlayersList.size
     gameSession.addOnePlayer(Option.empty)
     assert(gameSession.getPlayersList.size === (previousSize + 1))
+    assert(gameSession.gameBank.playersList.size === (previousSize + 1))
   }
 
   test("playerList size increased after adding multiple elements") {
@@ -24,7 +26,7 @@ class GameSessionTest extends AnyFunSuite:
     val previousSize: Int = gameSession.getPlayersList.size
     gameSession.addOnePlayer(Option.apply(15))
     assert(gameSession.getPlayersList.size === (previousSize + 1))
-    assert(gameSession.getPlayersList.last.getPlayerId === 15)
+    assert(gameSession.getPlayersList.last.playerId === 15)
     assert(gameSession.getPlayersList.last.getPlayerMoney === 1000)
   }
 
