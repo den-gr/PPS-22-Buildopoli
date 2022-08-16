@@ -18,8 +18,8 @@
     <!-- 1 item-->
     <tr>
         <td >I would like to define the property of the game and gamers</td>
-        <td>Creation of player options</td>
-        <td> Bertoni </td>
+        <td>Creation of game options</td>
+        <td> Bacca </td>
         <td>3</td>
         <td></td>
         <td></td>
@@ -48,7 +48,7 @@
     </tr>
     <tr>
         <td></td>
-        <td>Build/Define global default events (Trigger event when user complete one lap)</td>
+        <td>Build/Define global default behaviour (Trigger event when user complete one lap)</td>
         <td>Bertoni</td>
         <td>6</td>
         <td></td>
