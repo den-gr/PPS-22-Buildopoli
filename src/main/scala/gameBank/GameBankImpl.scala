@@ -3,7 +3,8 @@ package gameBank
 import player.Player
 import scala.collection.mutable.ListBuffer
 
-case class GameBankImpl(playersList: ListBuffer[Player], debtsManagement: Boolean) extends Bank:
+case class GameBankImpl(override val playersList: ListBuffer[Player], override val debtsManagement: Boolean)
+    extends Bank:
 
   val debitManagement: BankDebit = BankDebitImpl()
 
@@ -15,25 +16,25 @@ case class GameBankImpl(playersList: ListBuffer[Player], debtsManagement: Boolea
     val player: Player = getPlayer(playerId)
     val debts = getDebtsForPlayer(playerId)
     if debtsManagement && debts > 0 then this.increasePlayerMoneyWithDebts(debts, amount, player)
-    else player.increaseMoney(amount)
+    else player.setPlayerMoney(player.getPlayerMoney + amount)
 
   def increasePlayerMoneyWithDebts(debit: Int, amount: Int, player: Player): Unit =
-    if amount <= debit then this.debitManagement.decreaseDebit(player.getPlayerId, amount)
+    if amount <= debit then this.debitManagement.decreaseDebit(player.playerId, amount)
     else
-      this.debitManagement.decreaseDebit(player.getPlayerId, debit)
-      this.increasePlayerMoney(player.getPlayerId, amount - debit)
+      this.debitManagement.decreaseDebit(player.playerId, debit)
+      this.increasePlayerMoney(player.playerId, amount - debit)
 
   override def decreasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = getPlayer(playerId)
-    if playerHasEnoughMoney(player, amount) then player.decreaseMoney(amount)
+    if playerHasEnoughMoney(player, amount) then player.setPlayerMoney(player.getPlayerMoney - amount)
     else
       if debtsManagement then this.debitManagement.increaseDebit(playerId, amount - player.getPlayerMoney)
-      player.setMoney(0)
+      player.setPlayerMoney(0)
 
-  override def getDebtsList: Map[Int, Int] = this.debitManagement.getDebitList()
+  override def getDebtsList: Map[Int, Int] = this.debitManagement.getDebtsList
   override def getDebtsForPlayer(playerId: Int): Int = this.debitManagement.getDebitForPlayer(playerId)
   def getPlayer(playerId: Int): Player = playersList
-    .filter(p => p.getPlayerId.equals(playerId))
+    .filter(p => p.playerId.equals(playerId))
     .result()
     .head
 
