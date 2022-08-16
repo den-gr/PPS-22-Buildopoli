@@ -1,3 +1,5 @@
+package player
+
 import org.scalatest.funsuite.AnyFunSuite
 import player.{Player, PlayerImpl}
 

@@ -1,9 +1,12 @@
-import gameOptions.GameOptions
+package gameSession
+
+import gameOptions.{GameOptions, GameTemplate}
 import gameSession.{GameSession, GameSessionImpl}
 import org.scalatest.funsuite.AnyFunSuite
 
 class GameSessionTest extends AnyFunSuite:
-  val gameSession: GameSession = GameSessionImpl(GameOptions(1000, 2))
+  val initialMoney = 100
+  val gameSession: GameSession = GameSessionImpl(GameOptions(initialMoney, 2), GameTemplate())
 
   test("playersList has initial size at zero") {
     assert(gameSession.getPlayersList.size === 0)
@@ -27,7 +30,7 @@ class GameSessionTest extends AnyFunSuite:
     gameSession.addOnePlayer(Option.apply(15))
     assert(gameSession.getPlayersList.size === (previousSize + 1))
     assert(gameSession.getPlayersList.last.playerId === 15)
-    assert(gameSession.getPlayersList.last.getPlayerMoney === 1000)
+    assert(gameSession.getPlayersList.last.getPlayerMoney === initialMoney)
   }
 
   test("duplicate player ID existence") {

@@ -17,21 +17,23 @@ case class GameSessionImpl(override val gameOptions: GameOptions, override val g
   override def addManyPlayers(n: Int): Unit =
     for _ <- 0 until n do this.addOnePlayer(Option.empty)
 
-  override def addOnePlayer(playerId: Option[Int]): Unit = playerId match
-    case None =>
-      this.playersList += PlayerImpl(this.checkPlayerIdCounter())
-      this.playerIdsCounter += 1
-    case Some(id) =>
-      this.playersList += PlayerImpl(this.checkGivenPlayerId(id))
+  override def addOnePlayer(playerId: Option[Int]): Unit =
+    this.playersList += PlayerImpl(this.checkPlayerId(playerId))
+    if playerId.isEmpty then this.playerIdsCounter += 1
+    this.initializePlayer()
 
-  def checkPlayerIdCounter(): Int =
-    while playerIdAlreadyExist(this.playerIdsCounter) do this.playerIdsCounter += 1
-    this.playerIdsCounter
+  override def initializePlayer(): Unit =
+    this.playersList.last.setPlayerMoney(gameOptions.playerMoney)
 
-  def checkGivenPlayerId(id: Int): Int =
-    var player = id
-    while playerIdAlreadyExist(player) do player += 1
-    player
+  def checkPlayerId(playerId: Option[Int]): Int =
+    playerId match
+      case None =>
+        while playerIdAlreadyExist(this.playerIdsCounter) do this.playerIdsCounter += 1
+        this.playerIdsCounter
+      case Some(id) =>
+        var player = id
+        while playerIdAlreadyExist(player) do player += 1
+        player
 
   def playerIdAlreadyExist(playerId: Int): Boolean =
     this.playersList.exists(p => p.playerId.equals(playerId))

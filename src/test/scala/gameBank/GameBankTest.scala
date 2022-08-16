@@ -1,10 +1,12 @@
-import gameOptions.GameOptions
+package gameBank
+
+import gameOptions.{GameOptions, GameTemplate}
 import gameSession.{GameSession, GameSessionImpl}
 import org.scalatest.funsuite.AnyFunSuite
 
 class GameBankTest extends AnyFunSuite:
 
-  val gameSession: GameSession = GameSessionImpl(GameOptions(100, 2))
+  val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2), GameTemplate())
   var playerCounter = 0
 
   test("player has incremented money") {
