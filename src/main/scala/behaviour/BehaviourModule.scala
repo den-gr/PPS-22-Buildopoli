@@ -14,34 +14,12 @@ object BehaviourModule:
   trait Behaviour:
     def getInitialEvents(playerId: Int): Seq[EventGroup]
 
-    /** Allow to choose an available event of this behaviour
-      *
-      * @param choice
-      *   see [[Choice]]
-      */
-    def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, choice: Choice): Seq[EventGroup]
-
   object Behaviour:
     def apply(initialEvents: Seq[EventGroup]): Behaviour = BehaviourImpl(initialEvents)
 
     case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
       override def getInitialEvents(playerId: Int): Seq[EventGroup] =
         initialEvents.map(_.filter(_.hasToRun(playerId))).filter(_.nonEmpty)
-
-      override def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, choice: (Int, Int)): Seq[EventGroup] =
-        try
-          val nextOpEvent = currentEvents(choice._1)(choice._2).run(playerId)
-
-          // remove chose EventGroup
-          var newEvents = currentEvents.patch(choice._1, Nil, 1)
-
-          // insert next EventGroup
-          if nextOpEvent.nonEmpty && nextOpEvent.get.isInstanceOf[ConditionalEvent] then
-            val nextCondEvent = nextOpEvent.get.asInstanceOf[ConditionalEvent]
-            if nextCondEvent.hasToRun(playerId) then newEvents = newEvents :+ Seq(nextCondEvent)
-          newEvents
-        catch case _: IndexOutOfBoundsException => throw IllegalArgumentException("Indexes ho not existing event: " + choice)
-
 
     def getStories(events: Seq[EventGroup]): Seq[StoryGroup] =
       events.map(eventGroup => eventGroup.map(m => m.eventStory))
@@ -58,3 +36,24 @@ object BehaviourModule:
         )
       )
       result
+
+    /** Allow to choose an available event of this behaviour
+     *
+     * @param choice
+     * see [[Choice]]
+     */
+    def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, choice: (Int, Int)): Seq[EventGroup] =
+      try
+        val nextOpEvent = currentEvents(choice._1)(choice._2).run(playerId)
+
+        // remove chose EventGroup
+        var newEvents = currentEvents.patch(choice._1, Nil, 1)
+
+        // insert next EventGroup
+        if nextOpEvent.nonEmpty && nextOpEvent.get.isInstanceOf[ConditionalEvent] then
+          val nextCondEvent = nextOpEvent.get.asInstanceOf[ConditionalEvent]
+          if nextCondEvent.hasToRun(playerId) then newEvents = newEvents :+ Seq(nextCondEvent)
+        newEvents
+      catch
+        case _: IndexOutOfBoundsException =>
+          throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + choice)
