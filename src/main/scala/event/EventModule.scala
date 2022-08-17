@@ -7,7 +7,9 @@ object EventModule:
     def isSingleAction: Boolean = actions.length == 1
 
   trait Event:
-    def run(playerId: Int): Option[Event]
+    var nextEvent: Option[Event] = None
+//    def nextEvent_=(ev: Option[Event]) = 
+    def run(playerId: Int): Unit
     def eventStory: EventStory
 
   trait Condition[T]:
@@ -25,7 +27,7 @@ object EventModule:
 
   trait Scenario:
     def eventStrategy: EventStrategy
-    def nextEvent: Option[Event]
+//    def nextEvent: Option[Event]
     def eventStory: EventStory
 
   object EventStory:
@@ -43,17 +45,17 @@ object EventModule:
     import EventStory.*
     val tempStory: EventStory = EventStory("My temp description", List("OK"))
 
-    def apply(eventStrategy: EventStrategy, nextEvent: Option[Event]): Scenario =
-      ScenarioImpl(eventStrategy, nextEvent, tempStory)
+    def apply(eventStrategy: EventStrategy ): Scenario =
+      ScenarioImpl(eventStrategy, tempStory)
 
-    def apply(nextEvent: Option[Event], story: EventStory): Scenario = ScenarioImpl(nextEvent = nextEvent, story)
+    def apply(story: EventStory): Scenario = ScenarioImpl(eventStory = story)
 
-    def apply(eventStrategy: EventStrategy, nextEvent: Option[Event], story: EventStory): Scenario =
-      ScenarioImpl(eventStrategy, nextEvent, story)
+    def apply(eventStrategy: EventStrategy, story: EventStory): Scenario =
+      ScenarioImpl(eventStrategy, story)
 
     case class ScenarioImpl(
         override val eventStrategy: EventStrategy = _ => (),
-        override val nextEvent: Option[Event],
+//        override val nextEvent: Option[Event],
         override val eventStory: EventStory
     ) extends Scenario
 
@@ -61,15 +63,24 @@ object EventModule:
     def apply(scenario: Scenario, condition: EventPrecondition): ConditionalEvent =
       ConditionalEventImpl(scenario, condition)
 
-  class ConditionalEventImpl(scenario: Scenario, condition: EventPrecondition)
-      extends EventImpl(scenario),
-        ConditionalEvent:
+    class EventImpl(scenario: Scenario) extends Event :
+      override def run(playerId: Int): Unit =
+        scenario.eventStrategy(playerId)
 
-    override def hasToRun(playerId: Int): Boolean = condition(playerId)
+      override def eventStory: EventStory = scenario.eventStory
 
-  class EventImpl(scenario: Scenario) extends Event:
-    override def run(playerId: Int): Option[Event] =
-      scenario.eventStrategy(playerId)
-      scenario.nextEvent
+    class ConditionalEventImpl(scenario: Scenario, condition: EventPrecondition)
+        extends EventImpl(scenario),
+          ConditionalEvent:
 
-    override def eventStory: EventStory = scenario.eventStory
+      override def hasToRun(playerId: Int): Boolean = condition(playerId)
+
+  object EventOperation:
+    extension (e: Event)
+      def ++(nextEvent : Event): Event = 
+        e.nextEvent = Some(nextEvent)
+        e
+
+  object EventFactory:
+    import Event.*
+    def InfoEvent(story: EventStory, condition: EventPrecondition): ConditionalEvent = Event(Scenario(story), condition)

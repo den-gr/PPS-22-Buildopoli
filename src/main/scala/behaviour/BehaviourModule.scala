@@ -44,7 +44,9 @@ object BehaviourModule:
       */
     def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, choice: (Int, Int)): Seq[EventGroup] =
       try
-        val nextOpEvent = currentEvents(choice._1)(choice._2).run(playerId)
+        val ev = currentEvents(choice._1)(choice._2)
+        ev.run(playerId)
+        val nextOpEvent = ev.nextEvent
 
         // remove chose EventGroup
         var newEvents = currentEvents.patch(choice._1, Nil, 1)
