@@ -46,7 +46,7 @@ object EventModule:
     def apply(eventStrategy: EventStrategy, nextEvent: Option[Event]): Scenario =
       ScenarioImpl(eventStrategy, nextEvent, tempStory)
 
-    def apply(nextEvent: Option[Event]): Scenario = ScenarioImpl(nextEvent = nextEvent, tempStory)
+    def apply(nextEvent: Option[Event], story: EventStory): Scenario = ScenarioImpl(nextEvent = nextEvent, story)
 
     def apply(eventStrategy: EventStrategy, nextEvent: Option[Event], story: EventStory): Scenario =
       ScenarioImpl(eventStrategy, nextEvent, story)
@@ -58,22 +58,18 @@ object EventModule:
     ) extends Scenario
 
   object Event:
-    def apply(scenario: Scenario, condition: Int => Boolean): ConditionalEvent =
+    def apply(scenario: Scenario, condition: EventPrecondition): ConditionalEvent =
       ConditionalEventImpl(scenario, condition)
 
-    class ConditionalEventImpl(scenario: Scenario, condition: Int => Boolean) extends ConditionalEvent:
-      override def run(playerId: Int): Option[Event] =
-//        if actionIndex < 0 then throw new IllegalArgumentException("The action index can not be a negative number")
-        scenario.eventStrategy(playerId)
-        scenario.nextEvent
+  class ConditionalEventImpl(scenario: Scenario, condition: EventPrecondition)
+      extends EventImpl(scenario),
+        ConditionalEvent:
 
-      override def eventStory: EventStory = scenario.eventStory
+    override def hasToRun(playerId: Int): Boolean = condition(playerId)
 
-      override def hasToRun(playerId: Int): Boolean = condition(playerId)
+  class EventImpl(scenario: Scenario) extends Event:
+    override def run(playerId: Int): Option[Event] =
+      scenario.eventStrategy(playerId)
+      scenario.nextEvent
 
-    class EventImpl(scenario: Scenario) extends Event:
-      override def run(playerId: Int): Option[Event] =
-        scenario.eventStrategy(playerId)
-        scenario.nextEvent
-
-      override def eventStory: EventStory = scenario.eventStory
+    override def eventStory: EventStory = scenario.eventStory
