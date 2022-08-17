@@ -1,0 +1,5 @@
+package behaviour
+
+class CasinoTest {
+
+}

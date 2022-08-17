@@ -2,9 +2,9 @@ package behaviour
 
 import behaviour.BehaviourModule.{Behaviour, EventGroup, StoryGroup}
 import behaviour.BehaviourModule.Behaviour.*
-import events.EventModule
-import events.EventModule.*
-import helper.TestMocks.JailMock
+import event.EventModule
+import event.EventModule.*
+import util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -73,7 +73,7 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
   val escapeStrategy: Int => Unit =
     // This version has 100% probability to escape successfully
     jail.liberatePlayer(_)
-  // TODO start new movement
+    // TODO start new movement
   val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
   val escapePrecondition: EventPrecondition = jail.getRemainingBlockedMovements(_).nonEmpty
   val escapeEvent: ConditionalEvent = Event(Scenario(escapeStrategy, None, escapeStory), escapePrecondition)

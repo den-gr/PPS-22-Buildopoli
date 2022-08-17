@@ -1,10 +1,10 @@
-package events
+package event
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.*
 import EventModule.*
-import helper.TestMocks.*
-import helper.TestMocks.BankMock.*
+import util.mock.BankHelper.*
+import util.mock.BankHelper.BankMock.*
 
 class EventTest extends AnyFunSuite with BeforeAndAfterEach:
   val MOCK_ID: Int = 0

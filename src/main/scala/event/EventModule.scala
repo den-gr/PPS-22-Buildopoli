@@ -1,4 +1,4 @@
-package events
+package event
 
 object EventModule:
   trait EventStory:

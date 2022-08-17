@@ -1,6 +1,6 @@
 package behaviour
 import behaviour.BehaviourModule.StoryGroup
-import events.EventModule.*
+import event.EventModule.*
 
 object BehaviourModule:
   type EventGroup = Seq[ConditionalEvent]
@@ -38,10 +38,10 @@ object BehaviourModule:
       result
 
     /** Allow to choose an available event of this behaviour
-     *
-     * @param choice
-     * see [[Choice]]
-     */
+      *
+      * @param choice
+      *   see [[Choice]]
+      */
     def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, choice: (Int, Int)): Seq[EventGroup] =
       try
         val nextOpEvent = currentEvents(choice._1)(choice._2).run(playerId)
