@@ -42,9 +42,6 @@ object EventModule:
     import EventStory.*
     val tempStory: EventStory = EventStory("My temp description", List("OK"))
 
-    def apply(eventStrategy: EventStrategy): Scenario =
-      ScenarioImpl(eventStrategy, () => tempStory)
-
     def apply(story: EventStory): Scenario = ScenarioImpl(storyGenerator = () => story)
 
     def apply(eventStrategy: EventStrategy, story: EventStory): Scenario =
