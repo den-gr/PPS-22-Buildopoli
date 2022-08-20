@@ -51,12 +51,10 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
     println(printStories(events, PLAYER_1))
     assert(events.length == 1)
     assert(events.head.length == 1)
-    assert(events.head.head.eventStory(PLAYER_1).actions.length == 1)
+    assert(events.head.head.eventStory(PLAYER_1).choices.length == 1)
     events = chooseEvent(events)(PLAYER_1, (0, 0))
     assert(events.length == 1)
     assert(events.head.length == 1)
-    assert(events.head.head.eventStory(PLAYER_1).actions.length == 5)
+    assert(events.head.head.eventStory(PLAYER_1).choices.length == 5)
     println(printStories(events, PLAYER_1))
   }
-
-//  test("")

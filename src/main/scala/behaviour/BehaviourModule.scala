@@ -42,7 +42,7 @@ object BehaviourModule:
           result += "Group\n";
           storyGroup.foreach(story =>
             result += s"\t ${story.description}. Available actions:\n\t\t";
-            result += story.actions.mkString("\n\t\t")
+            result += story.choices.mkString("\n\t\t")
             result +=
               "\n"
           )
