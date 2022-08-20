@@ -47,7 +47,7 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
     var nextEv = ev2.nextEvent
 
     while nextEv.nonEmpty do
-      if nextEv.get.eventStory.isSingleAction then
+      if nextEv.get.eventStory(MOCK_ID).isSingleAction then
         nextEv.get.run(MAIN_ACTION)
         nextEv = nextEv.get.nextEvent
       else fail("Multiple action case is not supported now")

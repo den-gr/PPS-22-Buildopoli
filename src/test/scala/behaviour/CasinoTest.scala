@@ -34,7 +34,7 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
       bank.acceptPayment(Player(id), Bank)
       // assume we always lose
 
-  private val storyGenerator: () => EventStory = () =>
+  private val storyGenerator: StoryGenerator = _ =>
     val desc = "base event description"
     var seq = Seq[String]()
     if bank.money <= 100 then EventStory("Not enough money", Seq())
@@ -48,16 +48,15 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Check casino behaviour configuration") {
     var events = casinoBehaviour.getInitialEvents(PLAYER_1)
-    println(printStories(getStories(events)))
+    println(printStories(events, PLAYER_1))
     assert(events.length == 1)
     assert(events.head.length == 1)
-    assert(events.head.head.eventStory.actions.length == 1)
+    assert(events.head.head.eventStory(PLAYER_1).actions.length == 1)
     events = chooseEvent(events)(PLAYER_1, (0, 0))
     assert(events.length == 1)
     assert(events.head.length == 1)
-    assert(events.head.head.eventStory.actions.length == 5)
-    println(printStories(getStories(events)))
-    println(printStories(events))
+    assert(events.head.head.eventStory(PLAYER_1).actions.length == 5)
+    println(printStories(events, PLAYER_1))
   }
 
 //  test("")

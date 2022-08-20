@@ -17,27 +17,27 @@ object BehaviourModule:
   object Behaviour:
     def apply(initialEvents: Seq[EventGroup]): Behaviour = BehaviourImpl(initialEvents)
 
-    case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour :
+    case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
       override def getInitialEvents(playerId: Int): Seq[EventGroup] =
         initialEvents.map(_.filter(_.hasToRun(playerId))).filter(_.nonEmpty)
-    
+
     trait StoryConverter[T]:
-      def stories(seq : Seq[T]): Seq[StoryGroup]
-    
-    given StoryConverter[StoryGroup] with 
-      override  def stories(seq : Seq[StoryGroup]) : Seq[StoryGroup] = seq
+      def stories(seq: Seq[T], playerId: Int): Seq[StoryGroup]
+
+    given StoryConverter[StoryGroup] with
+      override def stories(seq: Seq[StoryGroup], playerId: Int): Seq[StoryGroup] = seq
 
     given StoryConverter[EventGroup] with
-      override def stories(seq: Seq[EventGroup]): Seq[StoryGroup] = getStories(seq)
+      override def stories(seq: Seq[EventGroup], playerId: Int): Seq[StoryGroup] =
+        seq.map(eventGroup => eventGroup.map(m => m.eventStory(playerId)))
 
-    def getStories(events: Seq[EventGroup]): Seq[StoryGroup] =
-      events.map(eventGroup => eventGroup.map(m => m.eventStory))
+    def getStories(events: Seq[EventGroup], playerId: Int): Seq[StoryGroup] =
+      summon[StoryConverter[EventGroup]].stories(events, playerId)
 
-    
-    def printStories[T: StoryConverter](stories: Seq[T]): String =
+    def printStories[T: StoryConverter](stories: Seq[T], playerId: Int): String =
       var result: String = ""
       summon[StoryConverter[T]]
-        .stories(stories)
+        .stories(stories, playerId)
         .foreach(storyGroup =>
           result += "Group\n";
           storyGroup.foreach(story =>
@@ -46,7 +46,7 @@ object BehaviourModule:
             result +=
               "\n"
           )
-      )
+        )
       result
 
     /** Allow to choose an available event of this behaviour

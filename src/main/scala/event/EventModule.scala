@@ -8,10 +8,14 @@ object EventModule:
     def actions: Seq[String]
     def isSingleAction: Boolean = actions.length == 1
 
+  trait StoryAction:
+    evSt: EventStory =>
+    def storyActions: Seq[(String, () => Unit)]
+
   trait Event:
     var nextEvent: Option[Event]
     def run(playerId: Int): Unit
-    def eventStory: EventStory
+    def eventStory(playerId: Int): EventStory
     def doCopy(): Event
 
   trait Condition[T]:
@@ -21,11 +25,11 @@ object EventModule:
 
   type EventStrategy = Int => Unit
   type EventPrecondition = Int => Boolean
-  type StoryGenerator = () => EventStory
+  type StoryGenerator = Int => EventStory
 
   trait Scenario:
     def eventStrategy: EventStrategy
-    def eventStory: EventStory
+    def eventStory(playerId: Int): EventStory
 
   object EventStory:
     val MAIN_ACTION = 0
@@ -42,10 +46,10 @@ object EventModule:
     import EventStory.*
     val tempStory: EventStory = EventStory("My temp description", List("OK"))
 
-    def apply(story: EventStory): Scenario = ScenarioImpl(storyGenerator = () => story)
+    def apply(story: EventStory): Scenario = ScenarioImpl(storyGenerator = _ => story)
 
     def apply(eventStrategy: EventStrategy, story: EventStory): Scenario =
-      ScenarioImpl(eventStrategy, () => story)
+      ScenarioImpl(eventStrategy, _ => story)
 
     def apply(eventStrategy: EventStrategy, storyGenerator: StoryGenerator): Scenario =
       ScenarioImpl(eventStrategy, storyGenerator)
@@ -56,7 +60,7 @@ object EventModule:
         override val eventStrategy: EventStrategy = _ => (),
         storyGenerator: StoryGenerator
     ) extends Scenario:
-      override def eventStory: EventStory = storyGenerator()
+      override def eventStory(playerId: Int): EventStory = storyGenerator(playerId)
 
   object Event:
     val WITHOUT_PRECONDITION: EventPrecondition = _ => true
@@ -69,7 +73,7 @@ object EventModule:
       override def run(playerId: Int): Unit =
         scenario.eventStrategy(playerId)
 
-      override def eventStory: EventStory = scenario.eventStory
+      override def eventStory(playerId: Int): EventStory = scenario.eventStory(playerId)
 
       override def doCopy(): Event = EventImpl(scenario)
 
