@@ -57,4 +57,7 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(events.head.length == 1)
     assert(events.head.head.eventStory.actions.length == 5)
     println(printStories(getStories(events)))
+    println(printStories(events))
   }
+
+//  test("")
