@@ -58,15 +58,13 @@ object BehaviourModule:
       try
         val ev = currentEvents(choice._1)(choice._2)
         ev.run(playerId)
-        val nextOpEvent = ev.nextEvent
+        val nextOpEvent: Option[ConditionalEvent] = ev.nextEvent
 
         // remove chose EventGroup
         var newEvents = currentEvents.patch(choice._1, Nil, 1)
 
         // insert next EventGroup
-        if nextOpEvent.nonEmpty && nextOpEvent.get.isInstanceOf[ConditionalEvent] then
-          val nextCondEvent = nextOpEvent.get.asInstanceOf[ConditionalEvent]
-          if nextCondEvent.hasToRun(playerId) then newEvents = newEvents :+ Seq(nextCondEvent)
+        if nextOpEvent.nonEmpty && nextOpEvent.get.hasToRun(playerId) then newEvents = newEvents :+ Seq(nextOpEvent.get)
         newEvents
       catch
         case _: IndexOutOfBoundsException =>

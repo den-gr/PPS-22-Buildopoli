@@ -13,15 +13,17 @@ object EventModule:
     def storyActions: Seq[(String, () => Unit)]
 
   trait Event:
-    var nextEvent: Option[Event]
+    def nextEvent: Option[Event]
     def run(playerId: Int): Unit
     def eventStory(playerId: Int): EventStory
-    def doCopy(): Event
+    def doCopy(nextEv: Option[Event]): Event
 
   trait Condition[T]:
     def hasToRun(playerId: T): Boolean
 
-  trait ConditionalEvent extends Event with Condition[Int]
+  trait ConditionalEvent extends Event with Condition[Int]:
+    override def nextEvent: Option[ConditionalEvent]
+    override def doCopy(nextEvent: Option[Event]): ConditionalEvent
 
   type EventStrategy = Int => Unit
   type EventPrecondition = Int => Boolean
@@ -67,37 +69,37 @@ object EventModule:
     def apply(scenario: Scenario, condition: EventPrecondition): ConditionalEvent =
       ConditionalEventImpl(scenario, condition)
 
-    case class EventImpl(scenario: Scenario) extends Event:
-      var nextEvent: Option[Event] = None
+    case class EventImpl(scenario: Scenario, nextEvent: Option[Event] = None) extends Event:
 
       override def run(playerId: Int): Unit =
         scenario.eventStrategy(playerId)
 
       override def eventStory(playerId: Int): EventStory = scenario.eventStory(playerId)
 
-      override def doCopy(): Event = EventImpl(scenario)
+      override def doCopy(nextEv: Option[Event]): Event = EventImpl(scenario, nextEv)
 
-    class ConditionalEventImpl(scenario: Scenario, condition: EventPrecondition)
-        extends EventImpl(scenario),
+    class ConditionalEventImpl(
+        scenario: Scenario,
+        condition: EventPrecondition,
+        override val nextEvent: Option[ConditionalEvent] = None
+    ) extends EventImpl(scenario),
           ConditionalEvent:
 
       override def hasToRun(playerId: Int): Boolean = condition(playerId)
 
-      override def doCopy(): Event = ConditionalEventImpl(scenario, condition)
+      override def doCopy(next: Option[Event]): ConditionalEvent = next.getOrElse(None) match
+        case event: ConditionalEvent => ConditionalEventImpl(scenario, condition, Some(event))
+        case None => ConditionalEventImpl(scenario, condition, None)
+        case _ => throw IllegalArgumentException("Event must be instance of ConditionalEvent")
 
   object EventOperation:
     extension (e: Event)
       @targetName("append")
-      def ++(nextEvent: Event): Event =
-        val copy = e.doCopy()
-        copy.nextEvent = Some(nextEvent)
-        copy
+      def ++(nextEvent: Event): Event = e.doCopy(Some(nextEvent))
+
     extension (e: ConditionalEvent)
       @targetName("append")
-      def ++(nextEvent: Event): ConditionalEvent =
-        val copy = e.doCopy().asInstanceOf[ConditionalEvent]
-        copy.nextEvent = Some(nextEvent)
-        copy
+      def ++(nextEvent: ConditionalEvent): ConditionalEvent = e.doCopy(Some(nextEvent))
 
   object EventFactory:
     import Event.*
