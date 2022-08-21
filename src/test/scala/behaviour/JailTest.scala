@@ -7,6 +7,7 @@ import event.EventModule.*
 import util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
+import event.EventStoryModule.*
 
 class JailTest extends AnyFunSuite with BeforeAndAfterEach:
   var jail: JailMock = JailMock()

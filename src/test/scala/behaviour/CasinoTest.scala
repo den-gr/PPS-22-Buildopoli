@@ -11,6 +11,7 @@ import util.mock.BankHelper.BankMock
 import util.mock.BankHelper.BankAccount.*
 import behaviour.BehaviourModule.*
 import behaviour.BehaviourModule.Behaviour.{chooseEvent, getStories, printStories}
+import event.EventStoryModule.*
 
 class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1

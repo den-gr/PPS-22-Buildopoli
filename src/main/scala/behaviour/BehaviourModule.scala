@@ -1,6 +1,8 @@
 package behaviour
 import behaviour.BehaviourModule.StoryGroup
 import event.EventModule.*
+import event.EventStoryModule.*
+
 
 object BehaviourModule:
   type EventGroup = Seq[ConditionalEvent]
@@ -9,7 +11,7 @@ object BehaviourModule:
 
   /** A choose of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
     */
-  type Choice = (Int, Int)
+  type Index = (Int, Int)
 
   trait Behaviour:
     def getInitialEvents(playerId: Int): Seq[EventGroup]
@@ -51,21 +53,21 @@ object BehaviourModule:
 
     /** Allow to choose an available event of this behaviour
       *
-      * @param choice
-      *   see [[Choice]]
+      * @param index
+      *   see [[Index]]
       */
-    def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, choice: (Int, Int)): Seq[EventGroup] =
+    def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, index: (Int, Int)): Seq[EventGroup] =
       try
-        val ev = currentEvents(choice._1)(choice._2)
+        val ev = currentEvents(index._1)(index._2)
         ev.run(playerId)
         val nextOpEvent: Option[ConditionalEvent] = ev.nextEvent
 
         // remove chose EventGroup
-        var newEvents = currentEvents.patch(choice._1, Nil, 1)
+        var newEvents = currentEvents.patch(index._1, Nil, 1)
 
         // insert next EventGroup
         if nextOpEvent.nonEmpty && nextOpEvent.get.hasToRun(playerId) then newEvents = newEvents :+ Seq(nextOpEvent.get)
         newEvents
       catch
         case _: IndexOutOfBoundsException =>
-          throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + choice)
+          throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + index)

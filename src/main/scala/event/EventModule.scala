@@ -1,23 +1,11 @@
 package event
 
+import java.awt.Choice
 import scala.annotation.targetName
 
-object EventModule:
-  trait EventStory:
-    def description: String
-    def choices: Seq[String]
-    def isSingleAction: Boolean = choices.length == 1
 
-  trait StoryAction:
-    evSt: EventStory =>
-    def actions: Seq[() => Unit]
-    def storyActions: Seq[(String, Action)] =
-      if choices.length != actions.length then
-        throw IllegalStateException("Each description must have a corresponding action")
-      for
-        choice <- choices
-        action <- actions
-      yield (choice, action)
+object EventModule:
+  import event.EventStoryModule.*
 
   trait Event:
     def nextEvent: Option[Event]
@@ -35,26 +23,12 @@ object EventModule:
   type EventStrategy = Int => Unit
   type EventPrecondition = Int => Boolean
   type StoryGenerator = Int => EventStory
-  type Action = () => Unit
 
   trait Scenario:
     def eventStrategy: EventStrategy
     def eventStory(playerId: Int): EventStory
 
-  object EventStory:
-    val MAIN_ACTION = 0
-    def apply(desc: String, choices: Seq[String]): EventStory = EventStoryImpl(desc, choices)
-
-    class EventStoryImpl(
-        override val description: String,
-        override val choices: Seq[String]
-    ) extends EventStory:
-      override def toString: String =
-        s"$description \n\t" + choices.mkString("\n\t")
-
-    class EventStoryActionsImpl(description: String, choices: Seq[String], override val actions: Seq[Action])
-        extends EventStoryImpl(description, choices)
-        with StoryAction
+  
 
   object Scenario:
     import EventStory.*
