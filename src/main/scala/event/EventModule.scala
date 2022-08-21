@@ -106,13 +106,9 @@ object EventModule:
         // TODO the code is fragile
 
   object EventOperation:
-    extension (e: Event)
+    extension [T <: Event](e: T)
       @targetName("append")
-      def ++(nextEvent: Event): Event = e.doCopy(Some(nextEvent))
-
-    extension (e: ConditionalEvent)
-      @targetName("append")
-      def ++(nextEvent: ConditionalEvent): ConditionalEvent = e.doCopy(Some(nextEvent))
+      def ++(nextEvent: T): T = e.doCopy(Some(nextEvent)).asInstanceOf[T]
 
   object EventFactory:
     import Event.*
