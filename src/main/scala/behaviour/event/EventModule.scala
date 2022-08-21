@@ -3,7 +3,6 @@ package behaviour.event
 import java.awt.Choice
 import scala.annotation.targetName
 
-
 object EventModule:
   import behaviour.event.EventStoryModule
   import behaviour.event.EventStoryModule.*
@@ -27,8 +26,6 @@ object EventModule:
   trait Scenario:
     def eventStrategy: EventStrategy
     def eventStory(playerId: Int): EventStory
-
-  
 
   object Scenario:
     import EventStory.*
@@ -94,7 +91,3 @@ object EventModule:
         if e.getClass != nextEvent.getClass then
           throw new IllegalArgumentException("Both event must be of the same type")
         e.doCopy(Some(nextEvent)).asInstanceOf[T]
-
-  object EventFactory:
-    import Event.*
-    def InfoEvent(story: EventStory, condition: EventPrecondition): ConditionalEvent = Event(Scenario(story), condition)

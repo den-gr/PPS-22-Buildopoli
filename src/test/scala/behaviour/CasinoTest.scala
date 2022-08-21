@@ -7,7 +7,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import util.mock.BankHelper.BankMock
 import util.mock.BankHelper.BankAccount.*
 import behaviour.BehaviourModule.*
-import behaviour.event.EventModule
+import behaviour.event.*
 import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.*
 
