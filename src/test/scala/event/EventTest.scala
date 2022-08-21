@@ -54,3 +54,27 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
       else fail("Multiple action case is not supported now")
     assert(bank.money == BANK_MONEY - TAX * 3)
   }
+
+  import EventOperation.*
+  test("Test ++ operator with Event object") {
+    val myEvent: Event = Event(Scenario(Scenario.tempStory))
+    val myEvent2: Event = Event(Scenario(Scenario.tempStory))
+    val appended = myEvent ++ myEvent2
+    assert(appended.isInstanceOf[Event])
+    assert(appended.nextEvent.get.isInstanceOf[Event])
+  }
+
+  test("Test ++ operator with Conditional object") {
+    val myEvent: ConditionalEvent = Event(Scenario(Scenario.tempStory), Event.WITHOUT_PRECONDITION)
+    val myEvent2: ConditionalEvent = Event(Scenario(Scenario.tempStory), Event.WITHOUT_PRECONDITION)
+    val appended = myEvent ++ myEvent2
+    assert(appended.isInstanceOf[ConditionalEvent])
+    assert(appended.nextEvent.get.isInstanceOf[ConditionalEvent])
+  }
+
+  test("Test ++ with appending an Event to a ConditionalEvent") {
+    val condEvent: ConditionalEvent = Event(Scenario(Scenario.tempStory), Event.WITHOUT_PRECONDITION)
+    val event: Event = Event(Scenario(Scenario.tempStory))
+    assertThrows[IllegalArgumentException](condEvent ++ event)
+    assertThrows[IllegalArgumentException](event ++ condEvent)
+  }

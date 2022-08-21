@@ -78,10 +78,18 @@ object EventModule:
 
   object Event:
     val WITHOUT_PRECONDITION: EventPrecondition = _ => true
-    def apply(scenario: Scenario, condition: EventPrecondition): ConditionalEvent =
-      ConditionalEventImpl(scenario, condition)
+    def apply(
+        scenario: Scenario,
+        condition: EventPrecondition,
+        nextEvent: Option[ConditionalEvent] = None
+    ): ConditionalEvent =
+      ConditionalEventImpl(scenario, condition, nextEvent)
 
-    case class EventImpl(scenario: Scenario, nextEvent: Option[Event] = None) extends Event:
+    def apply(scenario: Scenario, nextEvent: Option[Event]): Event = EventImpl(scenario, nextEvent)
+
+    def apply(scenario: Scenario): Event = apply(scenario, None)
+
+    case class EventImpl(scenario: Scenario, nextEvent: Option[Event]) extends Event:
 
       override def run(playerId: Int): Unit =
         scenario.eventStrategy(playerId)
@@ -93,8 +101,8 @@ object EventModule:
     class ConditionalEventImpl(
         scenario: Scenario,
         condition: EventPrecondition,
-        override val nextEvent: Option[ConditionalEvent] = None
-    ) extends EventImpl(scenario),
+        override val nextEvent: Option[ConditionalEvent]
+    ) extends EventImpl(scenario, nextEvent),
           ConditionalEvent:
 
       override def hasToRun(playerId: Int): Boolean = condition(playerId)
@@ -108,7 +116,10 @@ object EventModule:
   object EventOperation:
     extension [T <: Event](e: T)
       @targetName("append")
-      def ++(nextEvent: T): T = e.doCopy(Some(nextEvent)).asInstanceOf[T]
+      def ++(nextEvent: T): T =
+        if e.getClass != nextEvent.getClass then
+          throw new IllegalArgumentException("Both event must be of the same type")
+        e.doCopy(Some(nextEvent)).asInstanceOf[T]
 
   object EventFactory:
     import Event.*
