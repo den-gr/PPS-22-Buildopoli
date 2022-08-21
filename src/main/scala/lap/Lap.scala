@@ -28,6 +28,10 @@ object Lap :
      */
     def giveReward(playerID: Int, reward: Reward): Any
 
+  /**
+   * A basic implementation of lap
+   * @param playerPosition the Seq of player's positions
+   */
   case class GameLap(playerPosition: Seq[Int]) extends Lap:
     override def isNewLap(isValid: Boolean, playerID: Int, newPosition: Int): Boolean = isValid && newPosition < playerPosition(playerID - 1)
     override def giveReward(playerID: Int, reward: Reward): Any = reward.triggerBonus()
