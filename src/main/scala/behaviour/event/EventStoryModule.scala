@@ -1,7 +1,7 @@
 package behaviour.event
 
 object EventStoryModule:
-  type Action = () => Unit
+  type Interaction = () => Unit
 
   trait EventStory:
     def description: String
@@ -10,27 +10,26 @@ object EventStoryModule:
 
     def isSingleAction: Boolean = choices.length == 1
 
-  trait StoryAction:
+  trait StoryInteraction:
     evSt: EventStory =>
-    def actions: Seq[() => Unit]
+    def interactions: Seq[() => Unit]
 
-    def choicesAndActions: Seq[(String, Action)] =
-      if choices.length != actions.length then
+    def choicesAndInteractions: Seq[(String, Interaction)] =
+      if choices.length != interactions.length then
         throw IllegalStateException("Each description must have a corresponding action")
       for
-        choice <- choices
-        action <- actions
-      yield (choice, action)
+        i <- choices.indices
+      yield (choices(i), interactions(i))
 
-  trait EventStoryActions extends EventStory with StoryAction
+  trait InteractiveEventStory extends EventStory with StoryInteraction
 
   object EventStory:
     val MAIN_ACTION = 0
 
     def apply(desc: String, choices: Seq[String]): EventStory = EventStoryImpl(desc, choices)
 
-    def apply(desc: String, choices: Seq[String], actions: Seq[Action]): EventStoryActions =
-      EventStoryActionsImpl(desc, choices, actions)
+    def apply(desc: String, choices: Seq[String], interactions: Seq[Interaction]): InteractiveEventStory =
+      EventStoryActionsImpl(desc, choices, interactions)
 
     class EventStoryImpl(
         override val description: String,
@@ -40,8 +39,9 @@ object EventStoryModule:
         s"$description \n\t" + choices.mkString("\n\t")
 
     case class EventStoryActionsImpl(
-        description: String,
-        choices: Seq[String],
-        actions: Seq[Action]
-    ) extends EventStoryActions
-        with StoryAction
+                                      description: String,
+                                      choices: Seq[String],
+                                      interactions: Seq[Interaction]
+    ) extends InteractiveEventStory
+        with StoryInteraction:
+      if interactions.length != choices.length then throw new IllegalArgumentException()
