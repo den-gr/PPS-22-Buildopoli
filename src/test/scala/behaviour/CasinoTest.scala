@@ -2,16 +2,16 @@ package behaviour
 
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
-import event.EventModule
-import event.EventModule.*
-import event.EventModule.Event.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import util.mock.BankHelper.BankMock
 import util.mock.BankHelper.BankAccount.*
 import behaviour.BehaviourModule.*
+import behaviour.event.EventModule
+import behaviour.event.EventModule.*
+import behaviour.event.EventStoryModule.*
+
 import behaviour.BehaviourModule.Behaviour.{chooseEvent, getStories, printStories}
-import event.EventStoryModule.*
 
 class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1
@@ -43,7 +43,7 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
       for i <- 100 until bank.money by ((bank.money.toDouble / 500).ceil * 100).toInt do seq = seq :+ i.toString
       EventStory(desc, seq)
 
-  private val doubleGameEvent = Event(Scenario(doubleGameStrategy, storyGenerator), WITHOUT_PRECONDITION)
+  private val doubleGameEvent = Event(Scenario(doubleGameStrategy, storyGenerator), Event.WITHOUT_PRECONDITION)
 
   private val casinoBehaviour = Behaviour(Seq(EventGroup(infoEvent ++ doubleGameEvent)))
 

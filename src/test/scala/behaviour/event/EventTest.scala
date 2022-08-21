@@ -1,11 +1,11 @@
-package event
+package behaviour.event
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.*
-import EventModule.*
+import behaviour.event.EventModule.*
 import util.mock.BankHelper.*
 import util.mock.BankHelper.BankMock.*
-import event.EventStoryModule.*
+import EventStoryModule.*
 
 class EventTest extends AnyFunSuite with BeforeAndAfterEach:
   val MOCK_ID: Int = 0
@@ -30,7 +30,7 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(bank.money == BANK_MONEY - TAX * 2)
   }
 
-  import EventModule.*
+  import behaviour.event.EventModule.*
   import EventStory.*
 
   val ev: ConditionalEvent = Event(Scenario(eventStrategy, Scenario.tempStory), _ => true)

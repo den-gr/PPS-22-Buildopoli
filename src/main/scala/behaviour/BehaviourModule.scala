@@ -1,8 +1,8 @@
 package behaviour
 import behaviour.BehaviourModule.StoryGroup
-import event.EventModule.*
-import event.EventStoryModule.*
-
+import behaviour.event.EventModule
+import behaviour.event.EventModule.*
+import behaviour.event.EventStoryModule.EventStory
 
 object BehaviourModule:
   type EventGroup = Seq[ConditionalEvent]

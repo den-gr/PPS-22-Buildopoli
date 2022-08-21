@@ -1,12 +1,12 @@
-package event
+package behaviour.event
 
 import java.awt.Choice
 import scala.annotation.targetName
 
 
 object EventModule:
-  import event.EventStoryModule.*
-
+  import behaviour.event.EventStoryModule
+  import behaviour.event.EventStoryModule.*
   trait Event:
     def nextEvent: Option[Event]
     def run(playerId: Int): Unit

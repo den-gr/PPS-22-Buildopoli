@@ -1,4 +1,4 @@
-package event
+package behaviour.event
 
 object EventStoryModule:
   type Action = () => Unit

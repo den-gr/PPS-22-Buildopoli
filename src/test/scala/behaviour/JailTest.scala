@@ -1,13 +1,13 @@
 package behaviour
 
-import behaviour.BehaviourModule.{Behaviour, EventGroup, StoryGroup}
+import behaviour.BehaviourModule.*
 import behaviour.BehaviourModule.Behaviour.*
-import event.EventModule
-import event.EventModule.*
+import behaviour.event.EventModule
+import behaviour.event.EventModule.*
+import behaviour.event.EventStoryModule.EventStory
 import util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
-import event.EventStoryModule.*
 
 class JailTest extends AnyFunSuite with BeforeAndAfterEach:
   var jail: JailMock = JailMock()
