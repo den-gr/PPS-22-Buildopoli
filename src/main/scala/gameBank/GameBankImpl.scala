@@ -27,9 +27,11 @@ case class GameBankImpl(override val playersList: ListBuffer[Player], override v
   override def decreasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = getPlayer(playerId)
     if playerHasEnoughMoney(player, amount) then player.setPlayerMoney(player.getPlayerMoney - amount)
-    else
-      if debtsManagement then this.debitManagement.increaseDebit(playerId, amount - player.getPlayerMoney)
+    else if debtsManagement then
+      this.debitManagement.increaseDebit(playerId, amount - player.getPlayerMoney)
       player.setPlayerMoney(0)
+    else
+      throw new IllegalStateException("Money decrease not possible: player " + playerId + " does not have enough money")
 
   override def getDebtsList: Map[Int, Int] = this.debitManagement.getDebtsList
   override def getDebtsForPlayer(playerId: Int): Int = this.debitManagement.getDebitForPlayer(playerId)

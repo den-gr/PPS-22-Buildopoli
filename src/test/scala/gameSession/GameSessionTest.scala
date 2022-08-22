@@ -6,7 +6,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class GameSessionTest extends AnyFunSuite:
   val initialMoney = 100
-  val gameSession: GameSession = GameSessionImpl(GameOptions(initialMoney, 2), GameTemplate())
+  val gameSession: GameSession = GameSessionImpl(GameOptions(initialMoney, 2, true), GameTemplate())
 
   test("playersList has initial size at zero") {
     assert(gameSession.getPlayersList.size === 0)

@@ -6,7 +6,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class GameBankTest extends AnyFunSuite:
 
-  val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2), GameTemplate())
+  val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, true), GameTemplate())
   var playerCounter = 0
 
   test("player has incremented money") {
@@ -58,6 +58,19 @@ class GameBankTest extends AnyFunSuite:
   test("initial player has debit 0") {
     addPlayer(4)
     assert(gameSession.gameBank.getDebtsForPlayer(4) === 0)
+  }
+
+  test("throw exception when debit not enabled and player does not have enough money") {
+    val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, false), GameTemplate())
+    gameSession.addOnePlayer(Option.apply(1))
+    gameSession.addOnePlayer(Option.apply(2))
+    assert(gameSession.getPlayersList.size === 2)
+    gameSession.gameBank.increasePlayerMoney(1, 100)
+    gameSession.gameBank.increasePlayerMoney(2, 400)
+    assert(gameSession.gameBank.getMoneyForPlayer(1) === 100)
+    assert(gameSession.gameBank.getMoneyForPlayer(2) === 400)
+    gameSession.gameBank.makeTransaction(1, 2, 200)
+    assertThrows[IllegalStateException](() => {})
   }
 
   def addPlayer(id: Int): Unit =

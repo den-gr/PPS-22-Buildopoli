@@ -11,8 +11,7 @@ case class GameSessionImpl(override val gameOptions: GameOptions, override val g
 
   var playersList: ListBuffer[Player] = ListBuffer()
   var playerIdsCounter: Int = 0
-  val debtsManagement: Boolean = true
-  override val gameBank: Bank = GameBankImpl(playersList, debtsManagement)
+  override val gameBank: Bank = GameBankImpl(playersList, gameOptions.debtsManagement)
 
   override def addManyPlayers(n: Int): Unit =
     for _ <- 0 until n do this.addOnePlayer(Option.empty)
