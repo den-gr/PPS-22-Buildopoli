@@ -69,8 +69,7 @@ class GameBankTest extends AnyFunSuite:
     gameSession.gameBank.increasePlayerMoney(2, 400)
     assert(gameSession.gameBank.getMoneyForPlayer(1) === 100)
     assert(gameSession.gameBank.getMoneyForPlayer(2) === 400)
-    gameSession.gameBank.makeTransaction(1, 2, 200)
-    assertThrows[IllegalStateException](() => {})
+    assertThrows[IllegalStateException](gameSession.gameBank.makeTransaction(1, 2, 200))
   }
 
   def addPlayer(id: Int): Unit =
