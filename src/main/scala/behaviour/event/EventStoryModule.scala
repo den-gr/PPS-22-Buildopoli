@@ -1,7 +1,10 @@
 package behaviour.event
 
 object EventStoryModule:
-  type Interaction = () => Unit
+  enum Result:
+    case ERR(msg : String)
+    case OK
+  type Interaction = () => Result
 
   trait EventStory:
     def description: String
@@ -12,7 +15,7 @@ object EventStoryModule:
 
   trait StoryInteraction:
     evSt: EventStory =>
-    def interactions: Seq[() => Unit]
+    def interactions: Seq[Interaction]
 
     def choicesAndInteractions: Seq[(String, Interaction)] =
       if choices.length != interactions.length then
@@ -42,6 +45,5 @@ object EventStoryModule:
                                       description: String,
                                       choices: Seq[String],
                                       interactions: Seq[Interaction]
-    ) extends InteractiveEventStory
-        with StoryInteraction:
-      if interactions.length != choices.length then throw new IllegalArgumentException()
+    ) extends InteractiveEventStory:
+      if interactions.length != choices.length then throw new IllegalArgumentException("The quantity of choices and events must be the same")

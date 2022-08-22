@@ -10,6 +10,7 @@ import behaviour.BehaviourModule.*
 import behaviour.event.*
 import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.*
+import behaviour.event.EventStoryModule.Result.*
 
 import behaviour.BehaviourModule.Behaviour.{chooseEvent, getStories, printStories}
 
@@ -35,13 +36,18 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
       bank.acceptPayment(Player(id), Bank)
       // assume we always lose
 
+  val NUMBER_CHOICES = 5
   private val storyGenerator: StoryGenerator = _ =>
     val desc = "base event description"
     var seq = Seq[String]()
+    var interactionSequence = Seq[Interaction]()
     if bank.money <= 100 then EventStory("Not enough money", Seq())
     else
-      for i <- 100 until bank.money by ((bank.money.toDouble / 500).ceil * 100).toInt do seq = seq :+ i.toString
-      EventStory(desc, seq)
+      for i <- 100 until bank.money by ((bank.money.toDouble / (NUMBER_CHOICES * 100)).ceil * 100).toInt do
+        seq = seq :+ i.toString
+        val interaction = () => if bank.money > i then OK else ERR("No money")
+        interactionSequence = interactionSequence :+ interaction
+      EventStory(desc, seq, interactionSequence)
 
   private val doubleGameEvent = Event(Scenario(doubleGameStrategy, storyGenerator), Event.WITHOUT_PRECONDITION)
 
@@ -49,13 +55,23 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Check casino behaviour configuration") {
     var events = casinoBehaviour.getInitialEvents(PLAYER_1)
-    println(printStories(events, PLAYER_1))
     assert(events.length == 1)
     assert(events.head.length == 1)
     assert(events.head.head.eventStory(PLAYER_1).choices.length == 1)
     events = chooseEvent(events)(PLAYER_1, (0, 0))
     assert(events.length == 1)
     assert(events.head.length == 1)
-    assert(events.head.head.eventStory(PLAYER_1).choices.length == 5)
-    println(printStories(events, PLAYER_1))
+    assert(events.head.head.eventStory(PLAYER_1).choices.length == NUMBER_CHOICES)
   }
+
+  test("EventStory of casino must have interactions"){
+    val events = casinoBehaviour.getInitialEvents(PLAYER_1)
+    val interactions = getStories(events, PLAYER_1)
+    assert(interactions.head.head.isInstanceOf[EventStory])
+    assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
+//    interactions.head.foreach(e => println(e.description))
+
+
+  }
+
+

@@ -8,10 +8,10 @@ import util.mock.BankHelper.BankAccount.*
 
 class EventStoryTest extends AnyFunSuite with BeforeAndAfterEach:
   private val bank = BankMock()
-  private val PLAYER_1 = 1;
+  private val PLAYER_1 = 1
 
   def createPaymentInteraction(amount: Int): Interaction =
-    () => bank.createPaymentRequestAmount(Player(PLAYER_1), Bank, amount)
+    () => bank.createPaymentRequestAmount(Player(PLAYER_1), Bank, amount); Result.OK
 
   test("Creation of simple event story without interactions") {
     val story: EventStory = EventStory("Desc", Seq("One"))
