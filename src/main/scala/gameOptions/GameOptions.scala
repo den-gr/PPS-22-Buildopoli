@@ -7,4 +7,4 @@ package gameOptions
   * @param debtsManagement
   *   if you want to manage debit of each player during the game
   */
-case class GameOptions(playerMoney: Int, playerCells: Int, debtsManagement: Boolean)
+case class GameOptions(playerMoney: Int, playerCells: Int, debtsManagement: Boolean, nCells: Int)

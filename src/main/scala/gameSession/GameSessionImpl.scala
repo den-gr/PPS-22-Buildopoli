@@ -1,12 +1,13 @@
 package gameSession
 
 import gameBank.{Bank, GameBankImpl}
-import gameOptions.{GameOptions, GameTemplate}
+import gameOptions.GameOptions
+import lap.Lap.{Lap, Reward}
 import player.{Player, PlayerImpl}
 
 import scala.collection.mutable.ListBuffer
 
-case class GameSessionImpl(override val gameOptions: GameOptions, override val gameTemplate: GameTemplate)
+case class GameSessionImpl(override val gameOptions: GameOptions, override val gameLap: Lap)
     extends GameSession:
 
   var playersList: ListBuffer[Player] = ListBuffer()
@@ -36,5 +37,16 @@ case class GameSessionImpl(override val gameOptions: GameOptions, override val g
 
   def playerIdAlreadyExist(playerId: Int): Boolean =
     this.playersList.exists(p => p.playerId.equals(playerId))
+
+  override def setPlayerPosition(playerId: Int, nPositions: Int, isValidLap: Boolean, lapReward: Reward): Unit = ???
+//    val player: Player = getPlayer(playerId)
+//    val gameLapResult = this.gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nPositions, gameOptions.nCells)
+//    player.setPlayerPawnPosition(gameLapResult._1)
+//    if gameLapResult._2 then this.gameLap.giveReward(playerId, lapReward)
+
+  def getPlayer(playerId: Int): Player = playersList
+    .filter(p => p.playerId.equals(playerId))
+    .result()
+    .head
 
   override def getPlayersList: ListBuffer[Player] = this.playersList

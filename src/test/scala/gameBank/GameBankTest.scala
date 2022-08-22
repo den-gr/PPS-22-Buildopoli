@@ -1,12 +1,13 @@
 package gameBank
 
-import gameOptions.{GameOptions, GameTemplate}
+import gameOptions.GameOptions
 import gameSession.{GameSession, GameSessionImpl}
+import lap.Lap.GameLap
 import org.scalatest.funsuite.AnyFunSuite
 
 class GameBankTest extends AnyFunSuite:
 
-  val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, true), GameTemplate())
+  val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, true, 10), GameLap(null))
   var playerCounter = 0
 
   test("player has incremented money") {
@@ -61,7 +62,7 @@ class GameBankTest extends AnyFunSuite:
   }
 
   test("throw exception when debit not enabled and player does not have enough money") {
-    val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, false), GameTemplate())
+    val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, false, 10), GameLap(null))
     gameSession.addOnePlayer(Option.apply(1))
     gameSession.addOnePlayer(Option.apply(2))
     assert(gameSession.getPlayersList.size === 2)
