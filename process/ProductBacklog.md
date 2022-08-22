@@ -21,7 +21,7 @@
         <td>Creation of game options</td>
         <td> Bacca </td>
         <td>3</td>
-        <td></td>
+        <td>1</td>
         <td></td>
         <td></td>
         <td></td>
@@ -30,8 +30,8 @@
         <td></td>
         <td>Define Event object</td>
         <td>Grushchak</td>
-        <td>4</td>
-        <td></td>
+        <td>20</td>
+        <td>5</td>
         <td></td>
         <td></td>
         <td></td>
@@ -40,8 +40,8 @@
         <td></td>
         <td>Define behaviour object</td>
         <td>Grushchak</td>
-        <td>10</td>
-        <td></td>
+        <td>15</td>
+        <td>5</td>
         <td></td>
         <td></td>
         <td></td>
@@ -50,8 +50,8 @@
         <td></td>
         <td>Build/Define global default behaviour (Trigger event when user complete one lap)</td>
         <td>Bertoni</td>
-        <td>6</td>
-        <td></td>
+        <td>5</td>
+        <td>3</td>
         <td></td>
         <td></td>
         <td></td>
@@ -60,8 +60,8 @@
         <td></td>
         <td>Define player</td>
         <td>Bacca</td>
-        <td>3</td>
-        <td></td>
+        <td>6</td>
+        <td>1</td>
         <td></td>
         <td></td>
         <td></td>
@@ -70,8 +70,8 @@
         <td></td>
         <td>Creation of game session</td>
         <td>Bacca</td>
-        <td>3</td>
-        <td></td>
+        <td>10</td>
+        <td>4</td>
         <td></td>
         <td></td>
         <td></td>
@@ -79,20 +79,10 @@
     <!-- 2 item-->
     <tr>
         <td>I need to define conditions of the game ending</td>
-        <td>Define end game event structure</td>
+        <td>Define end game structure</td>
         <td>Grushchak</td>
         <td>10</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>Integrate end game event with global behaviour</td>
-        <td>Grushchak</td>
-        <td>5</td>
-        <td></td>
+        <td>10</td>
         <td></td>
         <td></td>
         <td></td>
@@ -103,7 +93,7 @@
         <td>Define Terrain and Terrain property</td>
         <td>Bertoni</td>
         <td>4</td>
-        <td></td>
+        <td>0</td>
         <td></td>
         <td></td>
         <td></td>
@@ -112,8 +102,8 @@
         <td></td>
         <td>Build purchasable terrain type (house building)</td>
         <td>Bertoni</td>
-        <td>10</td>
-        <td></td>
+        <td>15</td>
+        <td>5</td>
         <td></td>
         <td></td>
         <td></td>
@@ -122,8 +112,8 @@
         <td></td>
         <td>Build card terrain type</td>
         <td>Bacca</td>
-        <td>4</td>
-        <td></td>
+        <td>5</td>
+        <td>5</td>
         <td></td>
         <td></td>
         <td></td>
@@ -131,20 +121,30 @@
     <tr>
         <td></td>
         <td>Terrain Builder/Factory</td>
-        <td> Bertoni & Bacca</td>
+        <td>Bertoni & Bacca</td>
         <td>8</td>
-        <td></td>
+        <td>8</td>
         <td></td>
         <td></td>
         <td></td>
     </tr>
      <!-- 4 item-->
     <tr>
-        <td>I need to customize bahaviour of each terrain triggered by user movement and conditioned by actual game state</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
+        <td>I need to have default behaviour associated to some default terrain types</td>
+        <td>Define default card terrain behaviour and extend Behaviour factory</td>
+        <td>Bacca</td>
+        <td>5</td>
+        <td>5</td>
         <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Define default purchasable terrain behaviour and extend Behaviour factory</td>
+        <td>Bertoni</td>
+        <td>5</td>
+        <td>5</td>
         <td></td>
         <td></td>
         <td></td>
