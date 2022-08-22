@@ -39,14 +39,9 @@ case class GameSessionImpl(override val gameOptions: GameOptions, override val g
     this.playersList.exists(p => p.playerId.equals(playerId))
 
   override def setPlayerPosition(playerId: Int, nPositions: Int, isValidLap: Boolean, lapReward: Reward): Unit = ???
-//    val player: Player = getPlayer(playerId)
+//    val player: Player = getPlayer(playerId, playersList)
 //    val gameLapResult = this.gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nPositions, gameOptions.nCells)
 //    player.setPlayerPawnPosition(gameLapResult._1)
 //    if gameLapResult._2 then this.gameLap.giveReward(playerId, lapReward)
-
-  def getPlayer(playerId: Int): Player = playersList
-    .filter(p => p.playerId.equals(playerId))
-    .result()
-    .head
 
   override def getPlayersList: ListBuffer[Player] = this.playersList
