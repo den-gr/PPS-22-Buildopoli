@@ -157,7 +157,7 @@ object Buildable :
 
     override def mortgage: Buildable = BuildableTerrain(terrain.mortgage, token)
     override def computeMortgage: Int = terrain.computeMortgage
-    
+
     override def getNumToken(name: String): Int = token.getNumToken(name)
     override def addToken(name: String, num: Int):Buildable = BuildableTerrain(terrain, token.addToken(name, num))
     override def destroyToken(name: String, num: Int): Buildable = BuildableTerrain(terrain, token.removeToken(name, num))
