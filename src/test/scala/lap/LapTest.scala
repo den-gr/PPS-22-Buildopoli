@@ -1,20 +1,35 @@
 package lap
 
+import gameBank.{Bank, GameBankImpl}
 import lap.Lap.*
 import org.scalatest.funsuite.AnyFunSuite
+import player.PlayerImpl
+
+import scala.collection.mutable.ListBuffer
 
 class LapTest extends AnyFunSuite:
-  val lap: Lap = GameLap(Array(0, 25, 30))
-  test("The game lap checks if a player has completed a lap"){
-    assert(lap.isNewLap(true, 3, 5))
-    assert(!lap.isNewLap(true, 3, 31))
-    assert(!lap.isNewLap(false, 3, 5))
-    assert(!lap.isNewLap(false, 3, 31))
+  val lap: Lap = GameLap()
+  val nCells: Int = 20
+  val currentPosition = 17
+  test("The game lap checks if a player has completed a lap and can return the new position"){
+    assert(lap.isNewLap(true, currentPosition, 2, nCells)._1 == 19)
+    assert(!lap.isNewLap(true, currentPosition, 2, nCells)._2)
+
+    assert(lap.isNewLap(true, currentPosition, 3, nCells)._1 == 20)
+    assert(!lap.isNewLap(true, currentPosition, 3, nCells)._2)
+
+    assert(lap.isNewLap(true, currentPosition, 4, nCells)._1 == 1)
+    assert(lap.isNewLap(true, currentPosition, 4, nCells)._2)
+
+    assert(lap.isNewLap(true, currentPosition, 6, nCells)._1 == 3)
+    assert(lap.isNewLap(true, currentPosition, 6, nCells)._2)
   }
 
   test("The game lap can give a reward to the player that has completed a lap"){
-    val mock = new Reward {
-      override def triggerBonus(): String = "test"
-    }
-    assert(lap.giveReward(3, mock) == "test")
+    val bank = GameBankImpl(ListBuffer(PlayerImpl(52), PlayerImpl(36)), false)
+    val reward: Reward = MoneyReward(bank, 500)
+    lap.giveReward(36, reward)
+    assert(bank.getPlayer(36).getPlayerMoney == 500)
+    lap.giveReward(36, reward)
+    assert(bank.getPlayer(36).getPlayerMoney == 1000)
   }
