@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Buildopoli.iml" filepath="$PROJECT_DIR$/.idea/modules/Buildopoli.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Buildopoli-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Buildopoli-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/eleon.Buildopoli.iml" filepath="$PROJECT_DIR$/.idea/modules/eleon.Buildopoli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/project.Buildopoli-build.iml" filepath="$PROJECT_DIR$/.idea/modules/project.Buildopoli-build.iml" />
     </modules>
   </component>
 </project>
