@@ -23,12 +23,25 @@ class BuildableTest extends AnyFunSuite:
   val t: Terrain = BasicTerrain(TerrainInfo("vicolo corto", 1, null))
   val p1: Purchasable = PurchasableTerrain(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3, mock1))
   val p2: Purchasable = PurchasableTerrain(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3, mock2))
-  val token: Token = TokenWithBonus(Map("house"-> Array(250, 500, 1125, 375), "hotel" -> Array(500)), Array(4, 1), Array(25, 50),
-    Map("house" -> 0, "hotel" -> 0))
-  var b1: Buildable = BuildableTerrain(p1, token)
-  val b2: Buildable = BuildableTerrain(p2, token)
+
   val t1: String = "house"
   val t2: String = "hotel"
+  val token: Token = TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0))
+  var b1: Buildable = BuildableTerrain(p1, token)
+  val b2: Buildable = BuildableTerrain(p2, token)
+
+  test("A token where the array size is not coherent is not valid"){
+    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t2 -> 0)))
+    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4), Array(25, 50), Map(t1 -> 0, t2 -> 0)))
+  }
+
+  test("A token where the number of bonus is not the same as the max is not valid") {
+    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(5, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0)))
+  }
+  
+  test("A token where the name types do not match is not valid"){
+    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t1 -> 0, "wrong" -> 0)))
+  }
 
   test("If there are no token and the group is complete the price is the basic one multiplied by the factor"){
     assert(b1.getNumToken(t1) == 0)

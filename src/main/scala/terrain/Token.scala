@@ -51,14 +51,12 @@ object Token :
   case class TokenWithBonus(tokenTypeToRentBonus: Map[String, Seq[Int]], maxValues: Seq[Int], buyingPrices: Seq[Int], numToken: Map[String, Int]) extends Token:
 
     private val maxToken: Map[String, Int] = (tokenTypeToRentBonus.keys zip maxValues).toMap
-    private var check: Boolean = tokenTypeToRentBonus.keys.size == maxValues.size && maxValues.size == buyingPrices.size && buyingPrices.size == numToken.size
-    /*
+    private var check: Boolean = tokenTypeToRentBonus.keys.equals(numToken.keys)
+    check match {case false => throw Exception("Map keys are not the same") ; case _ => }
+    check = check && tokenTypeToRentBonus.size == maxValues.size && maxValues.size == buyingPrices.size && buyingPrices.size == numToken.size
     for i <- tokenTypeToRentBonus.keys do
       check = check && maxToken(i) == tokenTypeToRentBonus(i).size
-    check match
-      case false => throw Exception("Arrays size do not match!!!")
-      case true =>
-    */
+    check match {case false => throw Exception("Arrays size or map size do not match!!!") case true => }
     private val buyingPricesList: Map[String, Int] = (tokenTypeToRentBonus.keys zip buyingPrices).toMap
 
     override def tokenNames: Seq[String] = tokenTypeToRentBonus.keys.toList
