@@ -65,13 +65,20 @@ class CasinoTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("EventStory of casino must have interactions"){
-    val events = casinoBehaviour.getInitialEvents(PLAYER_1)
+    var events = casinoBehaviour.getInitialEvents(PLAYER_1)
     val interactions = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
-//    interactions.head.foreach(e => println(e.description))
+    events = chooseEvent(events)(PLAYER_1, (0, 0))
+    assert(getStories(events, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
+  }
 
-
+  test("In full"){
+//    var events = casinoBehaviour.getInitialEvents(PLAYER_1)
+//    events = chooseEvent(events)(PLAYER_1, (0, 0))
+//    val interactions = getStories(events, PLAYER_1)
+//    events = chooseEvent(events)(PLAYER_1, (0, 0))
+//    assert(events.isEmpty)
   }
 
 

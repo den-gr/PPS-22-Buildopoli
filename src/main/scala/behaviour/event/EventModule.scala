@@ -6,6 +6,7 @@ import scala.annotation.targetName
 object EventModule:
   import behaviour.event.EventStoryModule
   import behaviour.event.EventStoryModule.*
+  
   trait Event:
     def nextEvent: Option[Event]
     def run(playerId: Int): Unit
