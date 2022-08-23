@@ -21,89 +21,109 @@
         <td>Creation of game options</td>
         <td> Bacca </td>
         <td>3</td>
-        <td>1</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
-        <td>Define Event object</td>
-        <td>Grushchak</td>
-        <td>20</td>
-        <td>5</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>Creation of game bank</td>
+        <td>Bacca</td>
+        <td>4</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
-        <td>Define behaviour object</td>
-        <td>Grushchak</td>
-        <td>15</td>
-        <td>5</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>Build/Define global default behaviour (Trigger event when user complete one lap)</td>
-        <td>Bertoni</td>
-        <td>5</td>
+        <td>Creation of bank debit</td>
+        <td>Bacca</td>
         <td>3</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
-    <tr>
+     <tr>
         <td></td>
         <td>Define player</td>
         <td>Bacca</td>
         <td>6</td>
-        <td>1</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
         <td>Creation of game session</td>
         <td>Bacca</td>
         <td>10</td>
-        <td>4</td>
+        <td>2</td>
         <td></td>
         <td></td>
         <td></td>
     </tr>
     <!-- 2 item-->
     <tr>
-        <td>I need to define conditions of the game ending</td>
-        <td>Define end game structure</td>
+        <td>I would like to have events that can be chained</td>
+        <td>Define Event object</td>
         <td>Grushchak</td>
-        <td>10</td>
-        <td>10</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>4</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
-    <!-- 3 item-->
+    <tr>
+        <td></td>
+        <td>Build events chain (order of events)</td>
+        <td>Grushchak</td>
+        <td>6</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Build event stories</td>
+        <td>Grushchak</td>
+        <td>5</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+     <!-- 3 item-->
     <tr>
         <td>I would like to define and use different type of terrain (standard and personalized) </td>
         <td>Define Terrain and Terrain property</td>
         <td>Bertoni</td>
         <td>4</td>
         <td>0</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
-        <td>Build purchasable terrain type (house building)</td>
+        <td>Build purchasable terrain type</td>
         <td>Bertoni</td>
-        <td>15</td>
-        <td>5</td>
+        <td>6</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Define buildable terrain type (house building)</td>
+        <td>Bertoni</td>
+        <td>9</td>
+        <td>2</td>
         <td></td>
         <td></td>
         <td></td>
@@ -128,6 +148,79 @@
         <td></td>
         <td></td>
     </tr>
+    <tr>
+        <td></td>
+        <td>Integrate events with terrain</td>
+        <td>Grushchak</td>
+        <td>2</td>
+        <td>2</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <!-- item-->
+    <tr>
+        <td>I would like to group events and be able to execute them based on event chain order</td>
+        <td>Project and implement event input</td>
+        <td>Grushchak</td>
+        <td>8</td>
+        <td>2</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Define behaviour object</td>
+        <td>Grushchak</td>
+        <td>10</td>
+        <td>3</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <!-- item-->
+    <tr>
+        <td>I need to define conditions of the game ending and rewards of completing game lap</td>
+        <td>Define end game logic</td>
+        <td>Grushchak</td>
+        <td>5</td>
+        <td>5</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Build/Define strategy and reward to apply when user complete one lap</td>
+        <td>Bertoni</td>
+        <td>5</td>
+        <td>3</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+     <!-- 5 item-->
+    <tr>
+        <td>I need a simple CLI for use the game</td>
+        <td>Create simple controller</td>
+        <td>-</td>
+        <td>-</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+        <tr>
+        <td></td>
+        <td>Create CLI to play the game</td>
+        <td>-</td>
+        <td>-</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
      <!-- 4 item-->
     <tr>
         <td>I need to have default behaviour associated to some default terrain types</td>
@@ -145,17 +238,6 @@
         <td>Bertoni</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <!-- 5 item-->
-    <tr>
-        <td>I need to allow a player to do global interaction during its game turn</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>
