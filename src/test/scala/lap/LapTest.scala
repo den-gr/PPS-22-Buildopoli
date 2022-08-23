@@ -4,6 +4,7 @@ import gameBank.{Bank, GameBankImpl}
 import lap.Lap.*
 import org.scalatest.funsuite.AnyFunSuite
 import player.PlayerImpl
+import gameOptions.Utils.getPlayer
 
 import scala.collection.mutable.ListBuffer
 
@@ -29,7 +30,7 @@ class LapTest extends AnyFunSuite:
     val bank = GameBankImpl(ListBuffer(PlayerImpl(52), PlayerImpl(36)), false)
     val reward: Reward = MoneyReward(bank, 500)
     lap.giveReward(36, reward)
-    assert(bank.getPlayer(36).getPlayerMoney == 500)
+    assert(getPlayer(36, bank.playersList).getPlayerMoney == 500)
     lap.giveReward(36, reward)
-    assert(bank.getPlayer(36).getPlayerMoney == 1000)
+    assert(getPlayer(36, bank.playersList).getPlayerMoney == 1000)
   }
