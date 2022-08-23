@@ -5,8 +5,7 @@ import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.EventStory
 
 object BehaviourModule:
-  type EventGroup = Seq[ConditionalEvent]
-  def EventGroup(elems: ConditionalEvent*): EventGroup = elems
+  
   type StoryGroup = Seq[EventStory]
 
   /** A choose of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
@@ -60,13 +59,20 @@ object BehaviourModule:
       try
         val ev = currentEvents(index._1)(index._2)
         ev.run(playerId)
-        val nextOpEvent: Option[ConditionalEvent] = ev.nextEvent
+        val nextOpEvent: Option[EventGroup] = ev.nextEvent
 
         // remove chose EventGroup
         var newEvents = currentEvents.patch(index._1, Nil, 1)
 
         // insert next EventGroup
-        if nextOpEvent.nonEmpty && nextOpEvent.get.hasToRun(playerId) then newEvents = newEvents :+ Seq(nextOpEvent.get)
+        if nextOpEvent.nonEmpty  then
+          val nextEventGroup : EventGroup = {
+            for 
+              ev <- nextOpEvent.get
+              if ev.hasToRun(playerId)
+            yield ev
+          }
+          newEvents = newEvents :+ nextEventGroup
         newEvents
       catch
         case _: IndexOutOfBoundsException =>

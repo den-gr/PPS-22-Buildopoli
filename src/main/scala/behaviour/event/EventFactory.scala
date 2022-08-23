@@ -6,4 +6,4 @@ object EventFactory:
   import EventModule.*
   import EventStoryModule.*
   import Event.*
-  def InfoEvent(story: EventStory, condition: EventPrecondition): ConditionalEvent = Event(Scenario(story), condition)
+  def InfoEvent(story: EventStory, condition: EventPrecondition): Event = Event(Scenario(story), condition)
