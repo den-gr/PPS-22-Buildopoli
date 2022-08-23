@@ -13,10 +13,10 @@ object Lap :
      * It is the action performed to give the reward to the player
      * @param playerID the ID of the player that receives the reward
      */
-    def triggerBonus(playerID: Int): Unit
+    def triggerBonus(playerID: Int, bank: Bank): Unit
 
-  case class MoneyReward(bank: Bank, money: Int) extends Reward:
-    override def triggerBonus(playerID: Int): Unit = bank.increasePlayerMoney(playerID, money)
+  case class MoneyReward(money: Int) extends Reward:
+    override def triggerBonus(playerID: Int, bank: Bank): Unit = bank.increasePlayerMoney(playerID, money)
 
   /**
    * Buildopoli's terrains are displayed in circle, each player can complete a lap and gain a reward
@@ -39,7 +39,7 @@ object Lap :
      * @param playerID the player's ID
      * @param reward the reward
      */
-    def giveReward(playerID: Int, reward: Reward): Unit
+    def giveReward(playerID: Int, reward: Reward, bank: Bank): Unit
 
   /**
    * A basic implementation of lap
@@ -49,7 +49,6 @@ object Lap :
       case true => (playerCurrentPosition + nSteps - nCells, isValid)
       case false => (playerCurrentPosition + nSteps, false)
 
-    override def giveReward(playerID: Int, reward: Reward): Unit = reward.triggerBonus(playerID)
-
+    override def giveReward(playerID: Int, reward: Reward, bank: Bank): Unit = reward.triggerBonus(playerID, bank)
 
 

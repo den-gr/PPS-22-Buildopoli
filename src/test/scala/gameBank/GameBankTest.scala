@@ -2,12 +2,18 @@ package gameBank
 
 import gameOptions.GameOptions
 import gameSession.{GameSession, GameSessionImpl}
-import lap.Lap.GameLap
+import lap.Lap.{GameLap, MoneyReward}
 import org.scalatest.funsuite.AnyFunSuite
+import player.Player
+
+import scala.collection.mutable.ListBuffer
 
 class GameBankTest extends AnyFunSuite:
 
-  val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, true, 10), GameLap())
+  val selector: (ListBuffer[Player], ListBuffer[Int]) => Int = (playerList: ListBuffer[Player], playerWithTurn: ListBuffer[Int]) =>
+    val tempList = playerList.filter(el => !playerWithTurn.contains(el.playerId))
+    tempList.head.playerId
+  val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, true, 10, MoneyReward(200), selector), GameLap())
   var playerCounter = 0
 
   test("player has incremented money") {
@@ -62,7 +68,7 @@ class GameBankTest extends AnyFunSuite:
   }
 
   test("throw exception when debit not enabled and player does not have enough money") {
-    val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, false, 10), GameLap())
+    val gameSession: GameSession = GameSessionImpl(GameOptions(0, 2, false, 10, MoneyReward(200), selector), GameLap())
     gameSession.addOnePlayer(Option.apply(1))
     gameSession.addOnePlayer(Option.apply(2))
     assert(gameSession.getPlayersList.size === 2)

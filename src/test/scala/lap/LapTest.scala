@@ -28,9 +28,9 @@ class LapTest extends AnyFunSuite:
 
   test("The game lap can give a reward to the player that has completed a lap"){
     val bank = GameBankImpl(ListBuffer(PlayerImpl(52), PlayerImpl(36)), false)
-    val reward: Reward = MoneyReward(bank, 500)
-    lap.giveReward(36, reward)
+    val reward: Reward = MoneyReward(500)
+    lap.giveReward(36, reward, bank)
     assert(getPlayer(36, bank.playersList).getPlayerMoney == 500)
-    lap.giveReward(36, reward)
+    lap.giveReward(36, reward, bank)
     assert(getPlayer(36, bank.playersList).getPlayerMoney == 1000)
   }
