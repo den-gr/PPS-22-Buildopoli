@@ -2,87 +2,9 @@ package terrain
 
 import Purchasable.*
 import Terrain.*
+import Token.*
 
 object Buildable :
-
-  /**
-   * It represents the token used in the game that can be built on a buildable terrain to increase the rent
-   */
-  trait Token:
-    /**
-     *
-     * @return the names given to the used token
-     */
-    def tokenNames: Seq[String]
-    /**
-     *
-     * @param name of the token
-     * @return the maximum number of the specified token that can be built on a terrain
-     */
-    def maxToken(name:String): Int
-    /**
-     *
-     * @param name of the token
-     * @return the buying price of the specified token
-     */
-    def buyingPrice(name:String): Int
-    /**
-     *
-     * @param name of the token
-     * @return the Seq with the single bonus provided by each token
-     */
-    def totalBonusPrice(name:String): Seq[Int]
-    /**
-     * It is used to add an amount of the specific token
-     * @param name of the token
-     * @param num number of the tokens
-     * @return a new Token object
-     */
-    def addToken(name: String, num: Int): Token
-    /**
-     * It is used to remove an amount of the specific token
-     * @param name of the token
-     * @param num number of the tokens
-     * @return a new Token object
-     */
-    def removeToken(name: String, num: Int): Token
-    /**
-     * @param name of the token
-     * @return the number of tokens with the specified name
-     */
-    def getNumToken(name: String): Int
-
-  /**
-   * The implementation of Token that relies on two different type of tokens: houses and hotels
-   * @param maxHouse the maximum number of houses that can be built
-   * @param maxHotel the maximum number of hotels
-   * @param housePrice the price needed to buy a house
-   * @param hotelPrice the price needed to buy a hotel
-   * @param houseRentBonus the sequence of bonus provided by houses
-   * @param hotelRentBonus the sequence of bonus provided by hotels
-   * @param numHouses the number of houses
-   * @param numHotels the number of hotels
-   */
-  case class HouseHotelToken(maxHouse: Int, maxHotel: Int, housePrice: Int, hotelPrice: Int, houseRentBonus: Seq[Int], hotelRentBonus: Seq[Int],
-                            numHouses: Int = 0, numHotels: Int = 0) extends Token:
-    private val buyingPricesList: Map[String, Int] = Map(tokenNames.head -> housePrice, tokenNames(1)-> hotelPrice)
-    private val maxNumToken: Map[String, Int] = Map(tokenNames.head -> maxHouse, tokenNames(1) -> maxHotel)
-    private val bonuses: Map[String, Seq[Int]] = Map(tokenNames.head -> houseRentBonus, tokenNames(1) -> hotelRentBonus)
-    private val placedToken: Map[String, Int] = Map(tokenNames.head -> numHouses, tokenNames(1) -> numHotels)
-
-    override def tokenNames: Seq[String] = Array("house", "hotel")
-    override def maxToken(name: String): Int = maxNumToken(name)
-    override def buyingPrice(name: String): Int = buyingPricesList(name)
-    override def totalBonusPrice(name: String): Seq[Int] = bonuses(name)
-    override def getNumToken(name: String): Int = placedToken(name)
-    override def addToken(name: String, num: Int): Token = num > 0 match
-      case true => changeToken(name, num)
-    override def removeToken(name:String, num: Int): Token = num > 0 match
-      case true => changeToken(name, -num)
-
-    private def changeToken(name: String, num:Int): Token = name match
-      case "house" if getNumToken(name) + num <= maxToken(name) => HouseHotelToken(maxHouse, maxHotel, housePrice, hotelPrice, houseRentBonus, hotelRentBonus, numHouses + num, numHotels)
-      case "hotel" if getNumToken(name) + num <= maxToken(name) => HouseHotelToken(maxHouse, maxHotel, housePrice, hotelPrice, houseRentBonus, hotelRentBonus, numHouses, numHotels + num)
 
   /**
    *  The properties of a Buildable terrain
