@@ -13,16 +13,8 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
   override def beforeEach(): Unit =
     bank = BankMock()
 
-  test("test fake Bank") {
-    assert(bank.money == BANK_MONEY)
-    bank.decrement(TAX)
-    assert(bank.money == BANK_MONEY - TAX)
-    bank.decrement(TAX)
-    assert(bank.money == BANK_MONEY - TAX * 2)
-  }
-
   val eventStrategy: EventStrategy = _ => bank.decrement(TAX)
-  test("test decrement from strategy") {
+  test("Decrement bank money with event strategy") {
     assert(bank.money == BANK_MONEY)
     eventStrategy(MOCK_ID)
     assert(bank.money == BANK_MONEY - TAX)
@@ -33,18 +25,19 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
   import behaviour.event.EventModule.*
   import EventStory.*
 
-  val ev: ConditionalEvent = Event(Scenario(eventStrategy, Scenario.tempStory), _ => true)
-  test("I want an event that can change balance of a bank") {
+  val ev: ConditionalEvent = Event(Scenario(eventStrategy, Scenario.tempStory), Event.WITHOUT_PRECONDITION)
+  test("An event that can change balance of a bank") {
     ev.run(MAIN_ACTION)
     assert(bank.money == BANK_MONEY - TAX)
     ev.run(MAIN_ACTION)
     assert(bank.money == BANK_MONEY - TAX * 2)
   }
 
-  test("I want to have two consecutive events") {
+  test("Two consecutive events in a chain") {
     assert(bank.money == BANK_MONEY)
     import EventOperation.*
-    val ev2: ConditionalEvent = Event(Scenario(_ => bank.decrement(TAX * 2), Scenario.tempStory), _ => true) ++ ev
+    val ev2: ConditionalEvent
+      = Event(Scenario(_ => bank.decrement(TAX * 2), Scenario.tempStory), Event.WITHOUT_PRECONDITION) ++ ev
     ev2.run(MAIN_ACTION)
     var nextEv = ev2.nextEvent
 

@@ -9,7 +9,7 @@ import util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
-class JailTest extends AnyFunSuite with BeforeAndAfterEach:
+class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   var jail: JailMock = JailMock()
   val PLAYER_1: Int = 1
   val PLAYER_2: Int = 2
@@ -18,24 +18,6 @@ class JailTest extends AnyFunSuite with BeforeAndAfterEach:
     jail = JailMock()
 
   val BLOCKING_TIME = 2
-  test("jailMock works in in the correct way ") {
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    assert(jail.getRemainingBlockedMovements(PLAYER_2).isEmpty)
-    jail.blockPlayer(PLAYER_1, BLOCKING_TIME)
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
-    assert(jail.getRemainingBlockedMovements(PLAYER_2).isEmpty)
-    jail.doTurn()
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
-    assert(jail.getRemainingBlockedMovements(PLAYER_2).isEmpty)
-    jail.blockPlayer(PLAYER_2, BLOCKING_TIME)
-    jail.liberatePlayer(PLAYER_1)
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    assert(jail.getRemainingBlockedMovements(PLAYER_2).get == BLOCKING_TIME)
-    jail.doTurn()
-    jail.doTurn()
-    jail.doTurn()
-    assert(jail.getRemainingBlockedMovements(PLAYER_2).isEmpty)
-  }
 
   val story: EventStory = EventStory(s"You are imprisoned", Seq("Wait liberation"))
   val imprisonEventPredicate: Int => Boolean = _ => true
