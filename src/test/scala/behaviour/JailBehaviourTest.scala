@@ -1,37 +1,45 @@
 package behaviour
 
-import behaviour.BehaviourModule.*
+import behaviour.BehaviourModule.Behaviour
 import behaviour.BehaviourModule.Behaviour.*
-import behaviour.event.EventModule
-import behaviour.event.EventModule.*
-import behaviour.event.EventStoryModule.EventStory
-import util.mock.JailHelper.JailMock
+import behaviour.event.EventModule.EventGroup
+import behaviour.factory.BehaviourFactory
+import gameManagement.gameOptions.GameOptions
+import gameManagement.gameStore.{GameStore, GameStoreImpl}
+import gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
+import player.Player
+import scala.util.control.Breaks.*
+import scala.collection.mutable.ListBuffer
 
 class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
-  var jail: JailMock = JailMock()
-  val PLAYER_1: Int = 1
-  val PLAYER_2: Int = 2
+  def getParams: (GameOptions, GameStore) = // prepare input for GameTurn
+    val selector: (ListBuffer[Player], ListBuffer[Int]) => Int =
+      (playerList: ListBuffer[Player], playerWithTurn: ListBuffer[Int]) =>
+        playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
+    val playerInitialMoney = 200
+    val playerInitialCells = 2
+    val debtsManagement = true
+    val nCells = 10
+    val jailBlockingTime = 2
+    val gameOptions: GameOptions =
+      GameOptions(playerInitialMoney, playerInitialCells, debtsManagement, nCells, jailBlockingTime, selector)
+    val gameStore: GameStore = GameStoreImpl()
+    (gameOptions, gameStore)
 
+  private var gameTurn: GameTurn = _
+  private var behaviour: Behaviour = _
   override def beforeEach(): Unit =
-    jail = JailMock()
+    getParams match
+      case (gameOptions: GameOptions, gameStore: GameStore) =>
+        gameTurn = DefaultGameTurn(gameOptions, gameStore)
+    behaviour = BehaviourFactory(gameTurn).JailBehaviour(BLOCKING_TIME)
 
   val BLOCKING_TIME = 2
+  val PLAYER_1 = 1
 
-  val story: EventStory = EventStory(s"You are imprisoned", Seq("Wait liberation"))
-  val imprisonEventPredicate: Int => Boolean = _ => true
-  val imprisonStrategy: Int => Unit = playerId =>
-    jail.getRemainingBlockedMovements(playerId) match
-      case None =>
-        jail.blockPlayer(playerId, BLOCKING_TIME)
-        println("Automatic end of turn") // TODO
-      case _ =>
-  val imprisonEvent: Event =
-    Event(Scenario(imprisonStrategy, story), imprisonEventPredicate)
-
-  test("Behaviour with single Jail event that imprison a player") {
-    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
+  test("Behaviour imprison a player") {
     val events = behaviour.getInitialEvents(PLAYER_1)
     assertThrows[IllegalArgumentException](chooseEvent(events)(PLAYER_1, (1, 0)))
     assertThrows[IllegalArgumentException](chooseEvent(events)(PLAYER_1, (0, 1)))
@@ -40,47 +48,29 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("On the next turns player must be released from the Jail") {
-
-    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
     val events = behaviour.getInitialEvents(PLAYER_1)
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
+    assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).isEmpty)
     chooseEvent(events)(PLAYER_1, (0, 0))
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
-    jail.doTurn()
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
-    jail.doTurn()
-    jail.doTurn()
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
+    assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
+    gameTurn.doTurn()
+    assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
+    gameTurn.doTurn()
+    gameTurn.doTurn()
+    assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
-
-  val escapeStrategy: Int => Unit =
-    // This version has 100% probability to escape successfully
-    jail.liberatePlayer(_)
-    // TODO start new movement
-  val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
-  val escapePrecondition: EventPrecondition = jail.getRemainingBlockedMovements(_).nonEmpty
-  val escapeEvent: Event = Event(Scenario(escapeStrategy, escapeStory), escapePrecondition)
 
   test("Escape event allow to player escape from prison") {
-    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
-    var events = behaviour.getInitialEvents(PLAYER_1)
-    chooseEvent(events)(PLAYER_1, (0, 0))
-
-    jail.doTurn()
-    events = behaviour.getInitialEvents(PLAYER_1)
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).nonEmpty)
-    chooseEvent(events)(PLAYER_1, (0, 1))
-    assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-  }
-
-  test("Some event may need a precondition before to be available to players") {
-    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
-    var events = behaviour.getInitialEvents(PLAYER_1)
-    assert(events.length == 1)
-    assert(events.head.length == 1)
-    chooseEvent(events)(PLAYER_1, (0, 0))
-    jail.doTurn()
-    events = behaviour.getInitialEvents(PLAYER_1)
-    assert(events.length == 1)
-    assert(events.head.length == 2)
+    var liberated = false
+    for i <- 0 to 100 if !liberated do
+      var events = behaviour.getInitialEvents(i)
+      chooseEvent(events)(i, (0, 0))
+      gameTurn.doTurn()
+      events = behaviour.getInitialEvents(i)
+      assert(gameTurn.getRemainingBlockedMovements(i).nonEmpty)
+      chooseEvent(events)(i, (0, 1))
+      val remainingTurns = gameTurn.getRemainingBlockedMovements(i)
+      if remainingTurns.isEmpty then
+        liberated = true
+        println(s"liberate at $i turn")
+    if !liberated then assert(false)
   }
