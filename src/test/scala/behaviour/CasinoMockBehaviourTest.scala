@@ -14,7 +14,7 @@ import behaviour.event.EventStoryModule.Result.*
 
 import behaviour.BehaviourModule.Behaviour.{chooseEvent, getStories, printStories}
 
-class CasinoBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
+class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1
 
   var bank: BankMock = BankMock()
