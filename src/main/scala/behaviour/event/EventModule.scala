@@ -6,8 +6,6 @@ import behaviour.event.EventStoryModule
 import behaviour.event.EventStoryModule.*
 
 object EventModule:
-//  type EventGroup = Seq[Event]
-//  def EventGroup(elems: Event*): EventGroup = elems
   type EventStrategy = Int => Unit
   type EventPrecondition = Int => Boolean
   type StoryGenerator = Int => EventStory
@@ -16,8 +14,8 @@ object EventModule:
     val events: Seq[Event]
     export events.*
     val isAtomic: Boolean
-
     //TODO def isMandatory: Boolean
+    
   object EventGroup:
       def apply(elems: Event*): EventGroup = EventGroupImpl(elems)
       def apply(elems: Seq[Event], isAtomic: Boolean): EventGroup = EventGroupImpl(elems, isAtomic)
