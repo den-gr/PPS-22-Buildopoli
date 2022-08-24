@@ -1,20 +1,30 @@
 package behaviour.event
 
-
-
 import java.awt.Choice
 import scala.annotation.targetName
+import behaviour.event.EventStoryModule
+import behaviour.event.EventStoryModule.*
 
 object EventModule:
-  import behaviour.event.EventStoryModule
-  import behaviour.event.EventStoryModule.*
-  type EventGroup = Seq[Event]
-  def EventGroup(elems: Event*): EventGroup = elems
+//  type EventGroup = Seq[Event]
+//  def EventGroup(elems: Event*): EventGroup = elems
   type EventStrategy = Int => Unit
   type EventPrecondition = Int => Boolean
   type StoryGenerator = Int => EventStory
 
-  
+  trait EventGroup extends Seq[Event]:
+    val events: Seq[Event]
+    export events.*
+    val isAtomic: Boolean
+
+    //TODO def isMandatory: Boolean
+  object EventGroup:
+      def apply(elems: Event*): EventGroup = EventGroupImpl(elems)
+      def apply(elems: Seq[Event], isAtomic: Boolean): EventGroup = EventGroupImpl(elems, isAtomic)
+
+      class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean = false) extends EventGroup
+
+
   trait Event:
     def nextEvent: Option[EventGroup]
     def run(playerId: Int): Unit
