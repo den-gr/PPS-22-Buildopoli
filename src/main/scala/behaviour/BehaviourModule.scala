@@ -32,7 +32,7 @@ object BehaviourModule:
 
     given StoryConverter[EventGroup] with
       override def stories(seq: Seq[EventGroup], playerId: Int): Seq[StoryGroup] =
-        seq.map(eventGroup => eventGroup.seq.map(m => m.eventStory(playerId)))
+        seq.map(eventGroup => eventGroup.map(m => m.eventStory(playerId)))
 
     def getStories(events: Seq[EventGroup], playerId: Int): Seq[StoryGroup] =
       summon[StoryConverter[EventGroup]].stories(events, playerId)
@@ -59,9 +59,7 @@ object BehaviourModule:
       */
     def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, index: (Int, Int)): Seq[EventGroup] =
       try
-        val event = currentEvents(index._1)(index._2)
-        event.run(playerId)
-        val nextOpEvents: Option[EventGroup] = event.nextEvent
+        val nextOpEvents: Option[EventGroup] = chooseEvent(currentEvents(index._1))(playerId, index._2)
 
         // remove chose EventGroup
         var newEvents = currentEvents.patch(index._1, Nil, 1)
@@ -79,3 +77,12 @@ object BehaviourModule:
       catch
         case _: IndexOutOfBoundsException =>
           throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + index)
+
+    def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
+      try
+        val event = eventGroup(index)
+        event.run(playerId)
+        event.nextEvent
+      catch
+        case _: IndexOutOfBoundsException =>
+          throw IllegalArgumentException("Chose index of a not existing event. -> " + index)
