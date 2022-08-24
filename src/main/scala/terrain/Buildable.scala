@@ -3,6 +3,7 @@ package terrain
 import Purchasable.*
 import Terrain.*
 import Token.*
+import GroupManager.*
 
 object Buildable :
 
@@ -70,12 +71,12 @@ object Buildable :
     override def owner: Option[Int] = terrain.owner
 
     override def changeOwner(newOwner: Option[Int]): Buildable = BuildableTerrain(terrain.changeOwner(newOwner), token)
-    override def computeTotalRent: Int =
+    override def computeTotalRent(gm: GroupManager): Int =
       var numToken: Int = 0
       token.tokenNames.foreach(tn => numToken = numToken + token.getNumToken(tn))
       numToken > 0 match
         case true => var total: Int = 0; token.tokenNames.foreach(tn => total = total + token.totalBonusPrice(tn).take(token.getNumToken(tn)).sum); total
-        case false => terrain.computeTotalRent
+        case false => terrain.computeTotalRent(gm)
 
     override def mortgage: Buildable = BuildableTerrain(terrain.mortgage, token)
     override def computeMortgage: Int = terrain.computeMortgage
