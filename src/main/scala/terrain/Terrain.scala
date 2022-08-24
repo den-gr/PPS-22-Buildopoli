@@ -36,7 +36,7 @@ object Terrain :
 
   /**
    * Simple implementation of Terrain
-   * @param basicInfo
+   * @param basicInfo is the set of information a terrain needs
    */
   case class BasicTerrain(override val basicInfo: BasicInfo) extends Terrain:
     override def triggerBehaviour(): Any = "test behaviour"
