@@ -9,7 +9,7 @@ import terrain.Terrain.{BasicTerrain, Terrain, TerrainInfo}
 class PurchasableTest extends AnyFunSuite:
 
     val bt: Terrain = BasicTerrain(TerrainInfo("vicolo corto", 1, null))
-    var p: Purchasable = PurchasableTerrain(bt, 1000, "fucsia", DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20, null))
+    var p: Purchasable = PurchasableTerrain(bt, 1000, "fucsia", DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
 
     test("A property has a buying price"){
       assert(p.price == 1000)
