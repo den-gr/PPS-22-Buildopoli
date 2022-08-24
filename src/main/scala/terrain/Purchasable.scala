@@ -3,6 +3,7 @@ package terrain
 import Terrain.*
 import Mortgage.*
 import Rent.*
+import terrain.GroupManager.GroupManager
 
 object Purchasable :
 
@@ -46,9 +47,10 @@ object Purchasable :
     def changeOwner(newOwner: Option[Int]): Purchasable
     /**
      *
+     * @param gm is the group manager that provides information about the terrain's group
      * @return the total rent a player owes to the owner of the terrain
      */
-    def computeTotalRent: Int
+    def computeTotalRent(gm: GroupManager): Int
     /**
      * It is used to mortgage the purchasable terrain to the bank
      * @return a new Purchasable object
@@ -81,7 +83,7 @@ object Purchasable :
       case (_, None) => PurchasableTerrain(terrain, price, group, ms, rs, newOwner, PurchasableState.IN_BANK)
       case (PurchasableState.IN_BANK, Some(value)) => PurchasableTerrain(terrain, price, group, ms, rs, newOwner, PurchasableState.OWNED)
       case _ => PurchasableTerrain(terrain, price, group, ms, rs, newOwner, state)
-    override def computeTotalRent: Int = rs.computeTotalRent
+    override def computeTotalRent(gm: GroupManager): Int = rs.computeTotalRent(owner.get, group,gm)
     override def mortgage: Purchasable = state match
       case PurchasableState.OWNED => PurchasableTerrain(terrain, price, group, ms, rs, owner, PurchasableState.MORTGAGED)
     override def computeMortgage: Int = ms.computeMortgage
