@@ -1,9 +1,13 @@
-package gameBank
+package gameManagement.gameBank
 
+import gameManagement.gameBank.bankDebit.{BankDebit, BankDebitImpl}
+import gameManagement.gameOptions.GameOptions
+import gameManagement.gameStore.GameStore
 import player.Player
+
 import scala.collection.mutable.ListBuffer
 
-case class GameBankImpl(override val playersList: ListBuffer[Player], override val debtsManagement: Boolean)
+case class GameBankImpl(override val gameOptions: GameOptions, override val gameStore: GameStore)
     extends Bank:
 
   val debitManagement: BankDebit = BankDebitImpl()
@@ -13,9 +17,9 @@ case class GameBankImpl(override val playersList: ListBuffer[Player], override v
     increasePlayerMoney(receiverId, amount)
 
   override def increasePlayerMoney(playerId: Int, amount: Int): Unit =
-    val player: Player = getPlayer(playerId)
+    val player: Player = gameStore.getPlayer(playerId)
     val debts = getDebtsForPlayer(playerId)
-    if debtsManagement && debts > 0 then this.increasePlayerMoneyWithDebts(debts, amount, player)
+    if gameOptions.debtsManagement && debts > 0 then this.increasePlayerMoneyWithDebts(debts, amount, player)
     else player.setPlayerMoney(player.getPlayerMoney + amount)
 
   def increasePlayerMoneyWithDebts(debit: Int, amount: Int, player: Player): Unit =
@@ -25,9 +29,9 @@ case class GameBankImpl(override val playersList: ListBuffer[Player], override v
       this.increasePlayerMoney(player.playerId, amount - debit)
 
   override def decreasePlayerMoney(playerId: Int, amount: Int): Unit =
-    val player: Player = getPlayer(playerId)
+    val player: Player = gameStore.getPlayer(playerId)
     if playerHasEnoughMoney(player, amount) then player.setPlayerMoney(player.getPlayerMoney - amount)
-    else if debtsManagement then
+    else if gameOptions.debtsManagement then
       this.debitManagement.increaseDebit(playerId, amount - player.getPlayerMoney)
       player.setPlayerMoney(0)
     else
@@ -35,10 +39,6 @@ case class GameBankImpl(override val playersList: ListBuffer[Player], override v
 
   override def getDebtsList: Map[Int, Int] = this.debitManagement.getDebtsList
   override def getDebtsForPlayer(playerId: Int): Int = this.debitManagement.getDebitForPlayer(playerId)
-  def getPlayer(playerId: Int): Player = playersList
-    .filter(p => p.playerId.equals(playerId))
-    .result()
-    .head
 
   def playerHasEnoughMoney(player: Player, amount: Int): Boolean = player.getPlayerMoney > amount
-  override def getMoneyForPlayer(playerId: Int): Int = getPlayer(playerId).getPlayerMoney
+  override def getMoneyForPlayer(playerId: Int): Int = gameStore.getPlayer(playerId).getPlayerMoney

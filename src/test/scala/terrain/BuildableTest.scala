@@ -6,6 +6,7 @@ import terrain.Mortgage.DividePriceMortgage
 import terrain.Rent.{BasicRentStrategyFactor, KnowsTerrains, RentStrategyWithBonus}
 import terrain.Terrain.{BasicTerrain, Terrain, TerrainInfo}
 import terrain.Buildable.*
+import Token.*
 
 class BuildableTest extends AnyFunSuite:
   val mock1: KnowsTerrains = new KnowsTerrains {
@@ -22,7 +23,8 @@ class BuildableTest extends AnyFunSuite:
   val t: Terrain = BasicTerrain(TerrainInfo("vicolo corto", 1, null))
   val p1: Purchasable = PurchasableTerrain(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3, mock1))
   val p2: Purchasable = PurchasableTerrain(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3, mock2))
-  val token: Token = HouseHotelToken(4, 1, 25, 50, Array(250, 500, 1125, 375), Array(500))
+  val token: Token = TokenWithBonus(Map("house"-> Array(250, 500, 1125, 375), "hotel" -> Array(500)), Array(4, 1), Array(25, 50),
+    Map("house" -> 0, "hotel" -> 0))
   var b1: Buildable = BuildableTerrain(p1, token)
   val b2: Buildable = BuildableTerrain(p2, token)
   val t1: String = "house"

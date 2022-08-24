@@ -1,4 +1,4 @@
-package gameBank
+package gameManagement.gameBank.bankDebit
 
 trait BankDebit:
   def getDebtsList: Map[Int, Int]

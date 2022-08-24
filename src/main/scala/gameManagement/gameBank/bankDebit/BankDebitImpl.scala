@@ -1,8 +1,9 @@
-package gameBank
+package gameManagement.gameBank.bankDebit
 
-case class BankDebitImpl() extends BankDebit:
+case class BankDebitImpl() extends BankDebit :
 
   var debtsList: Map[Int, Int] = Map()
+
   override def getDebtsList: Map[Int, Int] = this.debtsList
 
   override def getDebitForPlayer(playerId: Int): Int =

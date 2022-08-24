@@ -1,11 +1,14 @@
-package gameBank
+package gameManagement.gameBank
 
+import gameManagement.gameOptions.GameOptions
+import gameManagement.gameStore.GameStore
 import player.Player
+
 import scala.collection.mutable.ListBuffer
 
 trait Bank:
-  def playersList: ListBuffer[Player]
-  def debtsManagement: Boolean
+  def gameOptions: GameOptions
+  def gameStore: GameStore
   def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit
   def increasePlayerMoney(playerId: Int, amount: Int): Unit
   def decreasePlayerMoney(playerId: Int, amount: Int): Unit
@@ -14,5 +17,5 @@ trait Bank:
   def getMoneyForPlayer(playerId: Int): Int
 
 object Bank:
-  def apply(playersList: ListBuffer[Player], debtsManagement: Boolean): Bank =
-    GameBankImpl(playersList, debtsManagement)
+  def apply(gameOptions: GameOptions, gameStore: GameStore): Bank =
+    GameBankImpl(gameOptions: GameOptions, gameStore: GameStore)
