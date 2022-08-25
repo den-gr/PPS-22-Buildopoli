@@ -20,8 +20,8 @@ case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) exten
       playerWithTurn.clear()
       doTurn()
 
-  override def lockPlayer(playerId: Int): Unit =
-    blockingList = blockingList + (playerId -> gameOptions.jailBlockingTime)
+  override def lockPlayer(playerId: Int, blockingTime: Int): Unit =
+    blockingList = blockingList + (playerId -> blockingTime)
 
   override def liberatePlayer(playerId: Int): Unit =
     blockingList = blockingList - playerId

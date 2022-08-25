@@ -21,5 +21,4 @@ case class GameOptions(playerInitialMoney: Int,
                        playerInitialCells: Int,
                        debtsManagement: Boolean,
                        nCells: Int,
-                       jailBlockingTime: Int,
                        playerTurnSelector: (ListBuffer[Player], ListBuffer[Int]) => Int)
