@@ -10,7 +10,7 @@ trait GameTurn:
 
   def selectNextPlayer(): Int
   def playerHasDoneTheActualTurn(playerId: Int): Boolean
-  def lockPlayer(playerId: Int): Unit
+  def lockPlayer(playerId: Int, blockingTime: Int): Unit
   def liberatePlayer(playerId: Int): Unit
   def doTurn(): Unit
   def getRemainingBlockedMovements(playerId: Int): Option[Int]

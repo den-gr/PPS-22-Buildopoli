@@ -1,4 +1,4 @@
-package gameSession
+package gameManagement.gameTurn
 
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.{GameStore, GameStoreImpl}
@@ -15,7 +15,7 @@ class GameTurnTest extends AnyFunSuite:
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
   val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(200, 2, true, 10, 2, selector)
+  val gameOptions: GameOptions = GameOptions(200, 2, true, 10, 6, selector)
   val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
 
   test("Verifying that each player is doing one turn, so the list with players that have done the turn is empty") {
@@ -30,7 +30,7 @@ class GameTurnTest extends AnyFunSuite:
 
   test("Verifying that each player (except the one blocked in prison) is doing one turn, " +
     "so the list with player with turn is empty and the locked player has one less turn to be stopped") {
-    gameTurn.lockPlayer(gameStore.playersList.head.playerId)
+    gameTurn.lockPlayer(gameStore.playersList.head.playerId, 2)
     for _ <- 1 until 5 do
       gameTurn.selectNextPlayer()
 

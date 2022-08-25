@@ -1,5 +1,6 @@
 package gameManagement.gameSession
 
+import gameManagement.diceGenerator.Dice
 import gameManagement.gameBank.Bank
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
@@ -15,6 +16,7 @@ trait GameSession:
   def gameTurn: GameTurn
   def gameStore: GameStore
   def gameLap: Lap
+  def dice: Dice
   def addOnePlayer(playerId: Option[Int]): Unit
   def addManyPlayers(n: Int): Unit
   def initializePlayer(lastPlayer: Player): Unit

@@ -1,4 +1,4 @@
-package gameBank
+package gameManagement.gameBank
 
 import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
@@ -15,7 +15,7 @@ class GameBankTest extends AnyFunSuite:
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
   
   val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(0, 2, true, 10, 2, selector)
+  val gameOptions: GameOptions = GameOptions(0, 2, true, 10, 6, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
 
   var playerCounter = 0
@@ -72,7 +72,7 @@ class GameBankTest extends AnyFunSuite:
   }
 
   test("throw exception when debit not enabled and player does not have enough money") {
-    val gameOptions: GameOptions = GameOptions(0, 2, false, 10, 2, selector)
+    val gameOptions: GameOptions = GameOptions(0, 2, false, 10, 6, selector)
     val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
 
     addPlayer(5)

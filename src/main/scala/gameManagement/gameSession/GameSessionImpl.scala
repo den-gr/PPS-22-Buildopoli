@@ -1,11 +1,13 @@
 package gameManagement.gameSession
 
+import gameManagement.diceGenerator.{Dice, SingleDice}
 import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
 import gameManagement.gameTurn.GameTurn
 import lap.Lap.Lap
 import player.{Player, PlayerImpl}
+import com.typesafe.scalalogging.Logger
 
 import scala.collection.mutable.ListBuffer
 
@@ -15,6 +17,10 @@ case class GameSessionImpl(override val gameOptions: GameOptions,
                            override val gameStore: GameStore,
                            override val gameLap: Lap)
     extends GameSession:
+  
+  override val dice: Dice = SingleDice(gameOptions.diceFaces)
+
+  val logger: Logger = Logger("GameSession")
 
   override def addManyPlayers(n: Int): Unit =
     for _ <- 0 until n do this.addOnePlayer(Option.empty)
@@ -46,4 +52,6 @@ case class GameSessionImpl(override val gameOptions: GameOptions,
     player.setPlayerPawnPosition(result._1)
     if result._2 then gameLap.giveReward(playerId)
     
+  
+
 
