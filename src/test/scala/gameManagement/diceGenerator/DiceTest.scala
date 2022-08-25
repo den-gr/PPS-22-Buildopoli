@@ -11,8 +11,8 @@ class DiceTest extends AnyFunSuite:
   test("launching a single dice with 6 faces") {
     val array : ListBuffer[Int] = ListBuffer()
     for _ <- 0 to 10 do
-      diceGenerator.rollOneDice()
-      array += diceGenerator.value
+      array += diceGenerator.rollOneDice()
+    println(array)
 
     assert(array.forall(el => el > 0 && el <= 6))
   }
@@ -20,8 +20,8 @@ class DiceTest extends AnyFunSuite:
   test("launching multiple dice all with 6 faces") {
     val array: ListBuffer[Int] = ListBuffer()
     for _ <- 0 to 10 do
-      diceGenerator.rollMoreDice(2)
-      array += diceGenerator.value
+      array += diceGenerator.rollMoreDice(2)
 
+    println(array)
     assert(array.forall(el => el > 0 && el <= 12))
   }
