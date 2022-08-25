@@ -2,6 +2,7 @@ package behaviour.factory
 import behaviour.BehaviourModule.*
 import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.EventStory
+import gameManagement.gameSession.GameSession
 import gameManagement.gameTurn.GameTurn
 
 import scala.util
@@ -9,9 +10,10 @@ import scala.util.Random
 
 object BehaviourFactory:
 
-  def apply(gameTurn: GameTurn): StandardBehaviourFactory = BehaviourFactoryImpl(gameTurn)
+  def apply(gameSession: GameSession): StandardBehaviourFactory = BehaviourFactoryImpl(gameSession)
 
-  class BehaviourFactoryImpl(gameTurn: GameTurn) extends StandardBehaviourFactory:
+  class BehaviourFactoryImpl(gameSession: GameSession) extends StandardBehaviourFactory:
+    private val gameTurn = gameSession.gameTurn
     override def JailBehaviour(blockingTime: Int): Behaviour =
       val story: EventStory = EventStory(s"You are imprisoned for $blockingTime turns", Seq("Wait liberation"))
       val imprisonStrategy: Int => Unit = playerId =>

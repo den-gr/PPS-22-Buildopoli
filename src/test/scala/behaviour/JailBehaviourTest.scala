@@ -4,37 +4,28 @@ import behaviour.BehaviourModule.Behaviour
 import behaviour.BehaviourModule.Behaviour.*
 import behaviour.event.EventModule.EventGroup
 import behaviour.factory.BehaviourFactory
+import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
+import gameManagement.gameSession.{GameSession, GameSessionImpl}
 import gameManagement.gameStore.{GameStore, GameStoreImpl}
 import gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
+import lap.Lap.{GameLap, Lap, MoneyReward}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import player.Player
+import util.GameSessionHelper.DefaultGameSession
+
 import scala.util.control.Breaks.*
 import scala.collection.mutable.ListBuffer
 
 class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
-  def getParams: (GameOptions, GameStore) = // prepare input for GameTurn
-    val selector: (ListBuffer[Player], ListBuffer[Int]) => Int =
-      (playerList: ListBuffer[Player], playerWithTurn: ListBuffer[Int]) =>
-        playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
-    val playerInitialMoney = 200
-    val playerInitialCells = 2
-    val debtsManagement = true
-    val nCells = 10
-    val jailBlockingTime = 2
-    val gameOptions: GameOptions =
-      GameOptions(playerInitialMoney, playerInitialCells, debtsManagement, nCells, jailBlockingTime, selector)
-    val gameStore: GameStore = GameStoreImpl()
-    (gameOptions, gameStore)
 
   private var gameTurn: GameTurn = _
   private var behaviour: Behaviour = _
   override def beforeEach(): Unit =
-    getParams match
-      case (gameOptions: GameOptions, gameStore: GameStore) =>
-        gameTurn = DefaultGameTurn(gameOptions, gameStore)
-    behaviour = BehaviourFactory(gameTurn).JailBehaviour(BLOCKING_TIME)
+    val gameSession = DefaultGameSession()
+    gameTurn = gameSession.gameTurn
+    behaviour = BehaviourFactory(gameSession).JailBehaviour(BLOCKING_TIME)
 
   val BLOCKING_TIME = 2
   val PLAYER_1 = 1
