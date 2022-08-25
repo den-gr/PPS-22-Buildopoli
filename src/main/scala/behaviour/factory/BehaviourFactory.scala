@@ -1,4 +1,5 @@
 package behaviour.factory
+
 import behaviour.BehaviourModule.*
 import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.EventStory
@@ -14,21 +15,21 @@ object BehaviourFactory:
 
   class BehaviourFactoryImpl(gameSession: GameSession) extends StandardBehaviourFactory:
     private val gameTurn = gameSession.gameTurn
+    private val dice = gameSession.dice
     override def JailBehaviour(blockingTime: Int): Behaviour =
       val story: EventStory = EventStory(s"You are imprisoned for $blockingTime turns", Seq("Wait liberation"))
       val imprisonStrategy: Int => Unit = playerId =>
         gameTurn.getRemainingBlockedMovements(playerId) match
           case None =>
-            gameTurn.lockPlayer(playerId,blockingTime)
+            gameTurn.lockPlayer(playerId, blockingTime)
           case _ =>
       val imprisonEvent: Event = Event(Scenario(imprisonStrategy, story))
       val escapeStrategy: Int => Unit = playerId =>
-        if Random.nextInt(6) == Random.nextInt(6) then
-          // TODO logger(User is escaped)
-          gameTurn.liberatePlayer(playerId)
-        // else
-        // TODO logger(fail to escape)
-        // TODO force a new movement
+        if dice.rollDice() == dice.rollDice() then gameTurn.liberatePlayer(playerId)
+        gameSession.setPlayerPosition(playerId, dice.rollDice() + dice.rollDice(), true)
+      // TODO logger(User is escaped)
+      // else
+      // TODO logger(fail to escape)
       val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       val escapeEvent: Event = Event(Scenario(escapeStrategy, escapeStory), escapePrecondition)

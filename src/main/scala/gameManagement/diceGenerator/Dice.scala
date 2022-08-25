@@ -7,3 +7,6 @@ trait Dice:
   var value: Int = 0
   def rollOneDice(): Unit
   def rollMoreDice(nDice: Int): Unit
+  def rollDice(): Int =
+    rollOneDice()
+    value

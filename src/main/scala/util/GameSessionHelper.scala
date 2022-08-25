@@ -19,9 +19,9 @@ object GameSessionHelper:
     val playerInitialCells = 2
     val debtsManagement = true
     val nCells = 10
-    val jailBlockingTime = 2
+    val diceFaces = 6
     val gameOptions: GameOptions =
-      GameOptions(playerInitialMoney, playerInitialCells, debtsManagement, nCells, jailBlockingTime, selector)
+      GameOptions(playerInitialMoney, playerInitialCells, debtsManagement, nCells, diceFaces, selector)
     val gameStore: GameStore = GameStoreImpl()
     val gameTurn = DefaultGameTurn(gameOptions, gameStore)
     val gameBank: Bank = GameBankImpl(gameOptions, gameStore)

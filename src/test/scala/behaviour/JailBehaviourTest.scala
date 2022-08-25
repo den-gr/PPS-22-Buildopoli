@@ -4,19 +4,11 @@ import behaviour.BehaviourModule.Behaviour
 import behaviour.BehaviourModule.Behaviour.*
 import behaviour.event.EventModule.EventGroup
 import behaviour.factory.BehaviourFactory
-import gameManagement.gameBank.{Bank, GameBankImpl}
-import gameManagement.gameOptions.GameOptions
-import gameManagement.gameSession.{GameSession, GameSessionImpl}
-import gameManagement.gameStore.{GameStore, GameStoreImpl}
-import gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
-import lap.Lap.{GameLap, Lap, MoneyReward}
+import com.typesafe.scalalogging.{CanLog, Logger}
+import gameManagement.gameTurn.GameTurn
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
-import player.Player
 import util.GameSessionHelper.DefaultGameSession
-
-import scala.util.control.Breaks.*
-import scala.collection.mutable.ListBuffer
 
 class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
@@ -50,6 +42,7 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
 
+  // this test can give a false negative result with probability (5/6)^100 = 7.6532335e-78 if the dice have 6 sides
   test("Escape event allow to the player escape from prison") {
     var liberated = false
     for i <- 0 to 100 if !liberated do
@@ -62,6 +55,6 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
       val remainingTurns = gameTurn.getRemainingBlockedMovements(i)
       if remainingTurns.isEmpty then
         liberated = true
-        println(s"liberate at $i turn")
+        println(s"Player was liberated at $i turn")
     if !liberated then assert(false)
   }
