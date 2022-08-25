@@ -1,13 +1,14 @@
 package gameManagement.diceGenerator
 
-import com.typesafe.scalalogging.Logger
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.Random
 
 case class SingleDice(sides: Int) extends Dice:
   override val random: Random = new Random()
   var tempValue = 0
-  val logger: Logger = Logger("SingleDice")
+  val logger: Logger = LoggerFactory.getLogger(this.getClass)
+
   override def rollOneDice(): Int =
     logger.info("Dice rolled")
     random.nextInt(sides) + 1
@@ -23,6 +24,8 @@ case class SingleDice(sides: Int) extends Dice:
     case _ =>
       logger.info("All dice rolled")
       result
+
+
     
 
 
