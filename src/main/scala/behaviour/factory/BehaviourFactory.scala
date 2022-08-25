@@ -3,11 +3,11 @@ package behaviour.factory
 import behaviour.BehaviourModule.*
 import behaviour.event.EventFactory
 import behaviour.event.EventModule.*
-import behaviour.event.EventStoryModule.EventStory
 import gameManagement.gameSession.GameSession
-import gameManagement.gameTurn.GameTurn
 import behaviour.event.EventFactory
 import behaviour.event.*
+import behaviour.factory.input.JailBehaviourInput
+
 import scala.util
 import scala.util.Random
 
@@ -18,7 +18,8 @@ object BehaviourFactory:
   class BehaviourFactoryImpl(gameSession: GameSession) extends StandardBehaviourFactory:
     private val eventFactory = EventFactory(gameSession)
 
-    override def JailBehaviour(blockingTime: Int): Behaviour =
-      val imprisonEvent = eventFactory.ImprisonEvent(blockingTime)
-      val escapeEvent = eventFactory.EscapeEvent()
+    override def JailBehaviour(input: JailBehaviourInput): Behaviour =
+
+      val imprisonEvent = eventFactory.ImprisonEvent(input.imprisonStory, input.blockingTime)
+      val escapeEvent = eventFactory.EscapeEvent(input.escapeStory, input.escapeSuccessMsg, input.escapeFailMsg)
       Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))

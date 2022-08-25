@@ -1,7 +1,9 @@
 package behaviour.factory
 
 import behaviour.BehaviourModule.Behaviour
-import sun.security.provider.NativePRNG.Blocking
+import behaviour.factory.input.JailBehaviourInput
 
 trait StandardBehaviourFactory:
-  def JailBehaviour(blockingTime: Int): Behaviour
+  private class JailBehaviourInputImpl extends JailBehaviourInput
+
+  def JailBehaviour(input: JailBehaviourInput = new JailBehaviourInputImpl): Behaviour

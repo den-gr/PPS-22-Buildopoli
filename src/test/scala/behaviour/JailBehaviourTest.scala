@@ -16,7 +16,7 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   override def beforeEach(): Unit =
     val gameSession = DefaultGameSession()
     gameTurn = gameSession.gameTurn
-    behaviour = BehaviourFactory(gameSession).JailBehaviour(BLOCKING_TIME)
+    behaviour = BehaviourFactory(gameSession).JailBehaviour()
 
   val BLOCKING_TIME = 2
   val PLAYER_1: Int = 1
