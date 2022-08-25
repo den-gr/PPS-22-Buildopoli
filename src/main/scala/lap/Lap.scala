@@ -4,9 +4,8 @@ import gameManagement.gameBank.Bank
 import player.Player
 
 object Lap :
-
   /**
-   * It represent the reward given to the player that has completed a new lap
+   * It represents the reward given to the player that has completed a new lap
    */
   trait Reward:
     /**
@@ -15,6 +14,11 @@ object Lap :
      */
     def triggerBonus(playerID: Int): Unit
 
+  /**
+   * Implementation of a reward that gift the player with a certain amount of money from the bank
+   * @param money prize
+   * @param bank that provides the money
+   */
   case class MoneyReward(money: Int, bank: Bank) extends Reward:
     override def triggerBonus(playerID: Int): Unit = bank.increasePlayerMoney(playerID, money)
 
@@ -22,8 +26,6 @@ object Lap :
    * Buildopoli's terrains are displayed in circle, each player can complete a lap and gain a reward
   */
   trait Lap:
-    def reward: Reward
-
     /**
      * Says if the checked player has started a new lap and returns also the new player's position
      * @param isValid says if the movement is valid to take the reward. If it is explicitly said
@@ -34,7 +36,6 @@ object Lap :
      * @return the new position and a value that says if a new lap has started or not
      */
     def isNewLap(isValid: Boolean, playerCurrentPosition: Int, nSteps: Int, nCells: Int): (Int, Boolean)
-
     /**
      * Gives the reward for completing the lap to the player
      * @param playerID the player's ID
@@ -44,11 +45,11 @@ object Lap :
   /**
    * A basic implementation of lap
    */
-  case class GameLap(override val reward: Reward) extends Lap:
+  case class GameLap(reward: Reward) extends Lap:
     override def isNewLap(isValid: Boolean, playerCurrentPosition: Int, nSteps: Int, nCells: Int): (Int, Boolean) = playerCurrentPosition + nSteps > nCells match
       case true => (playerCurrentPosition + nSteps - nCells, isValid)
       case false => (playerCurrentPosition + nSteps, false)
 
     override def giveReward(playerID: Int): Unit = reward.triggerBonus(playerID)
 
-  def apply(reward: Reward): Lap = GameLap(reward: Reward)
+    def apply(reward: Reward): Lap = GameLap(reward: Reward)
