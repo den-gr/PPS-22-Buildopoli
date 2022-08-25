@@ -64,7 +64,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(events.head.head.eventStory(PLAYER_1).choices.length == NUMBER_CHOICES)
   }
 
-  test("EventStory of casino must have interactions"){
+  test("EventStory of casino must have interactions") {
     var events = casinoBehaviour.getInitialEvents(PLAYER_1)
     val interactions = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])
@@ -73,12 +73,10 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(getStories(events, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
   }
 
-  test("In full"){
+  test("In full") {
 //    var events = casinoBehaviour.getInitialEvents(PLAYER_1)
 //    events = chooseEvent(events)(PLAYER_1, (0, 0))
 //    val interactions = getStories(events, PLAYER_1)
 //    events = chooseEvent(events)(PLAYER_1, (0, 0))
 //    assert(events.isEmpty)
   }
-
-
