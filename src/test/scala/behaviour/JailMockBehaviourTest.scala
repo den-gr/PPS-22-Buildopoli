@@ -55,7 +55,6 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   val escapeStrategy: Int => Unit =
     // This version has 100% probability to escape successfully
     jail.liberatePlayer(_)
-    // TODO start new movement
   val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
   val escapePrecondition: EventPrecondition = jail.getRemainingBlockedMovements(_).nonEmpty
   val escapeEvent: Event = Event(Scenario(escapeStrategy, escapeStory), escapePrecondition)
