@@ -59,7 +59,7 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
 
-  test("Escape event allow to player escape from prison") {
+  test("Escape event allow to the player escape from prison") {
     var liberated = false
     for i <- 0 to 100 if !liberated do
       var events = behaviour.getInitialEvents(i)

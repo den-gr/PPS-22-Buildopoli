@@ -12,13 +12,12 @@ object BehaviourFactory:
   def apply(gameTurn: GameTurn): StandardBehaviourFactory = BehaviourFactoryImpl(gameTurn)
 
   class BehaviourFactoryImpl(gameTurn: GameTurn) extends StandardBehaviourFactory:
-    // TODO blockingTime unused
     override def JailBehaviour(blockingTime: Int): Behaviour =
       val story: EventStory = EventStory(s"You are imprisoned for $blockingTime turns", Seq("Wait liberation"))
       val imprisonStrategy: Int => Unit = playerId =>
         gameTurn.getRemainingBlockedMovements(playerId) match
           case None =>
-            gameTurn.lockPlayer(playerId)
+            gameTurn.lockPlayer(playerId,blockingTime)
           case _ =>
       val imprisonEvent: Event = Event(Scenario(imprisonStrategy, story))
       val escapeStrategy: Int => Unit = playerId =>
@@ -27,6 +26,7 @@ object BehaviourFactory:
           gameTurn.liberatePlayer(playerId)
         // else
         // TODO logger(fail to escape)
+        // TODO force a new movement
       val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       val escapeEvent: Event = Event(Scenario(escapeStrategy, escapeStory), escapePrecondition)

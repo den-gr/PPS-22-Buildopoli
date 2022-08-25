@@ -11,13 +11,14 @@ import com.typesafe.scalalogging.Logger
 
 import scala.collection.mutable.ListBuffer
 
-case class GameSessionImpl(override val gameOptions: GameOptions,
-                           override val gameBank: Bank,
-                           override val gameTurn: GameTurn,
-                           override val gameStore: GameStore,
-                           override val gameLap: Lap)
-    extends GameSession:
-  
+case class GameSessionImpl(
+    override val gameOptions: GameOptions,
+    override val gameBank: Bank,
+    override val gameTurn: GameTurn,
+    override val gameStore: GameStore,
+    override val gameLap: Lap
+) extends GameSession:
+
   override val dice: Dice = SingleDice(gameOptions.diceFaces)
 
   val logger: Logger = Logger("GameSession")
@@ -51,7 +52,3 @@ case class GameSessionImpl(override val gameOptions: GameOptions,
     val result = gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nSteps, gameOptions.nCells)
     player.setPlayerPawnPosition(result._1)
     if result._2 then gameLap.giveReward(playerId)
-    
-  
-
-
