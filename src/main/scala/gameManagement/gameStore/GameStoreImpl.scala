@@ -5,7 +5,7 @@ import terrain.Terrain.Terrain
 
 import scala.collection.mutable.ListBuffer
 
-case class GameStoreImpl() extends GameStore :
+case class GameStoreImpl() extends GameStore:
   override val playersList: ListBuffer[Player] = ListBuffer()
   override val terrainList: ListBuffer[Terrain] = ListBuffer()
 

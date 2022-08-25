@@ -27,4 +27,6 @@ object GameSessionHelper:
     val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
     val gameLap: Lap = GameLap(MoneyReward(200, gameBank))
 
-    GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
+    val gs = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
+    gs.addManyPlayers(100)
+    gs

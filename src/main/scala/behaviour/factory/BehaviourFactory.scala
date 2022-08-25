@@ -25,8 +25,8 @@ object BehaviourFactory:
           case _ =>
       val imprisonEvent: Event = Event(Scenario(imprisonStrategy, story))
       val escapeStrategy: Int => Unit = playerId =>
-        if dice.rollDice() == dice.rollDice() then gameTurn.liberatePlayer(playerId)
-        gameSession.setPlayerPosition(playerId, dice.rollDice() + dice.rollDice(), true)
+        if dice.rollOneDice() == dice.rollOneDice() then gameTurn.liberatePlayer(playerId)
+        gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2), true)
       // TODO logger(User is escaped)
       // else
       // TODO logger(fail to escape)

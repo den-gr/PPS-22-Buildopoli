@@ -4,7 +4,6 @@ import behaviour.BehaviourModule.Behaviour
 import behaviour.BehaviourModule.Behaviour.*
 import behaviour.event.EventModule.EventGroup
 import behaviour.factory.BehaviourFactory
-import com.typesafe.scalalogging.{CanLog, Logger}
 import gameManagement.gameTurn.GameTurn
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
@@ -20,7 +19,7 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     behaviour = BehaviourFactory(gameSession).JailBehaviour(BLOCKING_TIME)
 
   val BLOCKING_TIME = 2
-  val PLAYER_1 = 1
+  val PLAYER_1: Int = 1
 
   test("Behaviour imprison a player") {
     val events = behaviour.getInitialEvents(PLAYER_1)
@@ -45,7 +44,7 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   // this test can give a false negative result with probability (5/6)^100 = 7.6532335e-78 if the dice have 6 sides
   test("Escape event allow to the player escape from prison") {
     var liberated = false
-    for i <- 0 to 100 if !liberated do
+    for i <- 1 to 100 if !liberated do
       var events = behaviour.getInitialEvents(i)
       chooseEvent(events)(i, (0, 0))
       gameTurn.doTurn()
