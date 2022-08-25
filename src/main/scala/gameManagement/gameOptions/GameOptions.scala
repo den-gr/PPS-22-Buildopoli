@@ -21,4 +21,5 @@ case class GameOptions(playerInitialMoney: Int,
                        playerInitialCells: Int,
                        debtsManagement: Boolean,
                        nCells: Int,
+                       diceFaces: Int,
                        playerTurnSelector: (ListBuffer[Player], ListBuffer[Int]) => Int)

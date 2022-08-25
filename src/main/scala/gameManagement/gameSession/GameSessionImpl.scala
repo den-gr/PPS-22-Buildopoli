@@ -1,5 +1,6 @@
 package gameManagement.gameSession
 
+import gameManagement.diceGenerator.{Dice, SingleDice}
 import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
@@ -15,6 +16,8 @@ case class GameSessionImpl(override val gameOptions: GameOptions,
                            override val gameStore: GameStore,
                            override val gameLap: Lap)
     extends GameSession:
+  
+  override val dice: Dice = SingleDice(gameOptions.diceFaces)
 
   override def addManyPlayers(n: Int): Unit =
     for _ <- 0 until n do this.addOnePlayer(Option.empty)
@@ -45,5 +48,7 @@ case class GameSessionImpl(override val gameOptions: GameOptions,
     val result = gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nSteps, gameOptions.nCells)
     player.setPlayerPawnPosition(result._1)
     if result._2 then gameLap.giveReward(playerId)
+    
+  
 
 
