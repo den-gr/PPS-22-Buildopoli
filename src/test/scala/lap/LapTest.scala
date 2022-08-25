@@ -34,6 +34,15 @@ class LapTest extends AnyFunSuite:
 
     assert(lap.isNewLap(true, currentPosition, 6, nCells)._1 == 3)
     assert(lap.isNewLap(true, currentPosition, 6, nCells)._2)
+
+    assert(lap.isNewLap(false, currentPosition, 6, nCells)._1 == 3)
+    assert(!lap.isNewLap(false, currentPosition, 6, nCells)._2)
+
+    assert(lap.isNewLap(true, currentPosition, -6, nCells)._1 == 11)
+    assert(!lap.isNewLap(true, currentPosition, -6, nCells)._2)
+
+    assert(lap.isNewLap(true, 2, -3, nCells)._1 == 19)
+    assert(!lap.isNewLap(true, 2, -3, nCells)._2)
   }
 
   test("The game lap can give a reward to the player that has completed a lap"){
