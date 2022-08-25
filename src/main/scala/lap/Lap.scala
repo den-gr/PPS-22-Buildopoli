@@ -1,6 +1,6 @@
 package lap
 
-import gameBank.Bank
+import gameManagement.gameBank.Bank
 import player.Player
 
 object Lap :
@@ -15,13 +15,14 @@ object Lap :
      */
     def triggerBonus(playerID: Int): Unit
 
-  case class MoneyReward(bank: Bank, money: Int) extends Reward:
+  case class MoneyReward(money: Int, bank: Bank) extends Reward:
     override def triggerBonus(playerID: Int): Unit = bank.increasePlayerMoney(playerID, money)
 
   /**
    * Buildopoli's terrains are displayed in circle, each player can complete a lap and gain a reward
   */
   trait Lap:
+    def reward: Reward
 
     /**
      * Says if the checked player has started a new lap and returns also the new player's position
@@ -37,19 +38,17 @@ object Lap :
     /**
      * Gives the reward for completing the lap to the player
      * @param playerID the player's ID
-     * @param reward the reward
      */
-    def giveReward(playerID: Int, reward: Reward): Unit
+    def giveReward(playerID: Int): Unit
 
   /**
    * A basic implementation of lap
    */
-  case class GameLap() extends Lap:
+  case class GameLap(override val reward: Reward) extends Lap:
     override def isNewLap(isValid: Boolean, playerCurrentPosition: Int, nSteps: Int, nCells: Int): (Int, Boolean) = playerCurrentPosition + nSteps > nCells match
       case true => (playerCurrentPosition + nSteps - nCells, isValid)
       case false => (playerCurrentPosition + nSteps, false)
 
-    override def giveReward(playerID: Int, reward: Reward): Unit = reward.triggerBonus(playerID)
+    override def giveReward(playerID: Int): Unit = reward.triggerBonus(playerID)
 
-
-
+  def apply(reward: Reward): Lap = GameLap(reward: Reward)
