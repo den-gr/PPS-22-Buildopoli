@@ -15,7 +15,7 @@ object BehaviourFactory:
 
   def apply(gameSession: GameSession): BasicBehaviourFactory = BehaviourFactoryImpl(gameSession)
 
-  class BehaviourFactoryImpl(gameSession: GameSession) extends BasicBehaviourFactory:
+  private class BehaviourFactoryImpl(gameSession: GameSession) extends BasicBehaviourFactory:
     private val eventFactory = EventFactory(gameSession)
 
     override def JailBehaviour(input: JailBehaviourInput): Behaviour =

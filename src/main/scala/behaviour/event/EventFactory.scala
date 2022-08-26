@@ -33,7 +33,7 @@ object EventFactory:
   def InfoEvent(story: EventStory, condition: EventPrecondition): Event =
     Event(Scenario(story), condition)
 
-  class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
+  private class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
     val logger: Logger = LoggerFactory.getLogger(this.getClass)
     private val gameTurn = gameSession.gameTurn
     private val dice = gameSession.dice

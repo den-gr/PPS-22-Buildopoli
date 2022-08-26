@@ -14,14 +14,13 @@ object EventModule:
     val events: Seq[Event]
     export events.*
     val isAtomic: Boolean
-    //TODO def isMandatory: Boolean
-    
+    // TODO def isMandatory: Boolean
+
   object EventGroup:
-      def apply(elems: Event*): EventGroup = EventGroupImpl(elems)
-      def apply(elems: Seq[Event], isAtomic: Boolean): EventGroup = EventGroupImpl(elems, isAtomic)
+    def apply(elems: Event*): EventGroup = EventGroupImpl(elems)
+    def apply(elems: Seq[Event], isAtomic: Boolean): EventGroup = EventGroupImpl(elems, isAtomic)
 
-      class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean = false) extends EventGroup
-
+    class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean = false) extends EventGroup
 
   trait Event:
     def nextEvent: Option[EventGroup]
@@ -63,7 +62,8 @@ object EventModule:
     ): Event =
       EventImpl(scenario, condition, nextEvent)
 
-    def apply(scenario: Scenario, nextEvent: Option[EventGroup]): Event = EventImpl(scenario, WITHOUT_PRECONDITION, nextEvent)
+    def apply(scenario: Scenario, nextEvent: Option[EventGroup]): Event =
+      EventImpl(scenario, WITHOUT_PRECONDITION, nextEvent)
 
     def apply(scenario: Scenario): Event = apply(scenario, None)
 

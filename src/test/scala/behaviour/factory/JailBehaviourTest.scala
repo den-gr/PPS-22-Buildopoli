@@ -1,17 +1,16 @@
-package behaviour
+package behaviour.factory
 
-import behaviour.BehaviourModule.Behaviour
+import behaviour.BehaviourModule.*
 import behaviour.BehaviourModule.Behaviour.*
-import behaviour.event.EventFactory.EventLogMsg
+import behaviour.event.EventFactory.*
 import behaviour.event.EventModule.EventGroup
 import behaviour.event.EventStoryModule
-import behaviour.factory.BehaviourFactory
+import behaviour.factory.BehaviourFactory.*
 import behaviour.factory.input.JailBehaviourInput
 import gameManagement.gameTurn.GameTurn
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import util.GameSessionHelper.DefaultGameSession
-import behaviour.event.EventFactory.*
 
 class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
@@ -21,7 +20,6 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     val gameSession = DefaultGameSession()
     gameTurn = gameSession.gameTurn
     behaviour = BehaviourFactory(gameSession).JailBehaviour()
-    val obj = EventFactoryImpl(gameSession)
 
   val BLOCKING_TIME = 2
   val PLAYER_1: Int = 1

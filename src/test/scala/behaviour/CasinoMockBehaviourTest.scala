@@ -12,7 +12,7 @@ import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.*
 import behaviour.event.EventStoryModule.Result.*
 
-import behaviour.BehaviourModule.Behaviour.{chooseEvent, getStories, printStories}
+import behaviour.BehaviourModule.*
 
 class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1

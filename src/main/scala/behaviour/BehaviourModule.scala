@@ -4,8 +4,8 @@ import behaviour.event.EventModule
 import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.EventStory
 
-object BehaviourModule:
-  
+object BehaviourModule extends StoryConverter:
+
   type StoryGroup = Seq[EventStory]
 
   /** A choose of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
@@ -19,71 +19,39 @@ object BehaviourModule:
     def apply(initialEvents: Seq[EventGroup]): Behaviour = BehaviourImpl(initialEvents)
     def apply(singleEventGroup: EventGroup): Behaviour = BehaviourImpl(Seq(singleEventGroup))
 
-    case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
+    private case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
       override def getInitialEvents(playerId: Int): Seq[EventGroup] =
         initialEvents
           .map(gr => EventGroup(gr.filter(_.hasToRun(playerId)), gr.isAtomic))
           .filter(_.nonEmpty)
 
-    trait StoryConverter[T]:
-      def stories(seq: Seq[T], playerId: Int): Seq[StoryGroup]
+  def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, index: (Int, Int)): Seq[EventGroup] =
+    try
+      val nextOpEvents: Option[EventGroup] = chooseEvent(currentEvents(index._1))(playerId, index._2)
 
-    given StoryConverter[StoryGroup] with
-      override def stories(seq: Seq[StoryGroup], playerId: Int): Seq[StoryGroup] = seq
+      // remove chose EventGroup
+      var newEvents = currentEvents.patch(index._1, Nil, 1)
 
-    given StoryConverter[EventGroup] with
-      override def stories(seq: Seq[EventGroup], playerId: Int): Seq[StoryGroup] =
-        seq.map(eventGroup => eventGroup.map(m => m.eventStory(playerId)))
-
-    def getStories(events: Seq[EventGroup], playerId: Int): Seq[StoryGroup] =
-      summon[StoryConverter[EventGroup]].stories(events, playerId)
-
-    def printStories[T: StoryConverter](stories: Seq[T], playerId: Int): String =
-      var result: String = ""
-      summon[StoryConverter[T]]
-        .stories(stories, playerId)
-        .foreach(storyGroup =>
-          result += "Group\n";
-          storyGroup.foreach(story =>
-            result += s"\t ${story.description}. Available actions:\n\t\t";
-            result += story.choices.mkString("\n\t\t")
-            result +=
-              "\n"
-          )
+      // insert next EventGroup
+      if nextOpEvents.nonEmpty then
+        val nextEventGroup: EventGroup = EventGroup(
+          for
+            ev <- nextOpEvents.get
+            if ev.hasToRun(playerId)
+          yield ev,
+          nextOpEvents.get.isAtomic
         )
-      result
+        newEvents = newEvents :+ nextEventGroup
+      newEvents
+    catch
+      case _: IndexOutOfBoundsException =>
+        throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + index)
 
-    /** Allow to choose an available event of this behaviour
-      *
-      * @param index
-      *   see [[Index]]
-      */
-    def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, index: (Int, Int)): Seq[EventGroup] =
-      try
-        val nextOpEvents: Option[EventGroup] = chooseEvent(currentEvents(index._1))(playerId, index._2)
-
-        // remove chose EventGroup
-        var newEvents = currentEvents.patch(index._1, Nil, 1)
-
-        // insert next EventGroup
-        if nextOpEvents.nonEmpty  then
-          val nextEventGroup : EventGroup = EventGroup(
-            for 
-              ev <- nextOpEvents.get
-              if ev.hasToRun(playerId)
-            yield ev
-          , nextOpEvents.get.isAtomic)
-          newEvents = newEvents :+ nextEventGroup
-        newEvents
-      catch
-        case _: IndexOutOfBoundsException =>
-          throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + index)
-
-    def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
-      try
-        val event = eventGroup(index)
-        event.run(playerId)
-        event.nextEvent
-      catch
-        case _: IndexOutOfBoundsException =>
-          throw IllegalArgumentException("Chose index of a not existing event. -> " + index)
+  def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
+    try
+      val event = eventGroup(index)
+      event.run(playerId)
+      event.nextEvent
+    catch
+      case _: IndexOutOfBoundsException =>
+        throw IllegalArgumentException("Chose index of a not existing event. -> " + index)
