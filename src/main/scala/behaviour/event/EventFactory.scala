@@ -7,11 +7,29 @@ import Event.*
 import gameManagement.gameSession.GameSession
 import org.slf4j.{Logger, LoggerFactory}
 
+/** Give access to static factory constructor of events and allows create a [[BasicEventFactory]] instance
+  */
 object EventFactory:
+  /** A simple type for generating personalized messages. Typically take in input player id and return a personalized
+    * event message
+    */
   type EventLogMsg = String => String
 
+  /** @param gameSession
+    *   Current game session
+    * @return
+    *   factory for event creation
+    */
   def apply(gameSession: GameSession): BasicEventFactory = EventFactoryImpl(gameSession)
 
+  /** Creation of an informative event, that can be useful as an introduction to a chain of events
+    * @param story
+    *   event description
+    * @param condition
+    *   define when this event will be visible to a player
+    * @return
+    *   event that not have any logic
+    */
   def InfoEvent(story: EventStory, condition: EventPrecondition): Event =
     Event(Scenario(story), condition)
 
