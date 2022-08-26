@@ -14,8 +14,10 @@ class GroupManagerTest extends AnyFunSuite:
   val t3: Buildable = BuildableTerrain(PurchasableTerrain(BasicTerrain(TerrainInfo("red 1" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
   val t4: Buildable = BuildableTerrain(PurchasableTerrain(BasicTerrain(TerrainInfo("red 2" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
   val t5: Buildable = BuildableTerrain(PurchasableTerrain(BasicTerrain(TerrainInfo("red 3" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
+  val t6: Purchasable = PurchasableTerrain(BasicTerrain(TerrainInfo("blue 1" , 1, null)), 500, "blue", null, null, Some(2), PurchasableState.MORTGAGED)
+  val t7: Purchasable = PurchasableTerrain(BasicTerrain(TerrainInfo("blue 2" , 1, null)), 500, "blue", null, null, Some(2), PurchasableState.OWNED)
 
-  val terrains: Seq[Terrain] = Array(t0, t1, t2, t3, t4, t5)
+  val terrains: Seq[Terrain] = Array(t0, t1, t2, t3, t4, t5, t6, t7)
   val gp: GroupManager = GameGroupManager(terrains)
   test("If the owner has no terrain of the group, the group is not complete"){
     assert(!gp.isGroupComplete(0, "purple"))
@@ -37,5 +39,11 @@ class GroupManagerTest extends AnyFunSuite:
     assert(gp.sameGroupTerrainsOwned(1, "red") == 3)
     assert(gp.sameGroupTerrainsOwned(2, "purple") == 1)
     assert(gp.sameGroupTerrainsOwned(2, "red") == 0)
+  }
+
+  test("If a terrain is mortgaged it is not count"){
+    assert(gp.sameGroupTerrainsOwned(2, "blue") == 1)
+    assert(!gp.isGroupComplete(2, "blue"))
+
   }
 
