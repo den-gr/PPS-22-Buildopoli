@@ -13,13 +13,12 @@ import scala.util.Random
 
 object BehaviourFactory:
 
-  def apply(gameSession: GameSession): StandardBehaviourFactory = BehaviourFactoryImpl(gameSession)
+  def apply(gameSession: GameSession): BasicBehaviourFactory = BehaviourFactoryImpl(gameSession)
 
-  class BehaviourFactoryImpl(gameSession: GameSession) extends StandardBehaviourFactory:
+  class BehaviourFactoryImpl(gameSession: GameSession) extends BasicBehaviourFactory:
     private val eventFactory = EventFactory(gameSession)
 
     override def JailBehaviour(input: JailBehaviourInput): Behaviour =
-
-      val imprisonEvent = eventFactory.ImprisonEvent(input.imprisonStory, input.blockingTime)
+      val imprisonEvent = eventFactory.ImprisonEvent(input.imprisonStory, input.blockingTurns)
       val escapeEvent = eventFactory.EscapeEvent(input.escapeStory, input.escapeSuccessMsg, input.escapeFailMsg)
-      Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
+      Behaviour(EventGroup(imprisonEvent, escapeEvent))

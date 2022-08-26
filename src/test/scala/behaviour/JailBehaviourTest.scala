@@ -2,8 +2,11 @@ package behaviour
 
 import behaviour.BehaviourModule.Behaviour
 import behaviour.BehaviourModule.Behaviour.*
+import behaviour.event.EventFactory.EventLogMsg
 import behaviour.event.EventModule.EventGroup
+import behaviour.event.EventStoryModule
 import behaviour.factory.BehaviourFactory
+import behaviour.factory.input.JailBehaviourInput
 import gameManagement.gameTurn.GameTurn
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite

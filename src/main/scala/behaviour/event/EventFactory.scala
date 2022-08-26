@@ -10,21 +10,21 @@ import org.slf4j.{Logger, LoggerFactory}
 object EventFactory:
   type EventLogMsg = String => String
 
-  def apply(gameSession: GameSession): StandardEventFactory = EventFactoryImpl(gameSession)
+  def apply(gameSession: GameSession): BasicEventFactory = EventFactoryImpl(gameSession)
 
   def InfoEvent(story: EventStory, condition: EventPrecondition): Event =
     Event(Scenario(story), condition)
 
-  class EventFactoryImpl(gameSession: GameSession) extends StandardEventFactory:
+  class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
     val logger: Logger = LoggerFactory.getLogger(this.getClass)
     private val gameTurn = gameSession.gameTurn
     private val dice = gameSession.dice
 
-    override def ImprisonEvent(story: EventStory, blockingTime: Int): Event =
+    override def ImprisonEvent(story: EventStory, blockingTurns: Int): Event =
       val imprisonStrategy: Int => Unit = playerId =>
         gameTurn.getRemainingBlockedMovements(playerId) match
           case None =>
-            gameTurn.lockPlayer(playerId, blockingTime)
+            gameTurn.lockPlayer(playerId, blockingTurns)
           case _ =>
       Event(Scenario(imprisonStrategy, story))
 

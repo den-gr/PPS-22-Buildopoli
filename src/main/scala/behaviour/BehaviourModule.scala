@@ -17,6 +17,7 @@ object BehaviourModule:
 
   object Behaviour:
     def apply(initialEvents: Seq[EventGroup]): Behaviour = BehaviourImpl(initialEvents)
+    def apply(singleEventGroup: EventGroup): Behaviour = BehaviourImpl(Seq(singleEventGroup))
 
     case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
       override def getInitialEvents(playerId: Int): Seq[EventGroup] =
