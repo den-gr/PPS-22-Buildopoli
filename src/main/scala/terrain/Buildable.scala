@@ -23,6 +23,12 @@ object Buildable :
      */
     override def mortgage: Buildable
     /**
+     * It tells if it is possible to build
+     * @param groupManager gives information about the terrain's group
+     * @return if it is possible to build
+     */
+    def canBuild(groupManager: GroupManager): Boolean
+    /**
      *
      * @param name of the token
      * @return the price needed to buy the specified token
@@ -81,6 +87,7 @@ object Buildable :
     override def mortgage: Buildable = BuildableTerrain(terrain.mortgage, token)
     override def computeMortgage: Int = terrain.computeMortgage
 
+    override def canBuild(groupManager: GroupManager): Boolean = owner.nonEmpty && groupManager.isGroupComplete(owner.get, group)
     override def getNumToken(name: String): Int = token.getNumToken(name)
     override def addToken(name: String, num: Int):Buildable = BuildableTerrain(terrain, token.addToken(name, num))
     override def destroyToken(name: String, num: Int): Buildable = BuildableTerrain(terrain, token.removeToken(name, num))

@@ -55,6 +55,11 @@ class BuildableTest extends AnyFunSuite:
     assert(b1.tokenBuyingPrice(t2) == 50)
   }
 
+  test("It is possible to check if it is possible to build on a terrain"){
+    assert(b1.canBuild(gm))
+    assert(!b3.canBuild(gm))
+  }
+
   test("Tokens can be added"){
     b1 = b1.addToken(t1, 3)
     assert(b1.getNumToken(t1) == 3)
