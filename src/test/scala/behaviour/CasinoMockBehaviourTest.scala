@@ -49,7 +49,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
         interactionSequence = interactionSequence :+ interaction
       EventStory(desc, seq, interactionSequence)
 
-  private val doubleGameEvent = Event(Scenario(doubleGameStrategy, storyGenerator), Event.WITHOUT_PRECONDITION)
+  private val doubleGameEvent = Event(storyGenerator, doubleGameStrategy)
 
   private val casinoBehaviour = Behaviour(Seq(EventGroup(infoEvent ++ doubleGameEvent)))
 

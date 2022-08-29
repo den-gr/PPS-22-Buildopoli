@@ -3,7 +3,7 @@ package behaviour
 import behaviour.BehaviourModule.StoryGroup
 import behaviour.event.EventModule.EventGroup
 
-/** Allows to convert events to stories and then to a string
+/** Allows to convert a sequence of [[EventGroup]] to sequence of [[StoryGroup]] and then to a string
   */
 trait StoryConverter:
   trait Converter[T]:

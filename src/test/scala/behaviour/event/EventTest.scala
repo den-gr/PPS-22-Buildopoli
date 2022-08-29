@@ -8,10 +8,12 @@ import util.mock.BankHelper.BankMock.*
 import EventStoryModule.*
 
 class EventTest extends AnyFunSuite with BeforeAndAfterEach:
+
   val MOCK_ID: Int = 0
   var bank: BankMock = BankMock()
   override def beforeEach(): Unit =
     bank = BankMock()
+  val tempStory: EventStory = EventStory("My temp description", List("OK"))
 
   val eventStrategy: EventStrategy = _ => bank.decrement(TAX)
   test("Decrement bank money with event strategy") {
@@ -25,7 +27,7 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
   import behaviour.event.EventModule.*
   import EventStory.*
 
-  val ev: Event = Event(Scenario(eventStrategy, Scenario.tempStory), Event.WITHOUT_PRECONDITION)
+  val ev: Event = Event(tempStory, eventStrategy)
   test("An event that can change balance of a bank") {
     ev.run(MAIN_ACTION)
     assert(bank.money == BANK_MONEY - TAX)
@@ -36,8 +38,8 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
   test("Two consecutive events in a chain") {
     assert(bank.money == BANK_MONEY)
     import EventOperation.*
-    val ev2: Event
-      = Event(Scenario(_ => bank.decrement(TAX * 2), Scenario.tempStory), Event.WITHOUT_PRECONDITION) ++ ev
+    val strategy: EventStrategy = _ => bank.decrement(TAX * 2)
+    val ev2: Event = Event(tempStory, strategy) ++ ev
     ev2.run(MAIN_ACTION)
     var nextEv = ev2.nextEvent
 
@@ -52,8 +54,8 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
 
   import EventOperation.*
   test("Test ++ operator with Event object") {
-    val myEvent: Event = Event(Scenario(Scenario.tempStory))
-    val myEvent2: Event = Event(Scenario(Scenario.tempStory))
+    val myEvent: Event = Event(tempStory)
+    val myEvent2: Event = Event(tempStory)
     val appended = myEvent ++ myEvent2
     assert(appended.isInstanceOf[Event])
     assert(appended.nextEvent.get.head.isInstanceOf[Event])

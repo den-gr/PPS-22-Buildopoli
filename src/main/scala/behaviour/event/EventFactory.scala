@@ -25,13 +25,13 @@ object EventFactory:
   /** Creation of an informative event, that can be useful as an introduction to a chain of events
     * @param story
     *   event description
-    * @param condition
+    * @param precondition
     *   define when this event will be visible to a player
     * @return
     *   event that not have any logic
     */
-  def InfoEvent(story: EventStory, condition: EventPrecondition): Event =
-    Event(Scenario(story), condition)
+  def InfoEvent(story: EventStory, precondition: EventPrecondition): Event =
+    Event(story, precondition = precondition)
 
   private class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
     val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -44,7 +44,7 @@ object EventFactory:
           case None =>
             gameTurn.lockPlayer(playerId, blockingTurns)
           case _ =>
-      Event(Scenario(imprisonStrategy, story))
+      Event(story, imprisonStrategy)
 
     override def EscapeEvent(story: EventStory, escapeSuccessMsg: EventLogMsg, escapeFailMsg: EventLogMsg): Event =
       val escapeStrategy: Int => Unit = playerId =>
@@ -54,4 +54,4 @@ object EventFactory:
           gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2), true)
         else logger.info(escapeFailMsg(playerId.toString))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
-      Event(Scenario(escapeStrategy, story), escapePrecondition)
+      Event(story, escapeStrategy, escapePrecondition)

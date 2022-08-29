@@ -26,57 +26,41 @@ object EventModule:
     def nextEvent: Option[EventGroup]
     def run(playerId: Int): Unit
     def eventStory(playerId: Int): EventStory
-    def doCopy(nextEv: Option[EventGroup]): Event
+    def copy(nextEv: Option[EventGroup]): Event
     def hasToRun(playerId: Int): Boolean
-
-  trait Scenario:
-    def eventStrategy: EventStrategy
-    def eventStory(playerId: Int): EventStory
-
-  object Scenario:
-    import EventStory.*
-    val tempStory: EventStory = EventStory("My temp description", List("OK"))
-
-    def apply(story: EventStory): Scenario = ScenarioImpl(storyGenerator = _ => story)
-
-    def apply(eventStrategy: EventStrategy, story: EventStory): Scenario =
-      ScenarioImpl(eventStrategy, _ => story)
-
-    def apply(eventStrategy: EventStrategy, storyGenerator: StoryGenerator): Scenario =
-      ScenarioImpl(eventStrategy, storyGenerator)
-
-    def apply(storyGenerator: StoryGenerator): Scenario = ScenarioImpl(storyGenerator = storyGenerator)
-
-    case class ScenarioImpl(
-        override val eventStrategy: EventStrategy = _ => (),
-        storyGenerator: StoryGenerator
-    ) extends Scenario:
-      override def eventStory(playerId: Int): EventStory = storyGenerator(playerId)
 
   object Event:
     val WITHOUT_PRECONDITION: EventPrecondition = _ => true
-    def apply(
-        scenario: Scenario,
-        condition: EventPrecondition,
+    val WITHOUT_STRATEGY: EventStrategy = _ => ()
+
+    trait StoryGeneratorAdapter[T]:
+      def adapt(st: T): StoryGenerator
+    given StoryGeneratorAdapter[StoryGenerator] with
+      override def adapt(st: StoryGenerator): StoryGenerator = st
+    given StoryGeneratorAdapter[EventStory] with
+      override def adapt(st: EventStory): StoryGenerator = _ => st
+
+    def apply[T: StoryGeneratorAdapter](
+        story: T,
+        eventStrategy: EventStrategy = WITHOUT_STRATEGY,
+        precondition: EventPrecondition = WITHOUT_PRECONDITION,
         nextEvent: Option[EventGroup] = None
-    ): Event =
-      EventImpl(scenario, condition, nextEvent)
+    ): Event = EventImpl(summon[StoryGeneratorAdapter[T]].adapt(story), eventStrategy, precondition, nextEvent)
 
-    def apply(scenario: Scenario, nextEvent: Option[EventGroup]): Event =
-      EventImpl(scenario, WITHOUT_PRECONDITION, nextEvent)
+    case class EventImpl(
+        storyGenerator: StoryGenerator,
+        eventStrategy: EventStrategy,
+        precondition: EventPrecondition,
+        nextEvent: Option[EventGroup]
+    ) extends Event:
 
-    def apply(scenario: Scenario): Event = apply(scenario, None)
+      override def run(playerId: Int): Unit = eventStrategy(playerId)
 
-    case class EventImpl(scenario: Scenario, condition: EventPrecondition, nextEvent: Option[EventGroup]) extends Event:
+      override def eventStory(playerId: Int): EventStory = storyGenerator(playerId)
 
-      override def run(playerId: Int): Unit =
-        scenario.eventStrategy(playerId)
+      override def hasToRun(playerId: Int): Boolean = precondition(playerId)
 
-      override def eventStory(playerId: Int): EventStory = scenario.eventStory(playerId)
-
-      override def doCopy(nextEv: Option[EventGroup]): Event = EventImpl(scenario, condition, nextEv)
-
-      override def hasToRun(playerId: Int): Boolean = condition(playerId)
+      override def copy(newNextEvent: Option[EventGroup]): Event = this.copy(nextEvent = newNextEvent)
 
   object EventOperation:
     extension [T <: Event](e: T)
@@ -84,4 +68,4 @@ object EventModule:
       def ++(nextEvent: T): T =
         if e.getClass != nextEvent.getClass then
           throw new IllegalArgumentException("Both event must be of the same type")
-        e.doCopy(Some(EventGroup(nextEvent))).asInstanceOf[T]
+        e.copy(Some(EventGroup(nextEvent))).asInstanceOf[T]

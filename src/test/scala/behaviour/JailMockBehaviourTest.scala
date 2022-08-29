@@ -27,7 +27,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
         println("Automatic end of turn") // TODO
       case _ =>
   val imprisonEvent: Event =
-    Event(Scenario(imprisonStrategy, story))
+    Event(story, imprisonStrategy)
 
   test("Behaviour with single Jail event that imprison a player") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
@@ -57,7 +57,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     jail.liberatePlayer(_)
   val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
   val escapePrecondition: EventPrecondition = jail.getRemainingBlockedMovements(_).nonEmpty
-  val escapeEvent: Event = Event(Scenario(escapeStrategy, escapeStory), escapePrecondition)
+  val escapeEvent: Event = Event(escapeStory, escapeStrategy, escapePrecondition)
 
   test("Escape event allow to player escape from prison") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
