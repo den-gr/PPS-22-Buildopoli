@@ -3,41 +3,41 @@ package terrain
 import org.scalatest.funsuite.AnyFunSuite
 import Purchasable.*
 import terrain.Mortgage.DividePriceMortgage
-import terrain.Rent.{BasicRentStrategyFactor, RentStrategyWithBonus}
-import terrain.Terrain.{BasicTerrain, Terrain, TerrainInfo}
+import terrain.RentStrategy.*
+import terrain.Terrain
 import terrain.Buildable.*
 import Token.*
 import terrain.GroupManager.*
 
 class BuildableTest extends AnyFunSuite:
 
-  val t: Terrain = BasicTerrain(TerrainInfo("vicolo corto", 1, null))
-  val p1: Purchasable = PurchasableTerrain(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
-  val p2: Purchasable = PurchasableTerrain(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
-  val p3: Purchasable = PurchasableTerrain(t, 1000, "red", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
-  val p4: Purchasable = PurchasableTerrain(t, 1000, "red", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3))
+  val t: Terrain = Terrain(TerrainInfo("vicolo corto", 1, null))
+  val p1: Purchasable = Purchasable(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
+  val p2: Purchasable = Purchasable(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
+  val p3: Purchasable = Purchasable(t, 1000, "red", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
+  val p4: Purchasable = Purchasable(t, 1000, "red", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3))
 
   val t1: String = "house"
   val t2: String = "hotel"
-  val token: Token = TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0))
-  var b1: Buildable = BuildableTerrain(p1, token)
-  val b2: Buildable = BuildableTerrain(p2, token)
-  val b3: Buildable = BuildableTerrain(p3, token)
-  val b4: Buildable = BuildableTerrain(p4, token)
+  val token: Token = Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0))
+  var b1: Buildable = Buildable(p1, token)
+  val b2: Buildable = Buildable(p2, token)
+  val b3: Buildable = Buildable(p3, token)
+  val b4: Buildable = Buildable(p4, token)
 
-  val gm: GroupManager = GameGroupManager(Array(b1, b2, b3, b4))
+  val gm: GroupManager = GroupManager(Array(b1, b2, b3, b4))
 
   test("A token where the array size is not coherent is not valid"){
-    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t2 -> 0)))
-    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4), Array(25, 50), Map(t1 -> 0, t2 -> 0)))
+    assertThrows[Exception](Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t2 -> 0)))
+    assertThrows[Exception](Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4), Array(25, 50), Map(t1 -> 0, t2 -> 0)))
   }
 
   test("A token where the number of bonus is not the same as the max is not valid") {
-    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(5, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0)))
+    assertThrows[Exception](Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(5, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0)))
   }
 
   test("A token where the name types do not match is not valid"){
-    assertThrows[Exception](TokenWithBonus(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t1 -> 0, "wrong" -> 0)))
+    assertThrows[Exception](Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t1 -> 0, "wrong" -> 0)))
   }
 
   test("If there are no token and the group is complete the price is the basic one multiplied by the factor"){

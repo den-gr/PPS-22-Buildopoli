@@ -2,14 +2,13 @@ package terrain
 
 import org.scalatest.funsuite.AnyFunSuite
 import terrain.Mortgage.{DividePriceMortgage, MortgageStrategy}
-import terrain.Purchasable.{Purchasable, PurchasableState, PurchasableTerrain}
-import terrain.Rent.RentStrategyWithBonus
-import terrain.Terrain.{BasicTerrain, Terrain, TerrainInfo}
+import terrain.RentStrategy.RentStrategyWithBonus
+import terrain.Terrain
 
 class PurchasableTest extends AnyFunSuite:
 
-    val bt: Terrain = BasicTerrain(TerrainInfo("vicolo corto", 1, null))
-    var p: Purchasable = PurchasableTerrain(bt, 1000, "fucsia", DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
+    val bt: Terrain = Terrain(TerrainInfo("vicolo corto", 1, null))
+    var p: Purchasable = Purchasable(bt, 1000, "fucsia", DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
 
     test("A property has a buying price"){
       assert(p.price == 1000)

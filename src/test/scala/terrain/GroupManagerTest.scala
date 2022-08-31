@@ -8,17 +8,17 @@ import terrain.Terrain.*
 import terrain.Buildable.*
 
 class GroupManagerTest extends AnyFunSuite:
-  val t0: Terrain = BasicTerrain(TerrainInfo("safe zone", 0, null))
-  val t1: Purchasable = PurchasableTerrain(BasicTerrain(TerrainInfo("purple 1" , 1, null)), 500, "purple", null, null, Some(2), PurchasableState.OWNED)
-  val t2: Purchasable = PurchasableTerrain(BasicTerrain(TerrainInfo("purple 2" , 1, null)), 500, "purple", null, null)
-  val t3: Buildable = BuildableTerrain(PurchasableTerrain(BasicTerrain(TerrainInfo("red 1" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
-  val t4: Buildable = BuildableTerrain(PurchasableTerrain(BasicTerrain(TerrainInfo("red 2" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
-  val t5: Buildable = BuildableTerrain(PurchasableTerrain(BasicTerrain(TerrainInfo("red 3" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
-  val t6: Purchasable = PurchasableTerrain(BasicTerrain(TerrainInfo("blue 1" , 1, null)), 500, "blue", null, null, Some(2), PurchasableState.MORTGAGED)
-  val t7: Purchasable = PurchasableTerrain(BasicTerrain(TerrainInfo("blue 2" , 1, null)), 500, "blue", null, null, Some(2), PurchasableState.OWNED)
+  val t0: Terrain = Terrain(TerrainInfo("safe zone", 0, null))
+  val t1: Purchasable = Purchasable(Terrain(TerrainInfo("purple 1" , 1, null)), 500, "purple", null, null, Some(2), PurchasableState.OWNED)
+  val t2: Purchasable = Purchasable(Terrain(TerrainInfo("purple 2" , 1, null)), 500, "purple", null, null)
+  val t3: Buildable = Buildable(Purchasable(Terrain(TerrainInfo("red 1" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
+  val t4: Buildable = Buildable(Purchasable(Terrain(TerrainInfo("red 2" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
+  val t5: Buildable = Buildable(Purchasable(Terrain(TerrainInfo("red 3" , 1, null)), 500, "red", null, null, Some(1), PurchasableState.OWNED), null)
+  val t6: Purchasable = Purchasable(Terrain(TerrainInfo("blue 1" , 1, null)), 500, "blue", null, null, Some(2), PurchasableState.MORTGAGED)
+  val t7: Purchasable = Purchasable(Terrain(TerrainInfo("blue 2" , 1, null)), 500, "blue", null, null, Some(2), PurchasableState.OWNED)
 
   val terrains: Seq[Terrain] = Array(t0, t1, t2, t3, t4, t5, t6, t7)
-  val gp: GroupManager = GameGroupManager(terrains)
+  val gp: GroupManager = GroupManager(terrains)
   test("If the owner has no terrain of the group, the group is not complete"){
     assert(!gp.isGroupComplete(0, "purple"))
   }

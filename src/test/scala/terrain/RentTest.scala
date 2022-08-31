@@ -2,7 +2,7 @@ package terrain
 
 import org.scalatest.funsuite.AnyFunSuite
 import GroupManager.*
-import terrain.Rent.{BasicRentStrategyFactor, RentStrategyPreviousPriceMultiplier, RentStrategyWithBonus}
+import terrain.RentStrategy.*
 
 class RentTest extends AnyFunSuite:
 
