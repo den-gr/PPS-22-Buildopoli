@@ -1,17 +1,22 @@
 package behaviour.event
 
+/** Define interactive and not interactive event stories
+  */
 object EventStoryModule:
-  enum Result:
-    case ERR(msg: String)
-    case OK
-  type Interaction = () => Result
-
+  /** Description and possible action of an event
+    */
   trait EventStory:
     def description: String
 
     def choices: Seq[String]
 
     def isSingleAction: Boolean = choices.length == 1
+
+  enum Result:
+    case ERR(msg: String)
+    case OK
+
+  type Interaction = () => Result
 
   trait StoryInteraction:
     evSt: EventStory =>
@@ -37,6 +42,7 @@ object EventStoryModule:
         override val description: String,
         override val choices: Seq[String]
     ) extends EventStory:
+
       override def toString: String =
         s"$description \n\t" + choices.mkString("\n\t")
 

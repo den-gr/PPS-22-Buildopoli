@@ -3,7 +3,7 @@ package behaviour.factory
 import behaviour.BehaviourModule.*
 import behaviour.BehaviourModule.Behaviour.*
 import behaviour.event.EventFactory.*
-import behaviour.event.EventModule.EventGroup
+import behaviour.event.EventGroup
 import behaviour.event.EventStoryModule
 import behaviour.factory.BehaviourFactory.*
 import behaviour.factory.input.JailBehaviourInput

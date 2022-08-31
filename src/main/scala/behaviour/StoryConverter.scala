@@ -1,7 +1,7 @@
 package behaviour
 
 import behaviour.BehaviourModule.StoryGroup
-import behaviour.event.EventModule.EventGroup
+import behaviour.event.EventGroup
 
 /** Allows to convert a sequence of [[EventGroup]] to sequence of [[StoryGroup]] and then to a string
   */

@@ -4,6 +4,7 @@ import behaviour.BehaviourModule.*
 import behaviour.BehaviourModule.Behaviour.*
 import behaviour.event.EventModule
 import behaviour.event.EventModule.*
+import behaviour.event.EventGroup
 import behaviour.event.EventStoryModule.EventStory
 import util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach

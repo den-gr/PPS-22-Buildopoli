@@ -1,7 +1,7 @@
 package behaviour
 
 import behaviour.BehaviourModule.{Behaviour, Index}
-import behaviour.event.EventModule.EventGroup
+import behaviour.event.EventGroup
 
 import scala.collection.mutable
 

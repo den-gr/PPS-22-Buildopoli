@@ -2,6 +2,7 @@ package behaviour
 import behaviour.BehaviourModule.StoryGroup
 import behaviour.event.EventModule
 import behaviour.event.EventModule.*
+import behaviour.event.EventGroup
 import behaviour.event.EventStoryModule.EventStory
 
 object BehaviourModule extends StoryConverter:
