@@ -1,22 +1,23 @@
 package terrain
 
 import terrain.GroupManager.*
-object Rent :
 
+/**
+ * It represents the strategy to calculate the rent that a player owes to the terrain's owner if
+ * there are no token
+ */
+trait RentStrategy:
   /**
-   * It represents the strategy to calculate the rent that a player owes to the terrain's owner if
+   * Calculates the rent that a player owes to the terrain's owner if
    * there are no token
+   * @param ownerID the owner's ID
+   * @param group the terrain's group
+   * @param groupManager the entity that provides information about the group
+   * @return the price of the rent
    */
-  trait RentStrategy:
-    /**
-     * It represents the strategy to calculate the rent that a player owes to the terrain's owner if
-     * there are no token
-     * @param ownerID the owner's ID
-     * @param group the terrain's group
-     * @param groupManager the entity that provides information about the group
-     * @return the price of the rent
-     */
-    def computeTotalRent(ownerID: Int, group: String, groupManager: GroupManager): Int
+  def computeTotalRent(ownerID: Int, group: String, groupManager: GroupManager): Int
+
+object RentStrategy :
 
   /**
    * A rent strategy that adds to the starting price a bonus for every additional terrain in the group
