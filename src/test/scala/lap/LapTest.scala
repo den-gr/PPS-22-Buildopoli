@@ -18,7 +18,7 @@ class LapTest extends AnyFunSuite:
   val gameStore: GameStore = GameStoreImpl()
   val gameOptions: GameOptions = GameOptions(200, 2, true, 20, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
-  val lap: Lap = GameLap(MoneyReward(500, gameBank))
+  val lap: Lap = Lap(MoneyReward(500, gameBank))
 
   val nCells: Int = 20
   val currentPosition = 17
