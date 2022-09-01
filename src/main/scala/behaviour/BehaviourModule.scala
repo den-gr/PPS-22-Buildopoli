@@ -32,33 +32,4 @@ object BehaviourModule extends StoryConverter:
         initialEvents
           .map(gr => EventGroup(gr.filter(_.hasToRun(playerId)), gr.isAtomic))
           .filter(_.nonEmpty)
-  def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, index: (Int, Int)): Seq[EventGroup] =
-    try
-      val nextOpEvents: Option[EventGroup] = chooseEvent(currentEvents(index._1))(playerId, index._2)
-
-      // remove chose EventGroup
-      var newEvents = currentEvents.patch(index._1, Nil, 1)
-
-      // insert next EventGroup
-      if nextOpEvents.nonEmpty then
-        val nextEventGroup: EventGroup = EventGroup(
-          for
-            ev <- nextOpEvents.get
-            if ev.hasToRun(playerId)
-          yield ev,
-          nextOpEvents.get.isAtomic
-        )
-        newEvents = newEvents :+ nextEventGroup
-      newEvents
-    catch
-      case _: IndexOutOfBoundsException =>
-        throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + index)
-
-  def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
-    try
-      val event = eventGroup(index)
-      event.run(playerId)
-      event.nextEvent
-    catch
-      case _: IndexOutOfBoundsException =>
-        throw IllegalArgumentException("Chose index of a not existing event. -> " + index)
+  

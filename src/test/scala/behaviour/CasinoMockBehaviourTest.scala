@@ -14,6 +14,8 @@ import behaviour.event.EventStoryModule.Result.*
 
 import behaviour.BehaviourModule.*
 
+/** Test Behaviour by using a casino terrain behaviour. Game bank is replaces by a mock
+  */
 class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1
 
@@ -67,16 +69,18 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("EventStory of casino must have interactions") {
-    var events = casinoBehaviour.getBehaviourIterator(PLAYER_1).current
-    val interactions = getStories(events, PLAYER_1)
+    val it = casinoBehaviour.getBehaviourIterator(PLAYER_1)
+    var events: Seq[EventGroup] = it.current
+    val interactions: Seq[StoryGroup] = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
-    events = chooseEvent(events)(PLAYER_1, (0, 0))
+    it.next((0, 0))
+    events = it.current
     assert(getStories(events, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
   }
 
   test("In full") {
-    //todo
+    // todo
 //    var events = casinoBehaviour.getInitialEvents(PLAYER_1)
 //    events = chooseEvent(events)(PLAYER_1, (0, 0))
 //    val interactions = getStories(events, PLAYER_1)

@@ -79,7 +79,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     var events = it.current
     assert(events.length == 1)
     assert(events.head.length == 1)
-    chooseEvent(events)(PLAYER_1, (0, 0))
+    it.next((0, 0))
     jail.doTurn()
     events = behaviour.getBehaviourIterator(PLAYER_1).current
     assert(events.length == 1)

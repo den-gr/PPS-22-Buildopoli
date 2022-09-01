@@ -10,6 +10,9 @@ import org.scalatest.funsuite.AnyFunSuite
 import util.GameSessionHelper
 import util.GameSessionHelper.DefaultGameSession
 
+/**
+ * Test the event that allows to withdraw money of a player
+ */
 class WithdrawalMoneyEventTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1
   private var bank: Bank = _
