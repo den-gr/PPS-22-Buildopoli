@@ -22,9 +22,11 @@ object BehaviourIterator:
 
     def choose(index: Index): Unit =
       import behaviour.BehaviourModule.*
-
+      if index._1 < 0 || index._1 >= this.next.length then
+        throw IllegalArgumentException(s"Chose indexes point to a not existing event. -> $index")
       val groups = eventStack.pop()
       val newGroup = chooseEvent(groups(index._1))(playerId, index._2)
+
       if eventStack.nonEmpty && eventStack.last(index._1).isAtomic then eventStack.push(groups.patch(index._1, Nil, 1))
       if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get))
 

@@ -16,7 +16,7 @@ object BehaviourModule extends StoryConverter:
   type Index = (Int, Int)
 
   trait Behaviour:
-    def getInitialEvents(playerId: Int): Seq[EventGroup]
+    def getBehaviourIterator(playerId: Int): BehaviourIterator
 
   object Behaviour:
     def apply(initialEvents: Seq[EventGroup]): Behaviour = BehaviourImpl(initialEvents)
@@ -25,11 +25,13 @@ object BehaviourModule extends StoryConverter:
     def apply(eventsOfSingleEventGroup: Event*): Behaviour = apply(EventGroup(eventsOfSingleEventGroup))
 
     private case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
-      override def getInitialEvents(playerId: Int): Seq[EventGroup] =
+      override def getBehaviourIterator(playerId: Int): BehaviourIterator =
+        BehaviourIterator(getInitialEvents(playerId), playerId)
+
+      private def getInitialEvents(playerId: Int): Seq[EventGroup] =
         initialEvents
           .map(gr => EventGroup(gr.filter(_.hasToRun(playerId)), gr.isAtomic))
           .filter(_.nonEmpty)
-
   def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, index: (Int, Int)): Seq[EventGroup] =
     try
       val nextOpEvents: Option[EventGroup] = chooseEvent(currentEvents(index._1))(playerId, index._2)

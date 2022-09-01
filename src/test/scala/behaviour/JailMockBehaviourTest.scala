@@ -31,20 +31,21 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     Event(story, imprisonStrategy)
 
   test("Behaviour with single Jail event that imprison a player") {
-    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
-    val events = behaviour.getInitialEvents(PLAYER_1)
-    assertThrows[IllegalArgumentException](chooseEvent(events)(PLAYER_1, (1, 0)))
-    assertThrows[IllegalArgumentException](chooseEvent(events)(PLAYER_1, (0, 1)))
-    val nextEvents: Seq[EventGroup] = chooseEvent(events)(PLAYER_1, (0, 0))
-    assert(nextEvents.isEmpty)
+    var it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+    assertThrows[IllegalArgumentException](it.choose((1, 0)))
+    assertThrows[IllegalArgumentException](it.choose((0, 1)))
+
+    it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+    it.choose((0, 0))
+    assert(!it.hasNext)
   }
 
   test("On the next turns player must be released from the Jail") {
 
-    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
-    val events = behaviour.getInitialEvents(PLAYER_1)
+    val behaviour: Behaviour = Behaviour(imprisonEvent)
+    val it = behaviour.getBehaviourIterator(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    chooseEvent(events)(PLAYER_1, (0, 0))
+    it.choose((0, 0))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
     jail.doTurn()
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
@@ -62,24 +63,25 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Escape event allow to player escape from prison") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
-    var events = behaviour.getInitialEvents(PLAYER_1)
-    chooseEvent(events)(PLAYER_1, (0, 0))
+    var it = behaviour.getBehaviourIterator(PLAYER_1)
+    it.choose((0, 0))
 
     jail.doTurn()
-    events = behaviour.getInitialEvents(PLAYER_1)
+    it = behaviour.getBehaviourIterator(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).nonEmpty)
-    chooseEvent(events)(PLAYER_1, (0, 1))
+    it.choose((0, 1))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
 
   test("Some event may need a precondition before to be available to players") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
-    var events = behaviour.getInitialEvents(PLAYER_1)
+    val it = behaviour.getBehaviourIterator(PLAYER_1)
+    var events = it.next
     assert(events.length == 1)
     assert(events.head.length == 1)
     chooseEvent(events)(PLAYER_1, (0, 0))
     jail.doTurn()
-    events = behaviour.getInitialEvents(PLAYER_1)
+    events = behaviour.getBehaviourIterator(PLAYER_1).next
     assert(events.length == 1)
     assert(events.head.length == 2)
   }

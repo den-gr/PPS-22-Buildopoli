@@ -39,11 +39,9 @@ object EventFactory:
     private val bank = gameSession.gameBank
     private val dice = gameSession.dice
 
-
     override def WithdrawMoneyEvent(story: EventStory, amount: Int): Event =
       val withdrawalStrategy: EventStrategy = playerId => bank.decreasePlayerMoney(playerId, amount)
       Event(story, withdrawalStrategy)
-          
 
     override def ImprisonEvent(story: EventStory, blockingTurns: Int): Event =
       val imprisonStrategy: EventStrategy = playerId =>

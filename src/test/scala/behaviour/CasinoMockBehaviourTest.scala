@@ -54,18 +54,20 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   private val casinoBehaviour = Behaviour(Seq(EventGroup(infoEvent ++ doubleGameEvent)))
 
   test("Check casino behaviour configuration") {
-    var events = casinoBehaviour.getInitialEvents(PLAYER_1)
+    val it: BehaviourIterator = casinoBehaviour.getBehaviourIterator(PLAYER_1)
+    var events = it.next
     assert(events.length == 1)
     assert(events.head.length == 1)
     assert(events.head.head.eventStory(PLAYER_1).choices.length == 1)
-    events = chooseEvent(events)(PLAYER_1, (0, 0))
+    it.choose((0, 0))
+    events = it.next
     assert(events.length == 1)
     assert(events.head.length == 1)
     assert(events.head.head.eventStory(PLAYER_1).choices.length == NUMBER_CHOICES)
   }
 
   test("EventStory of casino must have interactions") {
-    var events = casinoBehaviour.getInitialEvents(PLAYER_1)
+    var events = casinoBehaviour.getBehaviourIterator(PLAYER_1).next
     val interactions = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
@@ -74,6 +76,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("In full") {
+    //todo
 //    var events = casinoBehaviour.getInitialEvents(PLAYER_1)
 //    events = chooseEvent(events)(PLAYER_1, (0, 0))
 //    val interactions = getStories(events, PLAYER_1)
