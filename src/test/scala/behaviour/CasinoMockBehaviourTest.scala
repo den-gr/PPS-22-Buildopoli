@@ -25,7 +25,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   import EventFactory.*
   import EventOperation.*
 
-  private val story = EventStory("You are in casino", Seq("play"))
+  private val story = EventStory("You are in casino", "play")
   private val infoEvent = InfoEvent(story, _ => bank.money > 100)
 
   private val doubleGameStrategy: EventStrategy = id =>
@@ -41,7 +41,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     val desc = "base event description"
     var seq = Seq[String]()
     var interactionSequence = Seq[Interaction]()
-    if bank.money <= 100 then EventStory("Not enough money", Seq())
+    if bank.money <= 100 then EventStory("Not enough money", "Ok")
     else
       for i <- 100 until bank.money by ((bank.money.toDouble / (NUMBER_CHOICES * 100)).ceil * 100).toInt do
         seq = seq :+ i.toString

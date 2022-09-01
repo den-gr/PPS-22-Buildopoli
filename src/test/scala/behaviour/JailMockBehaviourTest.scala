@@ -20,7 +20,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   val BLOCKING_TIME = 2
 
-  val story: EventStory = EventStory(s"You are imprisoned", Seq("Wait liberation"))
+  val story: EventStory = EventStory(s"You are imprisoned", "Wait liberation")
   val imprisonStrategy: Int => Unit = playerId =>
     jail.getRemainingBlockedMovements(playerId) match
       case None =>
@@ -56,7 +56,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   val escapeStrategy: Int => Unit =
     // This version has 100% probability to escape successfully
     jail.liberatePlayer(_)
-  val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", Seq("Try to escape"))
+  val escapeStory: EventStory = EventStory(s"You have an opportunity to escape", "Try to escape")
   val escapePrecondition: EventPrecondition = jail.getRemainingBlockedMovements(_).nonEmpty
   val escapeEvent: Event = Event(escapeStory, escapeStrategy, escapePrecondition)
 

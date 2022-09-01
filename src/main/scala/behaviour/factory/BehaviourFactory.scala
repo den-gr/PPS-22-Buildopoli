@@ -21,4 +21,4 @@ object BehaviourFactory:
     override def JailBehaviour(input: JailBehaviourInput): Behaviour =
       val imprisonEvent = eventFactory.ImprisonEvent(input.imprisonStory, input.blockingTurns)
       val escapeEvent = eventFactory.EscapeEvent(input.escapeStory, input.escapeSuccessMsg, input.escapeFailMsg)
-      Behaviour(EventGroup(imprisonEvent, escapeEvent))
+      Behaviour(imprisonEvent, escapeEvent)

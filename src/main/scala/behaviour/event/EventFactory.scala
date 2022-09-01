@@ -36,10 +36,17 @@ object EventFactory:
   private class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
     val logger: Logger = LoggerFactory.getLogger(this.getClass)
     private val gameTurn = gameSession.gameTurn
+    private val bank = gameSession.gameBank
     private val dice = gameSession.dice
 
+
+    override def WithdrawMoneyEvent(story: EventStory, amount: Int): Event =
+      val withdrawalStrategy: EventStrategy = playerId => bank.decreasePlayerMoney(playerId, amount)
+      Event(story, withdrawalStrategy)
+          
+
     override def ImprisonEvent(story: EventStory, blockingTurns: Int): Event =
-      val imprisonStrategy: Int => Unit = playerId =>
+      val imprisonStrategy: EventStrategy = playerId =>
         gameTurn.getRemainingBlockedMovements(playerId) match
           case None =>
             gameTurn.lockPlayer(playerId, blockingTurns)
@@ -47,7 +54,7 @@ object EventFactory:
       Event(story, imprisonStrategy)
 
     override def EscapeEvent(story: EventStory, escapeSuccessMsg: EventLogMsg, escapeFailMsg: EventLogMsg): Event =
-      val escapeStrategy: Int => Unit = playerId =>
+      val escapeStrategy: EventStrategy = playerId =>
         if dice.rollOneDice() == dice.rollOneDice() then
           gameTurn.liberatePlayer(playerId)
           logger.info(escapeSuccessMsg(playerId.toString))
@@ -55,3 +62,6 @@ object EventFactory:
         else logger.info(escapeFailMsg(playerId.toString))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       Event(story, escapeStrategy, escapePrecondition)
+    
+    
+    

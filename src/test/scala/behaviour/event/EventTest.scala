@@ -13,7 +13,7 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
   var bank: BankMock = BankMock()
   override def beforeEach(): Unit =
     bank = BankMock()
-  val tempStory: EventStory = EventStory("My temp description", List("OK"))
+  val tempStory: EventStory = EventStory("My temp description", "OK")
 
   val eventStrategy: EventStrategy = _ => bank.decrement(TAX)
   test("Decrement bank money with event strategy") {

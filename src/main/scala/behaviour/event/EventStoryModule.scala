@@ -33,7 +33,8 @@ object EventStoryModule:
   object EventStory:
     val MAIN_ACTION = 0
 
-    def apply(desc: String, choices: Seq[String]): EventStory = EventStoryImpl(desc, choices)
+//    def apply(desc: String, choices: Seq[String]): EventStory = EventStoryImpl(desc, choices)
+    def apply(desc: String, singleChoice: String): EventStory = EventStoryImpl(desc, Seq(singleChoice))
 
     def apply(desc: String, choices: Seq[String], interactions: Seq[Interaction]): InteractiveEventStory =
       EventStoryActionsImpl(desc, choices, interactions)

@@ -8,6 +8,16 @@ import behaviour.event.EventFactory.EventLogMsg
 /** Allows easily to create basic events
   */
 trait BasicEventFactory:
+
+  /** @param story
+    *   event description
+    * @param amount
+    *   of money that will be withdraw from player
+    * @return
+    *   event that withdraw money of player
+    */
+  def WithdrawMoneyEvent(story: EventStory, amount: Int): Event
+
   /** @param story
     *   event description
     * @param blockingTime

@@ -14,7 +14,7 @@ class EventStoryTest extends AnyFunSuite with BeforeAndAfterEach:
     () => bank.createPaymentRequestAmount(Player(PLAYER_1), Bank, amount); Result.OK
 
   test("Creation of simple event story without interactions") {
-    val story: EventStory = EventStory("Desc", Seq("One"))
+    val story: EventStory = EventStory("Desc", "One")
     assert(!story.isInstanceOf[StoryInteraction])
   }
 

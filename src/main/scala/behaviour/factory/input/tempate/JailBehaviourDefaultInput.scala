@@ -5,15 +5,15 @@ import behaviour.event.EventStoryModule
 import behaviour.event.EventStoryModule.EventStory
 import behaviour.factory.input.JailBehaviourInput
 
-object JailBehaviourInputTemplate extends JailBehaviourInput:
+object JailBehaviourDefaultInput extends JailBehaviourInput:
 
   override val blockingTurns: Int = 2
 
   override val imprisonStory: EventStoryModule.EventStory =
-    EventStory(s"You are imprisoned for $blockingTurns turns", Seq("Wait for liberation"))
+    EventStory(s"You are imprisoned for $blockingTurns turns", "Wait for liberation")
 
   override val escapeStory: EventStoryModule.EventStory =
-    EventStory(s"You have an opportunity to escape if you get a double with dices", Seq("Try to escape"))
+    EventStory(s"You have an opportunity to escape if you get a double with dices", "Try to escape")
 
   override val escapeSuccessMsg: EventLogMsg = playerId => s"Player $playerId is escaped from the jail"
 
