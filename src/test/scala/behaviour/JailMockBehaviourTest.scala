@@ -32,11 +32,11 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Behaviour with single Jail event that imprison a player") {
     var it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
-    assertThrows[IllegalArgumentException](it.choose((1, 0)))
-    assertThrows[IllegalArgumentException](it.choose((0, 1)))
+    assertThrows[IllegalArgumentException](it.next((1, 0)))
+    assertThrows[IllegalArgumentException](it.next((0, 1)))
 
     it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
-    it.choose((0, 0))
+    it.next((0, 0))
     assert(!it.hasNext)
   }
 
@@ -45,7 +45,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     val behaviour: Behaviour = Behaviour(imprisonEvent)
     val it = behaviour.getBehaviourIterator(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    it.choose((0, 0))
+    it.next((0, 0))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
     jail.doTurn()
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
@@ -64,24 +64,24 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   test("Escape event allow to player escape from prison") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
     var it = behaviour.getBehaviourIterator(PLAYER_1)
-    it.choose((0, 0))
+    it.next((0, 0))
 
     jail.doTurn()
     it = behaviour.getBehaviourIterator(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).nonEmpty)
-    it.choose((0, 1))
+    it.next((0, 1))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
 
   test("Some event may need a precondition before to be available to players") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
     val it = behaviour.getBehaviourIterator(PLAYER_1)
-    var events = it.next
+    var events = it.current
     assert(events.length == 1)
     assert(events.head.length == 1)
     chooseEvent(events)(PLAYER_1, (0, 0))
     jail.doTurn()
-    events = behaviour.getBehaviourIterator(PLAYER_1).next
+    events = behaviour.getBehaviourIterator(PLAYER_1).current
     assert(events.length == 1)
     assert(events.head.length == 2)
   }

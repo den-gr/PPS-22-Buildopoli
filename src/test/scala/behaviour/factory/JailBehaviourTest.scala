@@ -26,18 +26,18 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Behaviour imprison a player") {
     var it = behaviour.getBehaviourIterator(PLAYER_1)
-    assertThrows[IllegalArgumentException](it.choose((1, 0)))
-    assertThrows[IllegalArgumentException](it.choose((0, 1)))
+    assertThrows[IllegalArgumentException](it.next((1, 0)))
+    assertThrows[IllegalArgumentException](it.next((0, 1)))
 
     it = behaviour.getBehaviourIterator(PLAYER_1)
-    it.choose((0, 0))
+    it.next((0, 0))
     assert(!it.hasNext)
   }
 
   test("On the next turns player must be released from the Jail") {
     val it = behaviour.getBehaviourIterator(PLAYER_1)
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    it.choose((0, 0))
+    it.next((0, 0))
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
     gameTurn.doTurn()
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
@@ -51,11 +51,11 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     var liberated = false
     for i <- 1 to 100 if !liberated do
       var it = behaviour.getBehaviourIterator(i)
-      it.choose((0, 0))
+      it.next((0, 0))
       gameTurn.doTurn()
       it = behaviour.getBehaviourIterator(i)
       assert(gameTurn.getRemainingBlockedMovements(i).nonEmpty)
-      it.choose((0, 1))
+      it.next((0, 1))
       val remainingTurns = gameTurn.getRemainingBlockedMovements(i)
       if remainingTurns.isEmpty then
         liberated = true
