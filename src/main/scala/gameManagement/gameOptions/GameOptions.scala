@@ -1,6 +1,6 @@
 package gameManagement.gameOptions
 
-import lap.Lap.Lap
+import lap.Lap
 import player.Player
 
 import scala.collection.mutable.ListBuffer
@@ -14,12 +14,13 @@ import scala.collection.mutable.ListBuffer
   * @param nCells
   *   Setting number of cells for one game session
   * @param playerTurnSelector
-  *   The function used by GameTurn to determine which is the next
-  *   player that should play during the game
+  *   The function used by GameTurn to determine which is the next player that should play during the game
   */
-case class GameOptions(playerInitialMoney: Int,
-                       playerInitialCells: Int,
-                       debtsManagement: Boolean,
-                       nCells: Int,
-                       diceFaces: Int,
-                       playerTurnSelector: (ListBuffer[Player], ListBuffer[Int]) => Int)
+case class GameOptions(
+    playerInitialMoney: Int,
+    playerInitialCells: Int,
+    debtsManagement: Boolean,
+    nCells: Int,
+    diceFaces: Int,
+    playerTurnSelector: (ListBuffer[Player], ListBuffer[Int]) => Int
+)

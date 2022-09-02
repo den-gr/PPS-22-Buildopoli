@@ -18,7 +18,7 @@ class LapTest extends AnyFunSuite:
   val gameStore: GameStore = GameStoreImpl()
   val gameOptions: GameOptions = GameOptions(200, 2, true, 20, 6, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
-  val lap: Lap = GameLap(MoneyReward(500, gameBank))
+  val lap: Lap = Lap(MoneyReward(500, gameBank))
 
   val nCells: Int = 20
   val currentPosition = 17
@@ -34,6 +34,15 @@ class LapTest extends AnyFunSuite:
 
     assert(lap.isNewLap(true, currentPosition, 6, nCells)._1 == 3)
     assert(lap.isNewLap(true, currentPosition, 6, nCells)._2)
+
+    assert(lap.isNewLap(false, currentPosition, 6, nCells)._1 == 3)
+    assert(!lap.isNewLap(false, currentPosition, 6, nCells)._2)
+
+    assert(lap.isNewLap(true, currentPosition, -6, nCells)._1 == 11)
+    assert(!lap.isNewLap(true, currentPosition, -6, nCells)._2)
+
+    assert(lap.isNewLap(true, 2, -3, nCells)._1 == 19)
+    assert(!lap.isNewLap(true, 2, -3, nCells)._2)
   }
 
   test("The game lap can give a reward to the player that has completed a lap"){

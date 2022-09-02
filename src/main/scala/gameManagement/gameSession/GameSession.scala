@@ -5,7 +5,7 @@ import gameManagement.gameBank.Bank
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
 import gameManagement.gameTurn.GameTurn
-import lap.Lap.Lap
+import lap.Lap
 import player.Player
 
 import scala.collection.mutable.ListBuffer
@@ -23,5 +23,11 @@ trait GameSession:
   def setPlayerPosition(playerId: Int, newPosition: Int, isValidLap: Boolean): Unit
 
 object GameSession:
-  def apply(gameOptions: GameOptions, gameBank: Bank, gameTurn: GameTurn, gameStore: GameStore, gameLap: Lap): GameSession =
+  def apply(
+      gameOptions: GameOptions,
+      gameBank: Bank,
+      gameTurn: GameTurn,
+      gameStore: GameStore,
+      gameLap: Lap
+  ): GameSession =
     GameSessionImpl(gameOptions: GameOptions, gameBank: Bank, gameTurn: GameTurn, gameStore: GameStore, gameLap: Lap)

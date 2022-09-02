@@ -5,7 +5,8 @@ import gameManagement.gameOptions.GameOptions
 import gameManagement.gameSession.{GameSession, GameSessionImpl}
 import gameManagement.gameStore.{GameStore, GameStoreImpl}
 import gameManagement.gameTurn.DefaultGameTurn
-import lap.Lap.{GameLap, Lap, MoneyReward}
+import lap.Lap
+import lap.Lap.MoneyReward
 import player.Player
 
 import scala.collection.mutable.ListBuffer
@@ -25,7 +26,7 @@ object GameSessionHelper:
     val gameStore: GameStore = GameStoreImpl()
     val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
     val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
-    val gameLap: Lap = GameLap(MoneyReward(200, gameBank))
+    val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 
     val gs = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
     gs.addManyPlayers(100)

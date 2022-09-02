@@ -1,7 +1,7 @@
 package behaviour.factory
 
 import behaviour.BehaviourIterator
-import behaviour.BehaviourModule.{Behaviour, chooseEvent}
+import behaviour.BehaviourModule.Behaviour
 import behaviour.event.EventFactory
 import behaviour.event.EventStoryModule.EventStory
 import gameManagement.gameBank.Bank
@@ -10,9 +10,8 @@ import org.scalatest.funsuite.AnyFunSuite
 import util.GameSessionHelper
 import util.GameSessionHelper.DefaultGameSession
 
-/**
- * Test the event that allows to withdraw money of a player
- */
+/** Test the event that allows to withdraw money of a player
+  */
 class WithdrawalMoneyEventTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1
   private var bank: Bank = _
