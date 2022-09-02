@@ -76,12 +76,12 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   test("Some event may need a precondition before to be available to players") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
     val it = behaviour.getBehaviourIterator(PLAYER_1)
-    var events = it.current
+    var events = it.currentEvents
     assert(events.length == 1)
     assert(events.head.length == 1)
     it.next((0, 0))
     jail.doTurn()
-    events = behaviour.getBehaviourIterator(PLAYER_1).current
+    events = behaviour.getBehaviourIterator(PLAYER_1).currentEvents
     assert(events.length == 1)
     assert(events.head.length == 2)
   }

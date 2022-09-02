@@ -11,6 +11,8 @@ import behaviour.event.*
 import behaviour.event.EventModule.*
 import behaviour.event.EventStoryModule.*
 import behaviour.event.EventStoryModule.Result.*
+import EventFactory.*
+import EventOperation.*
 
 import behaviour.BehaviourModule.*
 
@@ -23,9 +25,6 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   override def beforeEach(): Unit =
     bank = BankMock()
-
-  import EventFactory.*
-  import EventOperation.*
 
   private val story = EventStory("You are in casino", "play")
   private val infoEvent = InfoEvent(story, _ => bank.money > 100)
@@ -53,16 +52,16 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   private val doubleGameEvent = Event(storyGenerator, doubleGameStrategy)
 
-  private val casinoBehaviour = Behaviour(Seq(EventGroup(infoEvent ++ doubleGameEvent)))
+  private val casinoBehaviour = Behaviour(EventGroup(infoEvent ++ doubleGameEvent))
 
   test("Check casino behaviour configuration") {
     val it: BehaviourIterator = casinoBehaviour.getBehaviourIterator(PLAYER_1)
-    var events = it.current
+    var events = it.currentEvents
     assert(events.length == 1)
     assert(events.head.length == 1)
     assert(events.head.head.eventStory(PLAYER_1).choices.length == 1)
     it.next((0, 0))
-    events = it.current
+    events = it.currentEvents
     assert(events.length == 1)
     assert(events.head.length == 1)
     assert(events.head.head.eventStory(PLAYER_1).choices.length == NUMBER_CHOICES)
@@ -70,13 +69,12 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("EventStory of casino must have interactions") {
     val it = casinoBehaviour.getBehaviourIterator(PLAYER_1)
-    var events: Seq[EventGroup] = it.current
+    var events: Seq[EventGroup] = it.currentEvents
     val interactions: Seq[StoryGroup] = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
     it.next((0, 0))
-    events = it.current
-    assert(getStories(events, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
+    assert(getStories(it.currentEvents, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
   }
 
   test("In full") {
