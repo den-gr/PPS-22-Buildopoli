@@ -7,7 +7,8 @@ import gameManagement.gameStore.{GameStore, GameStoreImpl}
 import gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
 import org.scalatest.funsuite.AnyFunSuite
 import player.Player
-import lap.Lap.{GameLap, Lap, MoneyReward}
+import lap.Lap
+import lap.Lap.MoneyReward
 
 import scala.collection.mutable.ListBuffer
 
@@ -21,7 +22,7 @@ class GameSessionTest extends AnyFunSuite:
   val gameOptions: GameOptions = GameOptions(200, 2, true, 10, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
   val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
-  val gameLap: Lap = GameLap(MoneyReward(200, gameBank))
+  val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 
   val gameSession: GameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
 

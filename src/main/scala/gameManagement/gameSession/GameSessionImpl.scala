@@ -4,7 +4,7 @@ import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
 import gameManagement.gameTurn.GameTurn
-import lap.Lap.Lap
+import lap.Lap
 import player.{Player, PlayerImpl}
 
 import scala.collection.mutable.ListBuffer
