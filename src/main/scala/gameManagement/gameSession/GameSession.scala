@@ -25,8 +25,9 @@ trait GameSession:
   def addManyPlayers(n: Int): Unit
   def initializePlayer(lastPlayer: Player): Unit
   def setPlayerPosition(playerId: Int, newPosition: Int, isValidLap: Boolean): Unit
-  def getPlayerPosition(playerId: Int): Int
-
+  def getPlayerPosition(playerId: Int): Int = gameStore.getPlayer(playerId).getPlayerPawnPosition
+  def getPlayerTerrain(playerId: Int): Terrain = getTerrain(getPlayerPosition(playerId))
+  
   export gameStore.getTerrain
 object GameSession:
   def apply(gameOptions: GameOptions, gameBank: Bank, gameTurn: GameTurn, gameStore: GameStore, gameLap: Lap): GameSession =

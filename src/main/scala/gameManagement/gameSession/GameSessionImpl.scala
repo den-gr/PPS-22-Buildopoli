@@ -51,6 +51,3 @@ case class GameSessionImpl(override val gameOptions: GameOptions,
     val result = gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nSteps, gameOptions.nCells)
     player.setPlayerPawnPosition(result._1)
     if result._2 then gameLap.giveReward(playerId)
-
-  override def getPlayerPosition(playerId: Int): Int =
-    gameStore.getPlayer(playerId).getPlayerPawnPosition
