@@ -3,7 +3,6 @@ package terrain
 import org.scalatest.funsuite.AnyFunSuite
 import terrain.Mortgage.{DividePriceMortgage, MortgageStrategy}
 import terrain.RentStrategy.RentStrategyWithBonus
-import terrain.Terrain
 
 class PurchasableTest extends AnyFunSuite:
 
