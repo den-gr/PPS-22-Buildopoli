@@ -5,7 +5,7 @@ import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
 import gameManagement.gameTurn.GameTurn
-import lap.Lap.Lap
+import lap.Lap
 import org.slf4j.{Logger, LoggerFactory}
 import player.{Player, PlayerImpl}
 
