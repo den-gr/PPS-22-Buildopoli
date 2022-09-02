@@ -11,8 +11,8 @@ import scala.collection.mutable.ListBuffer
 
 class LapTest extends AnyFunSuite:
 
-  val selector: (ListBuffer[Player], ListBuffer[Int]) => Int =
-    (playerList: ListBuffer[Player], playerWithTurn: ListBuffer[Int]) =>
+  val selector: (Seq[Player], Seq[Int]) => Int =
+    (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
   val gameStore: GameStore = GameStoreImpl()
@@ -37,8 +37,8 @@ class LapTest extends AnyFunSuite:
   }
 
   test("The game lap can give a reward to the player that has completed a lap"){
-    gameStore.playersList += PlayerImpl(1)
-    gameStore.playersList += PlayerImpl(2)
+    gameStore.addPlayer(PlayerImpl(1))
+    gameStore.addPlayer(PlayerImpl(2))
 
     lap.giveReward(1)
     assert(gameStore.getPlayer(1).getPlayerMoney == 500)

@@ -3,14 +3,18 @@ package gameManagement.gameStore
 import player.Player
 import terrain.Terrain.Terrain
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 trait GameStore:
-  def playersList: ListBuffer[Player]
+  var playersList: List[Player]
   def terrainList: ListBuffer[Terrain]
-  var playerIdsCounter: Int = 0
 
+  var playerIdsCounter: Int = 0
   def getPlayer(playerId: Int): Player
+  def getTerrain(position: Int): Terrain
+  def putTerrain(terrain: Terrain*): Unit
+  def addPlayer(player: Player): Unit
 
 object GameStore:
   def apply(): GameStore =

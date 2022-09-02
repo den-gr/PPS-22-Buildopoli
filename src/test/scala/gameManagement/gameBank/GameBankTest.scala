@@ -10,8 +10,8 @@ import scala.collection.mutable.ListBuffer
 
 class GameBankTest extends AnyFunSuite:
 
-  val selector: (ListBuffer[Player], ListBuffer[Int]) => Int =
-    (playerList: ListBuffer[Player], playerWithTurn: ListBuffer[Int]) =>
+  val selector: (Seq[Player], Seq[Int]) => Int =
+    (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
   
   val gameStore: GameStore = GameStoreImpl()
@@ -105,6 +105,6 @@ class GameBankTest extends AnyFunSuite:
   }
 
   def addPlayer(id: Int): Unit =
-    gameStore.playersList += PlayerImpl(id)
+    gameStore.addPlayer(PlayerImpl(id))
     playerCounter += 1
     assert(gameStore.playersList.size === playerCounter)

@@ -5,7 +5,7 @@ import player.Player
 import scala.collection.mutable.ListBuffer
 
 trait GameTurn:
-  var playerWithTurn: ListBuffer[Int] = ListBuffer()
+  var playerWithTurn: List[Int] = List()
   var blockingList: Map[Int, Int] = Map()
 
   def selectNextPlayer(): Int

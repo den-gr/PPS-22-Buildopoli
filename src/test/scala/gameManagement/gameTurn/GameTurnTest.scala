@@ -10,8 +10,8 @@ import scala.collection.mutable.ListBuffer
 
 class GameTurnTest extends AnyFunSuite:
 
-  val selector: (ListBuffer[Player], ListBuffer[Int]) => Int =
-    (playerList: ListBuffer[Player], playerWithTurn: ListBuffer[Int]) =>
+  val selector: (Seq[Player], Seq[Int]) => Int =
+    (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
   val gameStore: GameStore = GameStoreImpl()
@@ -20,7 +20,7 @@ class GameTurnTest extends AnyFunSuite:
 
   test("Verifying that each player is doing one turn, so the list with players that have done the turn is empty") {
     for i <- 1 until 6 do
-      gameStore.playersList += PlayerImpl(i)
+      gameStore.addPlayer(PlayerImpl(i))
 
     for _ <- 1 until 6 do
       gameTurn.selectNextPlayer()
