@@ -15,7 +15,7 @@ class GameTurnTest extends AnyFunSuite:
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
   val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(200, 2, true, 10, 6, selector)
+  val gameOptions: GameOptions = GameOptions(200, 2, 10, 6, selector)
   val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
 
   test("Verifying that each player is doing one turn, so the list with players that have done the turn is empty") {

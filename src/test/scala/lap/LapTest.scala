@@ -16,7 +16,7 @@ class LapTest extends AnyFunSuite:
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
   val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(200, 2, true, 20, 6, selector)
+  val gameOptions: GameOptions = GameOptions(200, 2, 20, 6, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
   val lap: Lap = GameLap(MoneyReward(500, gameBank))
 

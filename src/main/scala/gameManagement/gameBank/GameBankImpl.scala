@@ -13,13 +13,22 @@ case class GameBankImpl(override val gameOptions: GameOptions, override val game
   val debitManagement: BankDebit = BankDebitImpl()
 
   override def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit =
-    decreasePlayerMoney(senderId, amount)
-    increasePlayerMoney(receiverId, amount)
+    if getDebtsForPlayer(senderId) != 0 || getMoneyForPlayer(senderId) < amount then
+      throw new IllegalStateException("The sender has debit, so can only sell something")
+    else
+      decreasePlayerMoney(senderId, amount)
+      increasePlayerMoney(receiverId, amount)
+
+  override def makeGlobalTransaction(receiverId: Int, amount: Int): Unit =
+    gameStore.playersList.foreach(p => {
+      decreasePlayerMoney(p.playerId, amount)
+      increasePlayerMoney(receiverId, amount)
+    })
 
   override def increasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = gameStore.getPlayer(playerId)
     val debts = getDebtsForPlayer(playerId)
-    if gameOptions.debtsManagement && debts > 0 then this.increasePlayerMoneyWithDebts(debts, amount, player)
+    if debts > 0 then this.increasePlayerMoneyWithDebts(debts, amount, player)
     else player.setPlayerMoney(player.getPlayerMoney + amount)
 
   def increasePlayerMoneyWithDebts(debit: Int, amount: Int, player: Player): Unit =
@@ -30,15 +39,13 @@ case class GameBankImpl(override val gameOptions: GameOptions, override val game
 
   override def decreasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = gameStore.getPlayer(playerId)
-    if playerHasEnoughMoney(player, amount) then player.setPlayerMoney(player.getPlayerMoney - amount)
-    else if gameOptions.debtsManagement then
+    if playerHasEnoughMoney(player, amount) then
+      player.setPlayerMoney(player.getPlayerMoney - amount)
+    else
       this.debitManagement.increaseDebit(playerId, amount - player.getPlayerMoney)
       player.setPlayerMoney(0)
-    else
-      throw new IllegalStateException("Money decrease not possible: player " + playerId + " does not have enough money")
 
   override def getDebtsList: Map[Int, Int] = this.debitManagement.getDebtsList
   override def getDebtsForPlayer(playerId: Int): Int = this.debitManagement.getDebitForPlayer(playerId)
-
   def playerHasEnoughMoney(player: Player, amount: Int): Boolean = player.getPlayerMoney > amount
   override def getMoneyForPlayer(playerId: Int): Int = gameStore.getPlayer(playerId).getPlayerMoney

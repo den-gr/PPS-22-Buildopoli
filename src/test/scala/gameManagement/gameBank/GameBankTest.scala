@@ -15,7 +15,7 @@ class GameBankTest extends AnyFunSuite:
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
   
   val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(0, 2, true, 10, 6, selector)
+  val gameOptions: GameOptions = GameOptions(0, 2, 10, 6, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
 
   var playerCounter = 0
@@ -72,7 +72,7 @@ class GameBankTest extends AnyFunSuite:
   }
 
   test("throw exception when debit not enabled and player does not have enough money") {
-    val gameOptions: GameOptions = GameOptions(0, 2, false, 10, 6, selector)
+    val gameOptions: GameOptions = GameOptions(0, 2, 10, 6, selector)
     val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
 
     addPlayer(5)
@@ -84,6 +84,24 @@ class GameBankTest extends AnyFunSuite:
     assert(gameBank.getMoneyForPlayer(5) === 100)
     assert(gameBank.getMoneyForPlayer(6) === 400)
     assertThrows[IllegalStateException](gameBank.makeTransaction(5, 6, 200))
+  }
+
+  test("player with debit cannot make transaction") {
+    val gameOptions: GameOptions = GameOptions(0, 2, 10, 6, selector)
+    val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
+
+    addPlayer(7)
+    addPlayer(8)
+
+    gameBank.increasePlayerMoney(7, 200)
+    gameBank.increasePlayerMoney(8, 1000)
+    assert(gameBank.getMoneyForPlayer(7) === 200)
+    assert(gameBank.getMoneyForPlayer(8) === 1000)
+    gameBank.makeGlobalTransaction(8, 300)
+    assert(gameBank.getMoneyForPlayer(7) === 0)
+    assert(gameBank.getDebtsForPlayer(7)=== 100)
+
+    assertThrows[IllegalStateException](gameBank.makeTransaction(7, 8, 100))
   }
 
   def addPlayer(id: Int): Unit =
