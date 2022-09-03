@@ -17,7 +17,7 @@ trait BehaviourIterator:
     * @param index
     *   is a double tuple where first element is event group index, and second is an event index
     */
-  def next(index: Index): Unit
+  def next(index: Index = (0,0)): Unit
 
   /** @return
     *   current, available to the player, sequence of events
@@ -34,7 +34,7 @@ object BehaviourIterator:
 
     override def hasNext: Boolean = eventStack.nonEmpty
 
-    override def next(index: Index): Unit =
+    override def next(index: Index ): Unit =
       import behaviour.BehaviourModule.*
       if index._1 < 0 || index._1 >= this.currentEvents.length then
         throw IllegalArgumentException(s"Chose indexes point to a not existing event. -> $index")

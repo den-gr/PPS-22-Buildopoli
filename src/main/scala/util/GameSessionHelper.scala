@@ -19,7 +19,7 @@ object GameSessionHelper:
   val nCells = 10
   val diceFaces = 6
 
-  def DefaultGameSession(): GameSession =
+  def DefaultGameSession(numPlayers: Int): GameSession =
     val gameOptions: GameOptions =
       GameOptions(playerInitialMoney, playerInitialCells, nCells, diceFaces, selector)
     val gameStore: GameStore = GameStoreImpl()
@@ -28,5 +28,5 @@ object GameSessionHelper:
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 
     val gs = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
-    gs.addManyPlayers(100)
+    gs.addManyPlayers(numPlayers)
     gs
