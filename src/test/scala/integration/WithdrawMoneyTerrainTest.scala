@@ -16,14 +16,17 @@ class WithdrawMoneyTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
   private val AMOUNT = 100
   private val AMOUNT2 = 50
   private val story: EventStory = EventStory(s"Player lose money", "Ok")
-  private val gameSession = DefaultGameSession(1)
-  private val bank: Bank = gameSession.gameBank
+  private var gameSession = DefaultGameSession(1)
+  private var bank: Bank = gameSession.gameBank
 
-  private val behaviour: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT))
-  private val behaviour2: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT2))
+  override def beforeEach(): Unit =
+    gameSession = DefaultGameSession(1)
+    bank = gameSession.gameBank
+    val behaviour: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT))
+    val behaviour2: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT2))
 
-  gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT money", 0, behaviour)))
-  gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT2 money", 1, behaviour2)))
+    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT money", 0, behaviour)))
+    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT2 money", 1, behaviour2)))
 
   test("Use behaviour of a terrain where player is located") {
     assert(gameSession.getPlayerPosition(PLAYER_1) == 0)
@@ -40,5 +43,5 @@ class WithdrawMoneyTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
   private def testAmount(it: BehaviourIterator, amount: Int): Unit =
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)
     it.next()
-    assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - AMOUNT2)
+    assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - amount)
     assert(!it.hasNext)
