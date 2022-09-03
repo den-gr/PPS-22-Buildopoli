@@ -61,7 +61,7 @@ class BuildableTest extends AnyFunSuite:
   }
 
   test("Tokens can be added"){
-    b1 = b1.addToken(t1, 3)
+    b1.addToken(t1, 3)
     assert(b1.getNumToken(t1) == 3)
   }
 
@@ -74,7 +74,7 @@ class BuildableTest extends AnyFunSuite:
   }
 
   test("Tokens can be destroyed"){
-    b1 = b1.destroyToken(t1, 2)
+    b1.destroyToken(t1, 2)
     assert(b1.getNumToken(t1) == 1)
     assert(b1.computeTotalRent(gm) == 250)
   }
