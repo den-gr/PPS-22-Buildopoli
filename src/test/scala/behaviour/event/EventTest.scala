@@ -10,6 +10,7 @@ import EventStoryModule.*
 class EventTest extends AnyFunSuite with BeforeAndAfterEach:
 
   val MOCK_ID: Int = 0
+  val MAIN_ACTION = 0
   var bank: BankMock = BankMock()
   override def beforeEach(): Unit =
     bank = BankMock()
@@ -45,10 +46,8 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
 
     while nextEv.nonEmpty do
       val ev = nextEv.get.head
-      if ev.eventStory(MOCK_ID).isSingleAction then
-        ev.run(MAIN_ACTION)
-        nextEv = ev.nextEvent
-      else fail("Multiple action case is not supported now")
+      ev.run(MAIN_ACTION)
+      nextEv = ev.nextEvent
     assert(bank.money == BANK_MONEY - TAX * 3)
   }
 

@@ -17,7 +17,7 @@ trait BehaviourIterator:
     * @param index
     *   is a double tuple where first element is event group index, and second is an event index
     */
-  def next(index: Index = (0,0)): Unit
+  def next(index: Index = (0, 0)): Unit
 
   /** @return
     *   current, available to the player, sequence of events
@@ -34,15 +34,16 @@ object BehaviourIterator:
 
     override def hasNext: Boolean = eventStack.nonEmpty
 
-    override def next(index: Index ): Unit =
-      import behaviour.BehaviourModule.*
-      if index._1 < 0 || index._1 >= this.currentEvents.length then
+    override def next(index: Index): Unit = index match
+      case (groupIndex: Int, _) if groupIndex < 0 || groupIndex >= this.currentEvents.length =>
         throw IllegalArgumentException(s"Chose indexes point to a not existing event. -> $index")
-      val groups = eventStack.pop()
-      val newGroup = chooseEvent(groups(index._1))(playerId, index._2)
 
-      if eventStack.nonEmpty && eventStack.last(index._1).isAtomic then eventStack.push(groups.patch(index._1, Nil, 1))
-      if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get))
+      case (groupIndex: Int, eventIndex: Int) =>
+        val groups = eventStack.pop()
+        val newGroup = chooseEvent(groups(groupIndex))(playerId, eventIndex)
+        if eventStack.nonEmpty && eventStack.last(groupIndex).isAtomic then
+          eventStack.push(groups.patch(groupIndex, Nil, 1))
+        if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get))
 
     override def currentEvents: Seq[EventGroup] = eventStack.last
 
