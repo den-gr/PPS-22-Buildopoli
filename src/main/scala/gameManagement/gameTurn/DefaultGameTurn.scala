@@ -8,8 +8,8 @@ import scala.collection.mutable.ListBuffer
 
 case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) extends GameTurn:
   override def selectNextPlayer(): Int =
-    val selection = gameOptions.playerTurnSelector.apply(gameStore.playersList, playerWithTurn)
-    playerWithTurn += selection
+    val selection: Int = gameOptions.playerTurnSelector.apply(gameStore.playersList, playerWithTurn)
+    playerWithTurn = playerWithTurn.::(selection)
     everyoneHasDoneOneTurn()
     selection
 
@@ -17,7 +17,7 @@ case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) exten
 
   def everyoneHasDoneOneTurn(): Unit =
     if playerWithTurn.size == (gameStore.playersList.size - blockingList.size) then
-      playerWithTurn.clear()
+      playerWithTurn = List()
       doTurn()
 
   override def lockPlayer(playerId: Int, blockingTime: Int): Unit =
