@@ -34,42 +34,22 @@ object BehaviourIterator:
 
     override def hasNext: Boolean = eventStack.nonEmpty
 
-    override def next(index: Index): Unit = index match
-      case (groupIndex: Int, _) if groupIndex < 0 || groupIndex >= this.currentEvents.length =>
-        throw IllegalArgumentException(s"Chose indexes point to a not existing event. -> $index")
+    override def next(index: Index): Unit =
+      val groups = eventStack.pop()
+      index match
+        case (groupIndex: Int, eventIndex: Int)
+            if groupIndex < 0 || groupIndex >= groups.length || eventIndex >= groups(groupIndex).length =>
+          eventStack.push(groups) // redo pop
+          throw IllegalArgumentException(s"Chose indexes point to a not existing event. -> $index")
 
-      case (groupIndex: Int, eventIndex: Int) =>
-        val groups = eventStack.pop()
-        if groups(groupIndex).isAtomic then eventStack.push(groups.patch(groupIndex, Nil, 1))
+        case (groupIndex: Int, eventIndex: Int) =>
+          val newGroup = chooseEvent(groups(groupIndex))(playerId, eventIndex)
+          if groups(groupIndex).isAtomic then
+            eventStack.push(groups.patch(groupIndex, Nil, 1))
+            if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get))
+          else if newGroup.nonEmpty then eventStack.push(newGroup.get +: groups.patch(groupIndex, Nil, 1))
 
-        val newGroup = chooseEvent(groups(groupIndex))(playerId, eventIndex)
-        if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get) ++ groups.patch(groupIndex, Nil, 1))
-
-        if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get))
-
-    override def currentEvents: Seq[EventGroup] = eventStack.last
-
-  private def chooseEvent(currentEvents: Seq[EventGroup])(playerId: Int, index: (Int, Int)): Seq[EventGroup] =
-    try
-      val nextOpEvents: Option[EventGroup] = chooseEvent(currentEvents(index._1))(playerId, index._2)
-
-      // remove chose EventGroup
-      var newEvents = currentEvents.patch(index._1, Nil, 1)
-
-      // insert next EventGroup
-      if nextOpEvents.nonEmpty then
-        val nextEventGroup: EventGroup = EventGroup(
-          for
-            ev <- nextOpEvents.get
-            if ev.hasToRun(playerId)
-          yield ev,
-          nextOpEvents.get.isAtomic
-        )
-        newEvents = newEvents :+ nextEventGroup
-      newEvents
-    catch
-      case _: IndexOutOfBoundsException =>
-        throw IllegalArgumentException("Chose indexes point to a not existing event. -> " + index)
+    override def currentEvents: Seq[EventGroup] = eventStack.head
 
   private def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
     try

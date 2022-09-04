@@ -33,6 +33,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     bank.getPaymentRequestAmount(Player(id), Bank) match
       case None => throw new IllegalStateException("Payment to casino not found")
       case Some(n) if n > 0 => bank.acceptPayment(Player(id), Bank) // assume we always lose
+      case _ =>
 
   val WIN_MULTIPLAYER = 10
   private val winGameStrategy: EventStrategy = id =>
@@ -41,9 +42,10 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
       case Some(n) if n > 0 =>
         bank.acceptPayment(Player(id), Bank)
         bank.money = n * WIN_MULTIPLAYER
+      case _ =>
 
   val NUMBER_CHOICES = 5
-  private val storyGenerator: StoryGenerator = _ =>
+  private val storyGenerator: StoryGenerator = playerId =>
     val desc = "base event description"
     var seq = Seq[String]()
     var interactionSequence = Seq[Interaction]()
@@ -51,7 +53,11 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     else
       for i <- 100 until bank.money by ((bank.money.toDouble / (NUMBER_CHOICES * 100)).ceil * 100).toInt do
         seq = seq :+ i.toString
-        val interaction: Interaction = _ => if bank.money > i then OK else ERR("No money")
+        val interaction: Interaction = _ =>
+          if bank.money > i then
+            bank.createPaymentRequestAmount(Player(playerId), Bank, i)
+            OK
+          else ERR("No money")
         interactionSequence = interactionSequence :+ interaction
       EventStory(desc, seq, interactionSequence)
 
@@ -68,26 +74,46 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     val events = casinoBehaviour.getBehaviourIterator(PLAYER_1).currentEvents
     assert(events.length == 2)
     assert(events.head.length == 1)
+    assert(events.last.length == 1)
     assert(events.head.head.eventStory(PLAYER_1).choices.length == 1)
+    assert(events.last.head.eventStory(PLAYER_1).choices.length == 1)
   }
 
-  test("Check casino behaviour lose game event") {
+  test("Check exceptions of behaviour iterator") {
+    def checkWrongIndexes(x: Int, y: Int): Unit =
+      val it = casinoBehaviour.getBehaviourIterator(PLAYER_1)
+      assertThrows[IllegalArgumentException](it.next(x, y))
+    checkWrongIndexes(Int.MinValue, 0)
+    checkWrongIndexes(0, Int.MinValue)
+    checkWrongIndexes(Int.MinValue, Int.MinValue)
+    checkWrongIndexes(Int.MaxValue, Int.MaxValue)
+    checkWrongIndexes(0, Int.MaxValue)
+  }
+
+  test("Check casino behaviour when choose lose game event") {
     val it: BehaviourIterator = casinoBehaviour.getBehaviourIterator(PLAYER_1)
     it.next()
     val events = it.currentEvents
     assert(events.length == 2)
     assert(events.head.length == 1)
-    assert(events.head.head.eventStory(PLAYER_1).choices.length == NUMBER_CHOICES)
+    val story = events.head.head.eventStory(PLAYER_1).asInstanceOf[InteractiveEventStory]
+    assert(story.choices.length == NUMBER_CHOICES)
+    assert(story.interactions.head(PLAYER_1) == Result.OK) // run story interaction
+    it.next()
+    assert(!it.hasNext)
   }
 
-  ignore("Check casino behaviour win game event") {
+  test("Check casino behaviour when choose win game event") {
     val it: BehaviourIterator = casinoBehaviour.getBehaviourIterator(PLAYER_1)
     it.next((1, 0))
     val events = it.currentEvents
     assert(events.length == 1) // second event group is ignored
     assert(events.head.length == 1)
-    println(events.head.head.eventStory(PLAYER_1).choices)
-    assert(events.head.head.eventStory(PLAYER_1).choices.length == NUMBER_CHOICES)
+    val story = events.head.head.eventStory(PLAYER_1).asInstanceOf[InteractiveEventStory]
+    assert(story.choices.length == NUMBER_CHOICES)
+    assert(story.interactions.head(PLAYER_1) == Result.OK) // run story interaction
+    it.next()
+    assert(it.hasNext)
   }
 
   test("EventStory of casino must have interactions") {
