@@ -17,6 +17,7 @@ trait EventGroup extends Seq[Event]:
 // TODO def isMandatory: Boolean
 
 object EventGroup:
+  
   /** Constructor of a not atomic [[EventGroup]]
     *
     * @param elems

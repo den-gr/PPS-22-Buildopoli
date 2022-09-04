@@ -40,9 +40,11 @@ object BehaviourIterator:
 
       case (groupIndex: Int, eventIndex: Int) =>
         val groups = eventStack.pop()
+        if groups(groupIndex).isAtomic then eventStack.push(groups.patch(groupIndex, Nil, 1))
+
         val newGroup = chooseEvent(groups(groupIndex))(playerId, eventIndex)
-        if eventStack.nonEmpty && eventStack.last(groupIndex).isAtomic then
-          eventStack.push(groups.patch(groupIndex, Nil, 1))
+        if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get) ++ groups.patch(groupIndex, Nil, 1))
+
         if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get))
 
     override def currentEvents: Seq[EventGroup] = eventStack.last

@@ -32,4 +32,3 @@ object BehaviourModule extends StoryConverter:
         initialEvents
           .map(gr => EventGroup(gr.filter(_.hasToRun(playerId)), gr.isAtomic))
           .filter(_.nonEmpty)
-  
