@@ -14,7 +14,7 @@ trait Terrain:
   /**
    * @return the object representing the correct sequence of events that need to be triggered
    */
-  def triggerBehaviour(playerID: Int): BehaviourIterator
+  def getBehaviourIterator(playerID: Int): BehaviourIterator
 
 object Terrain :
 
@@ -25,5 +25,5 @@ object Terrain :
   def apply(basicInfo: TerrainInfo, behaviour: Behaviour): Terrain = BasicTerrain(basicInfo, behaviour)
 
   private case class BasicTerrain(override val basicInfo: TerrainInfo, private val behaviour: Behaviour) extends Terrain:
-    override def triggerBehaviour(playerID: Int): BehaviourIterator =  behaviour.getBehaviourIterator(playerID)
+    export behaviour.getBehaviourIterator
 
