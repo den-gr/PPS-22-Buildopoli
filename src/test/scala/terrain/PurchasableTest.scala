@@ -6,7 +6,7 @@ import terrain.RentStrategy.RentStrategyWithBonus
 
 class PurchasableTest extends AnyFunSuite:
 
-  val t: Terrain = Terrain(TerrainInfo("vicolo corto", 1, null))
+  val t: Terrain = Terrain(TerrainInfo("vicolo corto", 1), null)
   val p: Purchasable = Purchasable(t, 1000, "fucsia", DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
 
   test("A property has a buying price") {

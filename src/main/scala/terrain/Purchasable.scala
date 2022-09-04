@@ -101,12 +101,10 @@ object Purchasable :
   private case class PurchasableTerrain(private val terrain: Terrain, override val price: Int,
                                         override val group: String, ms: MortgageStrategy,
                                         rs: RentStrategy, private var ownerID: Option[Int], private var purchasableState: PurchasableState) extends Purchasable:
+    export terrain.*
+
     override def owner: Option[Int] = ownerID
     override def state: PurchasableState = purchasableState
-
-    override val basicInfo: TerrainInfo = terrain.basicInfo
-    override def triggerBehaviour(): Any = terrain.triggerBehaviour()
-
     override def changeOwner(newOwner: Option[Int]): Unit = (state, newOwner) match
       case (_, None) => ownerID = newOwner; purchasableState = PurchasableState.IN_BANK
       case (PurchasableState.IN_BANK, Some(value)) => ownerID = newOwner; purchasableState = PurchasableState.OWNED
