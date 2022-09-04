@@ -40,9 +40,8 @@ trait Purchasable extends Terrain:
   /**
    * It is used to change the ownership of the terrain
    * @param newOwner the new owner of the terrain
-   * @return a new Purchasable object
    */
-  def changeOwner(newOwner: Option[Int]): Purchasable
+  def changeOwner(newOwner: Option[Int]): Unit
   /**
    *
    * @param gm is the group manager that provides information about the terrain's group
@@ -51,9 +50,8 @@ trait Purchasable extends Terrain:
   def computeTotalRent(gm: GroupManager): Int
   /**
    * It is used to mortgage the purchasable terrain to the bank
-   * @return a new Purchasable object
    */
-  def mortgage: Purchasable
+  def mortgage(): Unit
   /**
    *
    * @return the total amount of money the owner gets if mortgage the purchasable terrain
@@ -102,16 +100,16 @@ object Purchasable :
 
   private case class PurchasableTerrain(private val terrain: Terrain, override val price: Int,
                                         override val group: String, ms: MortgageStrategy,
-                                        rs: RentStrategy, override val owner:Option[Int],
-                                        override val state:PurchasableState) extends Purchasable:
-    override val basicInfo: TerrainInfo = terrain.basicInfo
-    override def triggerBehaviour(): Any = terrain.triggerBehaviour()
+                                        rs: RentStrategy, private var ownerID: Option[Int], private var purchasableState: PurchasableState) extends Purchasable:
+    export terrain.*
 
-    override def changeOwner(newOwner: Option[Int]): Purchasable = (state, newOwner) match
-      case (_, None) => PurchasableTerrain(terrain, price, group, ms, rs, newOwner, PurchasableState.IN_BANK)
-      case (PurchasableState.IN_BANK, Some(value)) => PurchasableTerrain(terrain, price, group, ms, rs, newOwner, PurchasableState.OWNED)
-      case _ => PurchasableTerrain(terrain, price, group, ms, rs, newOwner, state)
+    override def owner: Option[Int] = ownerID
+    override def state: PurchasableState = purchasableState
+    override def changeOwner(newOwner: Option[Int]): Unit = (state, newOwner) match
+      case (_, None) => ownerID = newOwner; purchasableState = PurchasableState.IN_BANK
+      case (PurchasableState.IN_BANK, Some(value)) => ownerID = newOwner; purchasableState = PurchasableState.OWNED
+      case _ => ownerID = newOwner; purchasableState = state
     override def computeTotalRent(gm: GroupManager): Int = rs.computeTotalRent(owner.get, group,gm)
-    override def mortgage: Purchasable = state match
-      case PurchasableState.OWNED => PurchasableTerrain(terrain, price, group, ms, rs, owner, PurchasableState.MORTGAGED)
+    override def mortgage(): Unit = state match
+      case PurchasableState.OWNED => purchasableState = PurchasableState.MORTGAGED
     override def computeMortgage: Int = ms.computeMortgage

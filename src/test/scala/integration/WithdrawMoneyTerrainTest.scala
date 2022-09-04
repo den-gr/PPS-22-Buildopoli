@@ -25,18 +25,18 @@ class WithdrawMoneyTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val behaviour: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT))
     val behaviour2: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT2))
 
-    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT money", 0, behaviour)))
-    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT2 money", 1, behaviour2)))
+    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT money", 0), behaviour))
+    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT2 money", 1), behaviour2))
 
   test("Use behaviour of a terrain where player is located") {
     assert(gameSession.getPlayerPosition(PLAYER_1) == 0)
-    val it = gameSession.getPlayerTerrain(PLAYER_1).basicInfo.behaviour.getBehaviourIterator(PLAYER_1)
+    val it = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1)
     testAmount(it, AMOUNT)
   }
 
   test("When player moves it arrives in new terrain with new behaviour that withdraw another amount of money") {
     gameSession.setPlayerPosition(PLAYER_1, 1, true)
-    val it = gameSession.getPlayerTerrain(PLAYER_1).basicInfo.behaviour.getBehaviourIterator(PLAYER_1)
+    val it = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1)
     testAmount(it, AMOUNT2)
   }
 
