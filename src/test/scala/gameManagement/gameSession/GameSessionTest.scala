@@ -10,16 +10,17 @@ import player.Player
 import lap.Lap
 import lap.Lap.MoneyReward
 
+import scala.collection.immutable.Seq
 import scala.collection.mutable.ListBuffer
 
 class GameSessionTest extends AnyFunSuite:
 
-  val selector: (ListBuffer[Player], ListBuffer[Int]) => Int =
-    (playerList: ListBuffer[Player], playerWithTurn: ListBuffer[Int]) =>
+  val selector: (Seq[Player], Seq[Int]) => Int =
+    (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
   val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(200, 2, true, 10, 6, selector)
+  val gameOptions: GameOptions = GameOptions(200, 2, 10, 6, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
   val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
   val gameLap: Lap = Lap(MoneyReward(200, gameBank))

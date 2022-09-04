@@ -8,6 +8,7 @@ import gameManagement.gameTurn.GameTurn
 import lap.Lap
 import org.slf4j.{Logger, LoggerFactory}
 import player.{Player, PlayerImpl}
+import terrain.Terrain
 
 import scala.collection.mutable.ListBuffer
 
@@ -20,15 +21,14 @@ case class GameSessionImpl(
 ) extends GameSession:
 
   override val dice: Dice = SingleDice(gameOptions.diceFaces)
-
-  val logger: Logger = LoggerFactory.getLogger("GameSession")
+  override val logger: Logger = LoggerFactory.getLogger("GameSession")
 
   override def addManyPlayers(n: Int): Unit =
     for _ <- 0 until n do this.addOnePlayer(Option.empty)
 
   override def addOnePlayer(playerId: Option[Int]): Unit =
     if playerId.isEmpty then this.gameStore.playerIdsCounter += 1
-    this.gameStore.playersList += PlayerImpl(this.checkPlayerId(playerId))
+    this.gameStore.addPlayer(PlayerImpl(this.checkPlayerId(playerId)))
     this.initializePlayer(this.gameStore.playersList.last)
 
   override def initializePlayer(lastPlayer: Player): Unit =

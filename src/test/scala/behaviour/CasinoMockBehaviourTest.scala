@@ -60,7 +60,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(events.length == 1)
     assert(events.head.length == 1)
     assert(events.head.head.eventStory(PLAYER_1).choices.length == 1)
-    it.next((0, 0))
+    it.next()
     events = it.currentEvents
     assert(events.length == 1)
     assert(events.head.length == 1)
@@ -69,11 +69,11 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("EventStory of casino must have interactions") {
     val it = casinoBehaviour.getBehaviourIterator(PLAYER_1)
-    var events: Seq[EventGroup] = it.currentEvents
+    val events: Seq[EventGroup] = it.currentEvents
     val interactions: Seq[StoryGroup] = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
-    it.next((0, 0))
+    it.next()
     assert(getStories(it.currentEvents, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
   }
 

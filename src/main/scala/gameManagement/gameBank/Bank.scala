@@ -10,6 +10,7 @@ trait Bank:
   def gameOptions: GameOptions
   def gameStore: GameStore
   def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit
+  def makeGlobalTransaction(receiverId: Int, amount: Int): Unit
   def increasePlayerMoney(playerId: Int, amount: Int): Unit
   def decreasePlayerMoney(playerId: Int, amount: Int): Unit
   def getDebtsList: Map[Int, Int]

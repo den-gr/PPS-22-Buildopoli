@@ -20,7 +20,7 @@ class WithdrawalMoneyEventTest extends AnyFunSuite with BeforeAndAfterEach:
   private val story: EventStory = EventStory(s"Player lose $AMOUNT money", "Ok")
 
   override def beforeEach(): Unit =
-    val gameSession = DefaultGameSession()
+    val gameSession = DefaultGameSession(1)
     bank = gameSession.gameBank
     behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT))
 
@@ -28,7 +28,7 @@ class WithdrawalMoneyEventTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)
     val it = behaviour.getBehaviourIterator(PLAYER_1)
     assert(it.hasNext)
-    it.next((0, 0))
+    it.next()
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - AMOUNT)
     assert(!it.hasNext)
   }
