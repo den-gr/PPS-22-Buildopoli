@@ -6,6 +6,8 @@ import EventStoryModule.*
 import Event.*
 import gameManagement.gameSession.GameSession
 import org.slf4j.{Logger, LoggerFactory}
+import terrain.Purchasable
+import terrain.PurchasableState.*
 
 /** Give access to static factory constructor of events and allows create a [[BasicEventFactory]] instance
   */
@@ -39,6 +41,36 @@ object EventFactory:
     private val bank = gameSession.gameBank
     private val dice = gameSession.dice
 
+    override def BuyTerrainEvent(story: EventStory): Event =
+      val interaction: Interaction = playerId =>
+        val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
+        gameSession.getPlayerTerrain(playerId) match
+          case t: Purchasable if playerMoney >= t.price => Result.OK
+          case _: Purchasable => Result.ERR("Not enough money")
+          
+      val interactiveStory = EventStory(story, Seq(interaction))
+      
+      val strategy: EventStrategy = playerId =>
+        gameSession.getPlayerTerrain(playerId) match
+          case t: Purchasable if t.state != IN_BANK =>
+            throw IllegalStateException("Player can not buy already purchased terrain")
+          case t: Purchasable =>
+            if bank.getMoneyForPlayer(playerId) >= t.price then
+              bank.decreasePlayerMoney(playerId, t.price)
+              t.changeOwner(Some(playerId))
+            else
+              throw IllegalStateException(
+                s"Player $playerId has not enough money =>  ${bank.getMoneyForPlayer(playerId)} but need ${t.price}"
+              )
+          case t => throw IllegalStateException(s"BuyTerrainEvent is not compatible with ${t.getClass}")
+
+      val precondition: EventPrecondition = playerId =>
+        gameSession.getPlayerTerrain(playerId) match
+          case t: Purchasable if t.state == IN_BANK => true
+          case _: Purchasable => false
+          case t => throw IllegalStateException(s"BuyTerrainEvent is not compatible with ${t.getClass}")
+      Event(interactiveStory, strategy, precondition)
+
     override def WithdrawMoneyEvent(story: EventStory, amount: Int): Event =
       val withdrawalStrategy: EventStrategy = playerId => bank.decreasePlayerMoney(playerId, amount)
       Event(story, withdrawalStrategy)
@@ -60,6 +92,3 @@ object EventFactory:
         else logger.info(escapeFailMsg(playerId.toString))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       Event(story, escapeStrategy, escapePrecondition)
-    
-    
-    

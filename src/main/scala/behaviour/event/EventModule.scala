@@ -71,6 +71,8 @@ object EventModule:
       override def adapt(st: StoryGenerator): StoryGenerator = st
     given StoryGeneratorAdapter[EventStory] with
       override def adapt(st: EventStory): StoryGenerator = _ => st
+    given StoryGeneratorAdapter[InteractiveEventStory] with
+      override def adapt(st: InteractiveEventStory): StoryGenerator = _ => st
 
     /** Flexible builder of Event
       * @param story

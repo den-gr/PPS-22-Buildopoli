@@ -1,7 +1,7 @@
 package behaviour.event
 
 import behaviour.event.EventModule.EventPrecondition
-import behaviour.event.EventStoryModule.EventStory
+import behaviour.event.EventStoryModule.{EventStory, InteractiveEventStory}
 import EventModule.*
 import behaviour.event.EventFactory.EventLogMsg
 
@@ -37,3 +37,6 @@ trait BasicEventFactory:
     *   event that allow to player to escape from prison if he get a double with two dices
     */
   def EscapeEvent(story: EventStory, escapeSuccessMsg: EventLogMsg, escapeFailMsg: EventLogMsg): Event
+
+
+  def BuyTerrainEvent(story: EventStory): Event

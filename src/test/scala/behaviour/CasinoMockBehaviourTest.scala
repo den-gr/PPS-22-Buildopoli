@@ -51,7 +51,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     else
       for i <- 100 until bank.money by ((bank.money.toDouble / (NUMBER_CHOICES * 100)).ceil * 100).toInt do
         seq = seq :+ i.toString
-        val interaction = () => if bank.money > i then OK else ERR("No money")
+        val interaction: Interaction = _ => if bank.money > i then OK else ERR("No money")
         interactionSequence = interactionSequence :+ interaction
       EventStory(desc, seq, interactionSequence)
 

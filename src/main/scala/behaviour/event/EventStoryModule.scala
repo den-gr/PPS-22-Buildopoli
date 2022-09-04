@@ -24,9 +24,9 @@ object EventStoryModule:
     case ERR(msg: String)
     case OK
 
-  /** Event interaction allows to player react to event with some action
+  /** Event interaction allows to player react to event with some action. Take in input player id
     */
-  type Interaction = () => Result
+  type Interaction = Int => Result
 
   /** [[EventStory]] extension that for each choice define an [[Interaction]]
     */
@@ -76,7 +76,11 @@ object EventStoryModule:
     def apply(desc: String, choices: Seq[String], interactions: Seq[Interaction]): InteractiveEventStory =
       if choices.length != interactions.length then
         throw IllegalArgumentException("Each description must have a corresponding action")
-      EventStoryActionsImpl(desc, choices, interactions)
+      EventStoryInteractionsImpl(desc, choices, interactions)
+
+    def apply(story: EventStory, interactions: Seq[Interaction]): InteractiveEventStory =
+      apply(story.description, story.choices, interactions)
+      
 
     private class EventStoryImpl(
         override val description: String,
@@ -86,7 +90,7 @@ object EventStoryModule:
       override def toString: String =
         s"$description \n\t" + choices.mkString("\n\t")
 
-    private class EventStoryActionsImpl(
+    private class EventStoryInteractionsImpl(
         override val description: String,
         override val choices: Seq[String],
         override val interactions: Seq[Interaction]
