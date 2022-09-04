@@ -4,6 +4,8 @@ import Purchasable.*
 import Terrain.*
 import Token.*
 import GroupManager.*
+import behaviour.BehaviourIterator
+import behaviour.BehaviourModule.Behaviour
 
 /**
  * The properties of a Buildable terrain
@@ -57,25 +59,14 @@ object Buildable:
 
   private case class BuildableTerrain(private val terrain: Purchasable, private var token: Token) extends Buildable:
 
-    override val basicInfo: TerrainInfo = terrain.basicInfo
-    override def triggerBehaviour(): Any = terrain.triggerBehaviour()
+    export terrain.{computeTotalRent => _,*}
 
-    override def price: Int = terrain.price
-    override def group: String = terrain.group
-    override def state: PurchasableState = terrain.state
-    override def owner: Option[Int] = terrain.owner
-
-    override def changeOwner(newOwner: Option[Int]): Unit = terrain.changeOwner(newOwner)
     override def computeTotalRent(gm: GroupManager): Int =
       var numToken: Int = 0
       token.tokenNames.foreach(tn => numToken = numToken + token.getNumToken(tn))
       numToken > 0 match
         case true => var total: Int = 0; token.tokenNames.foreach(tn => total = total + token.totalBonusPrice(tn).take(token.getNumToken(tn)).sum); total
         case false => terrain.computeTotalRent(gm)
-
-    override def mortgage(): Unit = terrain.mortgage()
-    override def computeMortgage: Int = terrain.computeMortgage
-
     override def canBuild(groupManager: GroupManager): Boolean = owner.nonEmpty && groupManager.isGroupComplete(owner.get, group)
     override def getNumToken(name: String): Int = token.getNumToken(name)
     override def addToken(name: String, num: Int): Unit = token = token.addToken(name, num)

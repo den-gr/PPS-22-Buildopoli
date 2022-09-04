@@ -11,7 +11,7 @@ import terrain.GroupManager.*
 
 class BuildableTest extends AnyFunSuite:
 
-  val t: Terrain = Terrain(TerrainInfo("vicolo corto", 1, null))
+  val t: Terrain = Terrain(TerrainInfo("vicolo corto", 1), null)
   val p1: Purchasable = Purchasable(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
   val p2: Purchasable = Purchasable(t, 1000, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
   val p3: Purchasable = Purchasable(t, 1000, "red", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(50, 3), Some(2), PurchasableState.OWNED)
