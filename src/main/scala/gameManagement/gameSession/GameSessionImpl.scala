@@ -5,20 +5,21 @@ import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
 import gameManagement.gameTurn.GameTurn
-import lap.Lap.Lap
+import lap.Lap
 import org.slf4j.{Logger, LoggerFactory}
 import player.{Player, PlayerImpl}
-import terrain.Terrain.Terrain
+import terrain.Terrain
 
 import scala.collection.mutable.ListBuffer
 
-case class GameSessionImpl(override val gameOptions: GameOptions,
-                           override val gameBank: Bank,
-                           override val gameTurn: GameTurn,
-                           override val gameStore: GameStore,
-                           override val gameLap: Lap)
-    extends GameSession:
-  
+case class GameSessionImpl(
+    override val gameOptions: GameOptions,
+    override val gameBank: Bank,
+    override val gameTurn: GameTurn,
+    override val gameStore: GameStore,
+    override val gameLap: Lap
+) extends GameSession:
+
   override val dice: Dice = SingleDice(gameOptions.diceFaces)
   override val logger: Logger = LoggerFactory.getLogger("GameSession")
 

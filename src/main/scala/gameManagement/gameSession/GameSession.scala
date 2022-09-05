@@ -5,10 +5,10 @@ import gameManagement.gameBank.Bank
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameStore.GameStore
 import gameManagement.gameTurn.GameTurn
-import lap.Lap.Lap
 import org.slf4j.Logger
+import lap.Lap
 import player.Player
-import terrain.Terrain.Terrain
+import terrain.Terrain
 
 import scala.collection.mutable.ListBuffer
 
@@ -86,8 +86,14 @@ trait GameSession:
    * @return the Terrain object of where the player is positioned
    */
   def getPlayerTerrain(playerId: Int): Terrain = getTerrain(getPlayerPosition(playerId))
-  
+
   export gameStore.getTerrain
 object GameSession:
-  def apply(gameOptions: GameOptions, gameBank: Bank, gameTurn: GameTurn, gameStore: GameStore, gameLap: Lap): GameSession =
+  def apply(
+      gameOptions: GameOptions,
+      gameBank: Bank,
+      gameTurn: GameTurn,
+      gameStore: GameStore,
+      gameLap: Lap
+  ): GameSession =
     GameSessionImpl(gameOptions: GameOptions, gameBank: Bank, gameTurn: GameTurn, gameStore: GameStore, gameLap: Lap)

@@ -1,6 +1,6 @@
 package gameManagement.gameOptions
 
-import lap.Lap.Lap
+import lap.Lap
 import player.Player
 
 import scala.collection.mutable.ListBuffer
@@ -14,11 +14,12 @@ import scala.collection.mutable.ListBuffer
   * @param diceFaces
   *   Number of faces in the dice used to play the game
   * @param playerTurnSelector
-  *   Lambda function used by GameTurn to select the next
-  *   player that should play during the game
+  *   Lambda function used by GameTurn to select the next player that should play during the game
   */
-case class GameOptions(playerInitialMoney: Int,
-                       playerInitialCells: Int,
-                       nCells: Int,
-                       diceFaces: Int,
-                       playerTurnSelector: (Seq[Player], Seq[Int]) => Int)
+case class GameOptions(
+    playerInitialMoney: Int,
+    playerInitialCells: Int,
+    nCells: Int,
+    diceFaces: Int,
+    playerTurnSelector: (Seq[Player], Seq[Int]) => Int
+)

@@ -1,7 +1,7 @@
 package gameManagement.gameStore
 
 import player.Player
-import terrain.Terrain.Terrain
+import terrain.Terrain
 
 import scala.collection.mutable.ListBuffer
 
