@@ -22,18 +22,18 @@ class GameBankTest extends AnyFunSuite:
 
   test("player has incremented money") {
     addPlayer(1)
-    gameBank.increasePlayerMoney(1, 1000)
+    gameBank.makeTransaction(receiverId = 1, 1000)
     assert(gameBank.getMoneyForPlayer(1) === 1000)
   }
 
   test("player has decremented money") {
-    gameBank.decreasePlayerMoney(1, 100)
+    gameBank.makeTransaction(1, amount = 100)
     assert(gameBank.getMoneyForPlayer(1) === 900)
   }
 
   test("two players make a transaction") {
     addPlayer(2)
-    gameBank.increasePlayerMoney(2, 500)
+    gameBank.makeTransaction(receiverId = 2, 500)
     gameBank.makeTransaction(2, 1, 300)
     assert(gameBank.getMoneyForPlayer(2) === 200)
     assert(gameBank.getMoneyForPlayer(1) === 1200)
@@ -41,27 +41,27 @@ class GameBankTest extends AnyFunSuite:
 
   test("player has debit (and zero money) after decreasing money") {
     addPlayer(3)
-    gameBank.increasePlayerMoney(3, 500)
-    gameBank.decreasePlayerMoney(3, 600)
+    gameBank.makeTransaction(receiverId = 3, 500)
+    gameBank.makeTransaction(3, amount = 600)
     assert(gameBank.getDebtsForPlayer(3) === 100)
     assert(gameBank.getMoneyForPlayer(3) === 0)
   }
 
   test("player has decreased debit after money increase") {
     assert(gameBank.getDebtsForPlayer(3) === 100)
-    gameBank.increasePlayerMoney(3, 50)
+    gameBank.makeTransaction(receiverId = 3, 50)
     assert(gameBank.getDebtsForPlayer(3) === 50)
   }
 
   test("player has increased debit after money decrease") {
     assert(gameBank.getDebtsForPlayer(3) === 50)
-    gameBank.decreasePlayerMoney(3, 150)
+    gameBank.makeTransaction(3, amount = 150)
     assert(gameBank.getDebtsForPlayer(3) === 200)
   }
 
   test("player has zero debit") {
     assert(gameBank.getDebtsForPlayer(3) === 200)
-    gameBank.increasePlayerMoney(3, 250)
+    gameBank.makeTransaction(receiverId = 3, 250)
     assert(gameBank.getDebtsForPlayer(3) === 0)
     assert(gameBank.getMoneyForPlayer(3) === 50)
   }
@@ -79,8 +79,8 @@ class GameBankTest extends AnyFunSuite:
     addPlayer(6)
 
     assert(gameStore.playersList.size === playerCounter)
-    gameBank.increasePlayerMoney(5, 100)
-    gameBank.increasePlayerMoney(6, 400)
+    gameBank.makeTransaction(receiverId = 5, 100)
+    gameBank.makeTransaction(receiverId = 6, 400)
     assert(gameBank.getMoneyForPlayer(5) === 100)
     assert(gameBank.getMoneyForPlayer(6) === 400)
     assertThrows[IllegalStateException](gameBank.makeTransaction(5, 6, 200))
@@ -93,8 +93,8 @@ class GameBankTest extends AnyFunSuite:
     addPlayer(7)
     addPlayer(8)
 
-    gameBank.increasePlayerMoney(7, 200)
-    gameBank.increasePlayerMoney(8, 1000)
+    gameBank.makeTransaction(receiverId = 7, 200)
+    gameBank.makeTransaction(receiverId = 8, 1000)
     assert(gameBank.getMoneyForPlayer(7) === 200)
     assert(gameBank.getMoneyForPlayer(8) === 1000)
     gameBank.makeGlobalTransaction(8, 300)

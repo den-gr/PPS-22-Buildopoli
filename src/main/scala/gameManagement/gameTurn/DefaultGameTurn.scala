@@ -6,6 +6,11 @@ import player.Player
 
 import scala.collection.mutable.ListBuffer
 
+/**
+ * Basic implementation of GameTurn
+ * @param gameOptions to access selector Lambda that selects the next player
+ * @param gameStore to access playersList in the game
+ */
 case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) extends GameTurn:
   override def selectNextPlayer(): Int =
     val selection: Int = gameOptions.playerTurnSelector.apply(gameStore.playersList, playerWithTurn)

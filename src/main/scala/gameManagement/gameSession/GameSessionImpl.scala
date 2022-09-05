@@ -28,9 +28,9 @@ case class GameSessionImpl(override val gameOptions: GameOptions,
   override def addOnePlayer(playerId: Option[Int]): Unit =
     if playerId.isEmpty then this.gameStore.playerIdsCounter += 1
     this.gameStore.addPlayer(PlayerImpl(this.checkPlayerId(playerId)))
-    this.initializePlayer(this.gameStore.playersList.last)
+    initializePlayer(this.gameStore.playersList.last)
 
-  override def initializePlayer(lastPlayer: Player): Unit =
+  def initializePlayer(lastPlayer: Player): Unit =
     lastPlayer.setPlayerMoney(gameOptions.playerInitialMoney)
 
   def checkPlayerId(playerId: Option[Int]): Int =

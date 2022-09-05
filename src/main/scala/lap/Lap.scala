@@ -16,7 +16,8 @@ object Lap :
     def triggerBonus(playerID: Int): Unit
 
   case class MoneyReward(money: Int, bank: Bank) extends Reward:
-    override def triggerBonus(playerID: Int): Unit = bank.increasePlayerMoney(playerID, money)
+    override def triggerBonus(playerID: Int): Unit =
+      bank.makeTransaction(receiverId = playerID, amount = money)
 
   /**
    * Buildopoli's terrains are displayed in circle, each player can complete a lap and gain a reward
