@@ -38,5 +38,6 @@ trait BasicEventFactory:
     */
   def EscapeEvent(story: EventStory, escapeSuccessMsg: EventLogMsg, escapeFailMsg: EventLogMsg): Event
 
-
   def BuyTerrainEvent(story: EventStory): Event
+
+  def GetRentEvent(story: EventStory, notMoneyErrMsg: String): Event

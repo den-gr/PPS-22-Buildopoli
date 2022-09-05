@@ -8,6 +8,11 @@ import scala.collection.mutable
 /** Allows correctly navigate between event groups and their successors of a Behaviour
   */
 trait BehaviourIterator:
+  /**
+   * Id of player that iterate behaviours events
+   */
+  val playerId: Int 
+  
   /** @return
     *   false if there are not available EventGroup
     */
@@ -29,7 +34,7 @@ object BehaviourIterator:
     if events.count(_.isAtomic) > 1 then throw IllegalStateException("Only one event group can be atomic")
     BehaviourIteratorImpl(events, playerId)
 
-  private case class BehaviourIteratorImpl(events: Seq[EventGroup], playerId: Int) extends BehaviourIterator:
+  private case class BehaviourIteratorImpl(events: Seq[EventGroup], override val playerId: Int) extends BehaviourIterator:
     val eventStack: mutable.Stack[Seq[EventGroup]] = mutable.Stack(events)
 
     override def hasNext: Boolean = eventStack.nonEmpty
