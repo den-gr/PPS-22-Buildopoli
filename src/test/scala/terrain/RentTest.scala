@@ -9,11 +9,13 @@ class RentTest extends AnyFunSuite:
   val mock1: GroupManager = new GroupManager {
     override def isGroupComplete(ownerID: Int, group: String): Boolean = true
     override def sameGroupTerrainsOwned(ownerID: Int, group: String): Int = 2
+    override def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable] = ???
   }
 
   val mock2: GroupManager = new GroupManager {
     override def isGroupComplete(ownerID: Int, group: String): Boolean = false
     override def sameGroupTerrainsOwned(ownerID: Int, group: String): Int = 1
+    override def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable] = ???
   }
 
   val mock3: GroupManager = new GroupManager {
@@ -23,6 +25,8 @@ class RentTest extends AnyFunSuite:
     override def sameGroupTerrainsOwned(ownerID: Int, group: String): Int =  b match
       case true => b = false; 4
       case _ => b = true; 3
+
+    override def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable] = ???
   }
 
   test("A rent strategy with bonus for each additional terrain"){
