@@ -47,16 +47,16 @@ object EventFactory:
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if playerMoney >= t.price => Result.OK
           case _: Purchasable => Result.ERR("Not enough money")
-          
+
       val interactiveStory = EventStory(story, Seq(interaction))
-      
+
       val strategy: EventStrategy = playerId =>
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if t.state != IN_BANK =>
             throw IllegalStateException("Player can not buy already purchased terrain")
           case t: Purchasable =>
             if bank.getMoneyForPlayer(playerId) >= t.price then
-              bank.decreasePlayerMoney(playerId, t.price)
+              bank.makeTransaction(playerId, amount = t.price)
               t.changeOwner(Some(playerId))
             else
               throw IllegalStateException(
@@ -72,7 +72,7 @@ object EventFactory:
       Event(interactiveStory, strategy, precondition)
 
     override def WithdrawMoneyEvent(story: EventStory, amount: Int): Event =
-      val withdrawalStrategy: EventStrategy = playerId => bank.decreasePlayerMoney(playerId, amount)
+      val withdrawalStrategy: EventStrategy = playerId => bank.makeTransaction(playerId, amount = amount)
       Event(story, withdrawalStrategy)
 
     override def ImprisonEvent(story: EventStory, blockingTurns: Int): Event =
@@ -88,7 +88,7 @@ object EventFactory:
         if dice.rollOneDice() == dice.rollOneDice() then
           gameTurn.liberatePlayer(playerId)
           logger.info(escapeSuccessMsg(playerId.toString))
-          gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2), true)
+          gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2))
         else logger.info(escapeFailMsg(playerId.toString))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       Event(story, escapeStrategy, escapePrecondition)
