@@ -36,7 +36,7 @@ object EventFactory:
     Event(story, precondition = precondition)
 
   private class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
-    val logger: Logger = LoggerFactory.getLogger(this.getClass)
+    private val logger: Logger = gameSession.logger
     private val gameTurn = gameSession.gameTurn
     private val bank = gameSession.gameBank
     private val dice = gameSession.dice
@@ -104,8 +104,8 @@ object EventFactory:
       val interaction: Interaction = playerId =>
         val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
-          case t: Purchasable if playerMoney >= t.computeTotalRent(GroupManager(Array(t))) =>
-            Result.OK // TODO technical debt -> group manger is temporal
+          case t: Purchasable if playerMoney >= t.computeTotalRent(gameSession.getGroupManager) =>
+            Result.OK
           case _: Purchasable => Result.ERR(notMoneyErrMsg)
 
       val interactiveStory = EventStory(story, Seq(interaction))
@@ -113,21 +113,25 @@ object EventFactory:
       val strategy: EventStrategy = playerId =>
         val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
-          case t: Purchasable if playerMoney >= t.computeTotalRent(GroupManager(Array(t))) =>
+          case t: Purchasable if playerMoney >= t.computeTotalRent(gameSession.getGroupManager) =>
             bank.makeTransaction(
               playerId,
               t.owner.get,
               t.computeTotalRent(GroupManager(Array(t)))
-            ) // TODO technical debt -> group manger is temporal
+            )
           case _ => throw IllegalStateException("Not enough money for pay the rent")
 
       Event(interactiveStory, strategy, precondition)
 
     override def BuildTokenEvent(storyDescription: String): Event =
-      val storyGenerator: StoryGenerator = playerId =>
-        val interactions: Interaction = Seq()
-
-        EventStory(storyDescription, "")
+//      val storyGenerator: StoryGenerator = playerId =>
+//        val interactions: Interaction = Seq()
+//        for
+//           val terrain <- groupManager.terrainsOwnerCanBuildOn(playerId)
+//        yield
+//
+//
+//        EventStory(storyDescription, "")
 //      val precondition: EventPrecondition = playerId =>
 //        gameSession.getPlayerTerrain(playerId) match
 //          case t: Buildable if => true //todo temporal group manger
