@@ -1,3 +1,0 @@
-package terrain
-
-trait Card
