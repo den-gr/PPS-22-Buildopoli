@@ -6,7 +6,7 @@ import EventStoryModule.*
 import Event.*
 import gameManagement.gameSession.GameSession
 import org.slf4j.{Logger, LoggerFactory}
-import terrain.{GroupManager, Purchasable}
+import terrain.{Buildable, GroupManager, Purchasable}
 import terrain.PurchasableState.*
 
 /** Give access to static factory constructor of events and allows create a [[BasicEventFactory]] instance
@@ -122,3 +122,13 @@ object EventFactory:
           case _ => throw IllegalStateException("Not enough money for pay the rent")
 
       Event(interactiveStory, strategy, precondition)
+
+    override def BuildTokenEvent(storyDescription: String): Event =
+      val storyGenerator: StoryGenerator = playerId =>
+        val interactions: Interaction = Seq()
+
+        EventStory(storyDescription, "")
+//      val precondition: EventPrecondition = playerId =>
+//        gameSession.getPlayerTerrain(playerId) match
+//          case t: Buildable if => true //todo temporal group manger
+      ???

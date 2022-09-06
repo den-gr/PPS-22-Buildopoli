@@ -41,3 +41,5 @@ trait BasicEventFactory:
   def BuyTerrainEvent(story: EventStory): Event
 
   def GetRentEvent(story: EventStory, notMoneyErrMsg: String): Event
+  
+  def BuildTokenEvent(storyDescription: String): Event
