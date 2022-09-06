@@ -5,7 +5,7 @@ import terrain.Terrain
 
 import scala.collection.mutable.ListBuffer
 
-case class GameStoreImpl() extends GameStore :
+case class GameStoreImpl() extends GameStore:
 
   override val terrainList: ListBuffer[Terrain] = ListBuffer()
   private var listOfPLayer: List[Player] = List()
@@ -17,9 +17,5 @@ case class GameStoreImpl() extends GameStore :
     .filter(t => t.basicInfo.position.equals(position))
     .result()
     .head
-  override def addPlayer(player: Player): Unit = playersList = playersList:+player
+  override def addPlayer(player: Player): Unit = playersList = playersList :+ player
   override def putTerrain(terrain: Terrain*): Unit = terrainList ++= terrain
-
-
-
-

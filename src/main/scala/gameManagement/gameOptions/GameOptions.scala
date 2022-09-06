@@ -9,12 +9,12 @@ import scala.collection.mutable.ListBuffer
   *   how much money to give to each player at start
   * @param playerInitialCells
   *   how many cells to assign at each player at game start
-  * @param debtsManagement
-  *   if you want to manage debit of each player during the game
   * @param nCells
   *   Setting number of cells for one game session
+  * @param diceFaces
+  *   Number of faces in the dice used to play the game
   * @param playerTurnSelector
-  *   The function used by GameTurn to determine which is the next player that should play during the game
+  *   Lambda function used by GameTurn to select the next player that should play during the game
   */
 case class GameOptions(
     playerInitialMoney: Int,

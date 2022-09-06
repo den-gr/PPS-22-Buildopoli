@@ -49,7 +49,7 @@ class PurchaseBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     val interactiveStory = story.asInstanceOf[InteractiveEventStory]
     assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
 
-    gameSession.gameBank.decreasePlayerMoney(it.playerId, GameSessionHelper.playerInitialMoney)
+    gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
     assert(interactiveStory.interactions.head(it.playerId) match
       case Result.ERR(_) => true
       case _ => false
@@ -75,7 +75,7 @@ class PurchaseBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     val interactiveStory = getStories(it.currentEvents, it.playerId).head.head.asInstanceOf[InteractiveEventStory]
     assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
 
-    gameSession.gameBank.decreasePlayerMoney(it.playerId, GameSessionHelper.playerInitialMoney)
+    gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
     assert(interactiveStory.interactions.head(it.playerId) match
       case Result.ERR(_) => true
       case _ => false

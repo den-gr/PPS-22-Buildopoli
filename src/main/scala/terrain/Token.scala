@@ -1,75 +1,101 @@
 package terrain
 
-/**
- * It represents the token used in the game that can be built on a buildable terrain to increase the rent
- */
+/** It represents the token used in the game that can be built on a buildable terrain to increase the rent
+  */
 trait Token:
-  /**
-   *
-   * @return the names given to the used token
-   */
+  /** @return
+    *   the names given to the used token
+    */
   def tokenNames: Seq[String]
-  /**
-   *
-   * @param name of the token
-   * @return the maximum number of the specified token that can be built on a terrain
-   */
-  def maxNumToken(name:String): Int
-  /**
-   *
-   * @param name of the token
-   * @return the buying price of the specified token
-   */
-  def buyingPrice(name:String): Int
-  /**
-   *
-   * @param name of the token
-   * @return the Seq with the single bonus provided by each token
-   */
-  def totalBonusPrice(name:String): Seq[Int]
-  /**
-   * It is used to add an amount of the specific token
-   * @param name of the token
-   * @param num number of the tokens
-   * @return a new Token object
-   */
+
+  /** @param name
+    *   of the token
+    * @return
+    *   the maximum number of the specified token that can be built on a terrain
+    */
+  def maxNumToken(name: String): Int
+
+  /** @param name
+    *   of the token
+    * @return
+    *   the buying price of the specified token
+    */
+  def buyingPrice(name: String): Int
+
+  /** @param name
+    *   of the token
+    * @return
+    *   the Seq with the single bonus provided by each token
+    */
+  def totalBonusPrice(name: String): Seq[Int]
+
+  /** It is used to add an amount of the specific token
+    * @param name
+    *   of the token
+    * @param num
+    *   number of the tokens
+    * @return
+    *   a new Token object
+    */
   def addToken(name: String, num: Int): Token
-  /**
-   * It is used to remove an amount of the specific token
-   * @param name of the token
-   * @param num number of the tokens
-   * @return a new Token object
-   */
+
+  /** It is used to remove an amount of the specific token
+    * @param name
+    *   of the token
+    * @param num
+    *   number of the tokens
+    * @return
+    *   a new Token object
+    */
   def removeToken(name: String, num: Int): Token
-  /**
-   * @param name of the token
-   * @return the number of tokens with the specified name
-   */
+
+  /** @param name
+    *   of the token
+    * @return
+    *   the number of tokens with the specified name
+    */
   def getNumToken(name: String): Int
 
-object Token :
+object Token:
 
-  /**
-   * Factory to create a token
-   * @param tokenTypeToRentBonus a map which keys determine the name of the tokens. Each value is the list of money bonus each
-   *                             additional token gives
-   * @param maxValues the maximum number of tokens that can be built
-   * @param buyingPrices the price at which each different type of token can be built
-   * @param numToken the number of initial token
-   * @return the token object desired
-   */
-  def apply(tokenTypeToRentBonus: Map[String, Seq[Int]], maxValues: Seq[Int], buyingPrices: Seq[Int], numToken: Map[String, Int]): Token =
+  /** Factory to create a token
+    * @param tokenTypeToRentBonus
+    *   a map which keys determine the name of the tokens. Each value is the list of money bonus each additional token
+    *   gives
+    * @param maxValues
+    *   the maximum number of tokens that can be built
+    * @param buyingPrices
+    *   the price at which each different type of token can be built
+    * @param numToken
+    *   the number of initial token
+    * @return
+    *   the token object desired
+    */
+  def apply(
+      tokenTypeToRentBonus: Map[String, Seq[Int]],
+      maxValues: Seq[Int],
+      buyingPrices: Seq[Int],
+      numToken: Map[String, Int]
+  ): Token =
     TokenWithBonus(tokenTypeToRentBonus, maxValues, buyingPrices, numToken)
 
-  private case class TokenWithBonus(tokenTypeToRentBonus: Map[String, Seq[Int]], maxValues: Seq[Int], buyingPrices: Seq[Int], numToken: Map[String, Int]) extends Token:
+  private case class TokenWithBonus(
+      tokenTypeToRentBonus: Map[String, Seq[Int]],
+      maxValues: Seq[Int],
+      buyingPrices: Seq[Int],
+      numToken: Map[String, Int]
+  ) extends Token:
 
     private val maxToken: Map[String, Int] = (tokenTypeToRentBonus.keys zip maxValues).toMap
     private var check: Boolean = tokenTypeToRentBonus.keys.equals(numToken.keys)
-    check match {case false => throw Exception("Map keys are not the same") ; case _ => }
-    check = check && tokenTypeToRentBonus.size == maxValues.size && maxValues.size == buyingPrices.size && buyingPrices.size == numToken.size
-    for i <- tokenTypeToRentBonus.keys do
-      check = check && maxToken(i) == tokenTypeToRentBonus(i).size
-    check match {case false => throw Exception("Arrays size or map size do not match!!!") case true => }
+    check match
+      case false => throw Exception("Map keys are not the same"); case _ =>
+    check =
+      check && tokenTypeToRentBonus.size == maxValues.size && maxValues.size == buyingPrices.size && buyingPrices.size == numToken.size
+    for i <- tokenTypeToRentBonus.keys do check = check && maxToken(i) == tokenTypeToRentBonus(i).size
+    check match
+      case false => throw Exception("Arrays size or map size do not match!!!")
+      case true =>
     private val buyingPricesList: Map[String, Int] = (tokenTypeToRentBonus.keys zip buyingPrices).toMap
 
     override def tokenNames: Seq[String] = tokenTypeToRentBonus.keys.toList
@@ -79,11 +105,17 @@ object Token :
     override def getNumToken(name: String): Int = numToken(name)
     override def addToken(name: String, num: Int): Token = num > 0 && getNumToken(name) + num <= maxToken(name) match
       case true => changeToken(name, num)
-    override def removeToken(name:String, num: Int): Token = num > 0 && getNumToken(name) - num >= 0 match
+    override def removeToken(name: String, num: Int): Token = num > 0 && getNumToken(name) - num >= 0 match
       case true => changeToken(name, -num)
 
-    private def changeToken(name: String, num:Int): Token =
-      TokenWithBonus(tokenTypeToRentBonus, maxValues, buyingPrices, numToken.map((k, v) => k match
-        case `name` => (k, v + num)
-        case _ => (k, v)
-      ))
+    private def changeToken(name: String, num: Int): Token =
+      TokenWithBonus(
+        tokenTypeToRentBonus,
+        maxValues,
+        buyingPrices,
+        numToken.map((k, v) =>
+          k match
+            case `name` => (k, v + num)
+            case _ => (k, v)
+        )
+      )

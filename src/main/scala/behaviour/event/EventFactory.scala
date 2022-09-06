@@ -42,7 +42,7 @@ object EventFactory:
     private val dice = gameSession.dice
 
     override def WithdrawMoneyEvent(story: EventStory, amount: Int): Event =
-      val withdrawalStrategy: EventStrategy = playerId => bank.decreasePlayerMoney(playerId, amount)
+      val withdrawalStrategy: EventStrategy = playerId => bank.makeTransaction(playerId, amount = amount)
       Event(story, withdrawalStrategy)
 
     override def ImprisonEvent(story: EventStory, blockingTurns: Int): Event =
@@ -84,7 +84,7 @@ object EventFactory:
             throw IllegalStateException("Player can not buy already purchased terrain")
           case t: Purchasable =>
             if bank.getMoneyForPlayer(playerId) >= t.price then
-              bank.decreasePlayerMoney(playerId, t.price)
+              bank.makeTransaction(playerId, amount = t.price)
               t.changeOwner(Some(playerId))
             else
               throw IllegalStateException(

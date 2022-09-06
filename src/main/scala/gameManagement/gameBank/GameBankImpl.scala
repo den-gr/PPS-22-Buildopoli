@@ -7,25 +7,26 @@ import player.Player
 
 import scala.collection.mutable.ListBuffer
 
-case class GameBankImpl(override val gameOptions: GameOptions, override val gameStore: GameStore)
-    extends Bank:
+case class GameBankImpl(override val gameOptions: GameOptions, override val gameStore: GameStore) extends Bank:
 
   val debitManagement: BankDebit = BankDebitImpl()
 
-  override def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit =
-    if getDebtsForPlayer(senderId) != 0 || getMoneyForPlayer(senderId) < amount then
-      throw new IllegalStateException("The sender has debit, so can only sell something")
-    else
-      decreasePlayerMoney(senderId, amount)
-      increasePlayerMoney(receiverId, amount)
+  override def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit = (senderId, receiverId) match
+    case (0, _) => increasePlayerMoney(receiverId, amount)
+    case (_, 0) => decreasePlayerMoney(senderId, amount)
+    case (send, _) if getDebtsForPlayer(send) != 0 || getMoneyForPlayer(send) < amount =>
+      throw new IllegalStateException("The sender has debit, so can only sell")
+    case (send, receive) =>
+      decreasePlayerMoney(send, amount)
+      increasePlayerMoney(receive, amount)
 
   override def makeGlobalTransaction(receiverId: Int, amount: Int): Unit =
-    gameStore.playersList.foreach(p => {
+    gameStore.playersList.foreach(p =>
       decreasePlayerMoney(p.playerId, amount)
       increasePlayerMoney(receiverId, amount)
-    })
+    )
 
-  override def increasePlayerMoney(playerId: Int, amount: Int): Unit =
+  def increasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = gameStore.getPlayer(playerId)
     val debts = getDebtsForPlayer(playerId)
     if debts > 0 then this.increasePlayerMoneyWithDebts(debts, amount, player)
@@ -37,10 +38,9 @@ case class GameBankImpl(override val gameOptions: GameOptions, override val game
       this.debitManagement.decreaseDebit(player.playerId, debit)
       this.increasePlayerMoney(player.playerId, amount - debit)
 
-  override def decreasePlayerMoney(playerId: Int, amount: Int): Unit =
+  def decreasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = gameStore.getPlayer(playerId)
-    if playerHasEnoughMoney(player, amount) then
-      player.setPlayerMoney(player.getPlayerMoney - amount)
+    if playerHasEnoughMoney(player, amount) then player.setPlayerMoney(player.getPlayerMoney - amount)
     else
       this.debitManagement.increaseDebit(playerId, amount - player.getPlayerMoney)
       player.setPlayerMoney(0)

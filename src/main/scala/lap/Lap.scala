@@ -42,7 +42,8 @@ object Lap :
    * @param bank that provides the money
    */
   case class MoneyReward(money: Int, bank: Bank) extends Reward:
-    override def triggerBonus(playerID: Int): Unit = bank.increasePlayerMoney(playerID, money)
+    override def triggerBonus(playerID: Int): Unit =
+      bank.makeTransaction(receiverId = playerID, amount = money)
 
   /**
    * A factory to create a basic implementation of lap
