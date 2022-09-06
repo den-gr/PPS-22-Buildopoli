@@ -8,7 +8,7 @@ import gameManagement.gameTurn.GameTurn
 import org.slf4j.Logger
 import lap.Lap
 import player.Player
-import terrain.{GroupManager, Terrain}
+import terrain.{Buildable, GroupManager, Terrain}
 
 import scala.collection.mutable.ListBuffer
 
@@ -89,11 +89,17 @@ trait GameSession:
     */
   def getPlayerTerrain(playerId: Int): Terrain = getTerrain(getPlayerPosition(playerId))
 
+  /** Used to start the game. Creating GroupManager and impeding creation of new terrains and players.
+    */
   def startGame(): Unit
 
-  def getTerrainRent(position: Int): Int
+  /** @return
+    *   current instance of GroupManager
+    */
+  def getGroupManager: GroupManager
 
   export gameStore.getTerrain
+
 object GameSession:
   def apply(
       gameOptions: GameOptions,

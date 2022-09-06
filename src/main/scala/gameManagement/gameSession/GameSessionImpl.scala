@@ -8,7 +8,7 @@ import gameManagement.gameTurn.GameTurn
 import lap.Lap
 import org.slf4j.{Logger, LoggerFactory}
 import player.{Player, PlayerImpl}
-import terrain.{GroupManager, Purchasable, Terrain}
+import terrain.{Buildable, GroupManager, Purchasable, Terrain}
 
 import scala.collection.mutable.ListBuffer
 
@@ -23,6 +23,8 @@ case class GameSessionImpl(
   override val dice: Dice = SingleDice(gameOptions.diceFaces)
   override val logger: Logger = LoggerFactory.getLogger("GameSession")
   private var groupManager: GroupManager = _
+
+  override def getGroupManager: GroupManager = this.groupManager
 
   override def startGame(): Unit =
     this.gameStore.startGame()
@@ -57,6 +59,3 @@ case class GameSessionImpl(
     val result = gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nSteps, gameOptions.nCells)
     player.setPlayerPawnPosition(result._1)
     if result._2 then gameLap.giveReward(playerId)
-
-  override def getTerrainRent(position: Int): Int =
-    getTerrain(position).asInstanceOf[Purchasable].computeTotalRent(this.groupManager)
