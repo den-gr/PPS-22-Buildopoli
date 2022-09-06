@@ -1,6 +1,6 @@
 package integration
 
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.funsuite.AnyFunSuite
 import terrain.Mortgage.DividePriceMortgage
 import terrain.RentStrategy.{BasicRentStrategyFactor, RentStrategyWithBonus}
@@ -9,17 +9,18 @@ import behaviour.BehaviourModule.*
 import behaviour.event.{EventFactory, EventGroup}
 import behaviour.event.EventStoryModule.{EventStory, Interaction, InteractiveEventStory, Result}
 import gameManagement.gameSession.GameSession
+import org.scalatest.featurespec.AnyFeatureSpec
 import util.GameSessionHelper
 import util.GameSessionHelper.DefaultGameSession
 
-//todo The FeatureSpec style
-// extends AnyFeatureSpec with GivenWhenThen
-class PurchaseBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
+/** Test purchasable events produced by factory that allow buying terrains and pay rent to the owner
+  */
+class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
   private val PLAYER_2 = 2
   private val POSITION_0 = 0
   private val POSITION_1 = 1
-  private var dumbTerrain: Terrain = _
+  private var simpleTerrain: Terrain = _
   private var purchasableTerrain: Purchasable = _
   private val TERRAIN_PRICE = 100
   private val RENT = 50
@@ -35,64 +36,99 @@ class PurchaseBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
       EventGroup(factory.BuyTerrainEvent(story), factory.GetRentEvent(rentStory, "Not enough money"))
     )
 
-    dumbTerrain = Terrain(TerrainInfo("Dumb terrain", POSITION_1), behaviour)
+    simpleTerrain = Terrain(TerrainInfo("Dumb terrain", POSITION_1), behaviour)
     val t: Terrain = Terrain(TerrainInfo("vicolo corto", POSITION_0), behaviour)
     purchasableTerrain =
       Purchasable(t, TERRAIN_PRICE, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
     gameSession.gameStore.putTerrain(purchasableTerrain)
-    gameSession.gameStore.putTerrain(dumbTerrain)
+    gameSession.gameStore.putTerrain(simpleTerrain)
+    gameSession.startGame()
 
-  test("Verify the buy terran interaction") {
-    val it = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1)
-    val story = getStories(it.currentEvents, it.playerId).head.head
-    assert(story.isInstanceOf[InteractiveEventStory])
-    val interactiveStory = story.asInstanceOf[InteractiveEventStory]
-    assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
+  info("Purchasable Terrain can be bought by a player, in this case another players must pay rent")
 
-    gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
-    assert(interactiveStory.interactions.head(it.playerId) match
-      case Result.ERR(_) => true
-      case _ => false
-    )
-  }
+  Feature("Purchasable Terrain can be bought by a player") {
+    Scenario("Buy terrain event is compatible only with Purchasable terrains") {
+      When("a player on a simple Terrain with purchasable event")
+      gameSession.setPlayerPosition(PLAYER_1, 1)
 
-  test("Test buying of terrain by player 1") {
-    assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)
-    assert(purchasableTerrain.owner.isEmpty)
-    gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next() // buy
-    assert(purchasableTerrain.owner.nonEmpty)
-    assert(purchasableTerrain.owner.get == PLAYER_1)
-    assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE)
-    println(purchasableTerrain.computeTotalRent(GroupManager(Array(purchasableTerrain))))
-  }
+      Then("we have illegal state exception")
+      assertThrows[IllegalStateException](gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1))
+    }
 
-  test(
-    "When terrain is bought another player see pay rent event, interaction return OK when player have money to pay rent "
-  ) {
-    gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
-    val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourIterator(PLAYER_2)
-    assert(it.currentEvents.nonEmpty)
-    val interactiveStory = getStories(it.currentEvents, it.playerId).head.head.asInstanceOf[InteractiveEventStory]
-    assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
+    Scenario("Terrain interaction return different answer based on money of the player") {
+      Given("interactive Story of event that allows to buy the terrains")
+      val terrain = gameSession.getPlayerTerrain(PLAYER_1)
+      val it = terrain.getBehaviourIterator(PLAYER_1)
+      val story = getStories(it.currentEvents, it.playerId).head.head
+      assert(story.isInstanceOf[InteractiveEventStory])
+      val interactiveStory = story.asInstanceOf[InteractiveEventStory]
 
-    gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
-    assert(interactiveStory.interactions.head(it.playerId) match
-      case Result.ERR(_) => true
-      case _ => false
-    )
-  }
+      When("when player have money to buy the terrain")
+      val terrainPrice = terrain.asInstanceOf[Purchasable].price
+      assert(gameSession.gameBank.getMoneyForPlayer(it.playerId) >= terrainPrice)
 
-  test("Player 2 pay rent to player 1") {
-    gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
-    val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourIterator(PLAYER_2)
-    it.next()
-    assert(
-      gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE + RENT
-    )
-    assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_2) == GameSessionHelper.playerInitialMoney - RENT)
-  }
+      Then("event interaction return OK")
+      assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
 
-  test("Buy terrain event is not compatible with not purchasable terrains") {
-    gameSession.setPlayerPosition(PLAYER_1, 1, true)
-    assertThrows[IllegalStateException](gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1))
+      When("player have no money to buy the terrain")
+      gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
+
+      Then("event interaction return an ERR")
+      assert(interactiveStory.interactions.head(it.playerId) match
+        case Result.ERR(_) => true
+        case _ => false
+      )
+    }
+
+    Scenario("Player 1 buy a terrain") {
+      Given("Terrain has not an owner and player 1 has money to buy it ")
+      val terrainPrice = gameSession.getPlayerTerrain(PLAYER_1).asInstanceOf[Purchasable].price
+      assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) >= terrainPrice)
+      assert(purchasableTerrain.owner.isEmpty)
+
+      When("player buy the terrain")
+      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
+
+      Then("player 1 become owner of the terrain")
+      assert(purchasableTerrain.owner.nonEmpty)
+      assert(purchasableTerrain.owner.get == PLAYER_1)
+
+      Then("player 1 spend his money")
+      assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE)
+    }
+
+    Scenario("When terrain is bought another player on this terrain must see the rent event") {
+      Given("player 1 buys the terrain")
+      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
+
+      When("player 2 arrived on the terrain")
+      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourIterator(PLAYER_2)
+
+      Then("event interaction return OK if player 2 has money to pay rent")
+      assert(it.currentEvents.nonEmpty)
+      val interactiveStory = getStories(it.currentEvents, it.playerId).head.head.asInstanceOf[InteractiveEventStory]
+      assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
+
+      Then("event interaction return ERR if player 2 cannot pay rent")
+      gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
+      assert(interactiveStory.interactions.head(it.playerId) match
+        case Result.ERR(_) => true
+        case _ => false
+      )
+    }
+
+    Scenario("Player 2 pay rent to player 1") {
+      Given("player 1 buys the terrain")
+      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
+
+      When("player 2 pay the rent")
+      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourIterator(PLAYER_2)
+      it.next()
+
+      Then("player 2 loses his money and player 1 receives the payment")
+      assert(
+        gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE + RENT
+      )
+      assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_2) == GameSessionHelper.playerInitialMoney - RENT)
+    }
   }
