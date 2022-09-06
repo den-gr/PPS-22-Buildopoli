@@ -9,6 +9,8 @@ case class GameStoreImpl() extends GameStore:
 
   override val terrainList: ListBuffer[Terrain] = ListBuffer()
   private var listOfPLayer: List[Player] = List()
+  private var gameStarted: Boolean = false
+
   def playersList: List[Player] = listOfPLayer
   def playersList_=(list: List[Player]): Unit = this.listOfPLayer = list
 
@@ -17,5 +19,12 @@ case class GameStoreImpl() extends GameStore:
     .filter(t => t.basicInfo.position.equals(position))
     .result()
     .head
-  override def addPlayer(player: Player): Unit = playersList = playersList :+ player
-  override def putTerrain(terrain: Terrain*): Unit = terrainList ++= terrain
+
+  override def startGame(): Unit = this.gameStarted = true
+  def checkGameStarted(): Unit = if gameStarted then throw new InterruptedException("Game already started !")
+  override def addPlayer(player: Player): Unit =
+    checkGameStarted()
+    playersList = playersList :+ player
+  override def putTerrain(terrain: Terrain*): Unit =
+    checkGameStarted()
+    terrainList ++= terrain

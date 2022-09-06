@@ -9,6 +9,9 @@ import org.scalatest.funsuite.AnyFunSuite
 import player.Player
 import lap.Lap
 import lap.Lap.MoneyReward
+import terrain.Mortgage.DividePriceMortgage
+import terrain.RentStrategy.RentStrategyWithBonus
+import terrain.{Purchasable, Terrain, TerrainInfo}
 
 import scala.collection.immutable.Seq
 import scala.collection.mutable.ListBuffer
@@ -59,4 +62,8 @@ class GameSessionTest extends AnyFunSuite:
     assert(gameStore.playersList.size === (previousSize + 1))
   }
 
-
+  test("game started control") {
+    gameSession.startGame()
+    val previousSize: Int = gameStore.playersList.size
+    assertThrows[InterruptedException](gameSession.addOnePlayer(Option.apply(2)))
+  }

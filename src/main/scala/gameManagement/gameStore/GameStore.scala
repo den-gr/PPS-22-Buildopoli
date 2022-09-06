@@ -48,6 +48,8 @@ trait GameStore:
    * @param player to put into playersList
    */
   def addPlayer(player: Player): Unit
+  
+  def startGame(): Unit
 
 object GameStore:
   def apply(): GameStore =
