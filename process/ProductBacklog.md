@@ -62,9 +62,9 @@
         <td>Bacca</td>
         <td>10</td>
         <td>2</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <!-- 2 item-->
     <tr>
@@ -112,8 +112,8 @@
         <td></td>
         <td>Build purchasable terrain type</td>
         <td>Bertoni</td>
-        <td>6</td>
-        <td>0</td>
+        <td>8</td>
+        <td>2</td>
         <td>0</td>
         <td>0</td>
         <td>0</td>
@@ -122,11 +122,11 @@
         <td></td>
         <td>Define buildable terrain type (house building)</td>
         <td>Bertoni</td>
-        <td>9</td>
-        <td>2</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>11</td>
+        <td>4</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
@@ -134,11 +134,11 @@
         <td>Bacca</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
+        <td>4</td>
         <td></td>
         <td></td>
     </tr>
-    <tr>
+    <!-- <tr>
         <td></td>
         <td>Terrain Builder/Factory</td>
         <td>Bertoni & Bacca</td>
@@ -147,16 +147,16 @@
         <td></td>
         <td></td>
         <td></td>
-    </tr>
+    </tr> -->
     <tr>
         <td></td>
         <td>Integrate events with terrain</td>
         <td>Grushchak</td>
-        <td>2</td>
-        <td>2</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>3</td>
+        <td>3</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <!-- item-->
     <tr>
@@ -165,9 +165,9 @@
         <td>Grushchak</td>
         <td>8</td>
         <td>2</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
@@ -175,18 +175,28 @@
         <td>Grushchak</td>
         <td>10</td>
         <td>3</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
         <td></td>
-        <td></td>
-        <td></td>
+        <td>Define behaviour iterator for navigation between event groups</td>
+        <td>Grushchak</td>
+        <td>7</td>
+        <td>7</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <!-- item-->
     <tr>
         <td>I need to define conditions of the game ending and rewards of completing game lap</td>
         <td>Define end game logic</td>
-        <td>Grushchak</td>
+        <td>Bertoni</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
+        <td>5</td>
         <td></td>
         <td></td>
     </tr>
@@ -196,7 +206,7 @@
         <td>Bertoni</td>
         <td>5</td>
         <td>3</td>
-        <td></td>
+        <td>1</td>
         <td></td>
         <td></td>
     </tr>
@@ -204,42 +214,72 @@
     <tr>
         <td>I need a simple CLI for use the game</td>
         <td>Create simple controller</td>
-        <td>-</td>
-        <td>-</td>
-        <td></td>
-        <td></td>
+        <td>Bacca & Grushchak</td>
+        <td>10</td>
+        <td>10</td>
+        <td>10</td>
         <td></td>
         <td></td>
     </tr>
         <tr>
         <td></td>
         <td>Create CLI to play the game</td>
-        <td>-</td>
-        <td>-</td>
-        <td></td>
-        <td></td>
+        <td>Bertoni & Bacca</td>
+        <td>10</td>
+        <td>10</td>
+        <td>10</td>
         <td></td>
         <td></td>
     </tr>
      <!-- 4 item-->
     <tr>
         <td>I need to have default behaviour associated to some default terrain types</td>
-        <td>Define default card terrain behaviour and extend Behaviour factory</td>
+        <td>Build default card terrain behaviour</td>
         <td>Bacca</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
+        <td>5</td>
         <td></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td>Define default purchasable terrain behaviour and extend Behaviour factory</td>
-        <td>Bertoni</td>
+        <td>Define event groups for each cards</td>
+        <td>Bacca</td>
         <td>5</td>
         <td>5</td>
+        <td>5</td>
         <td></td>
         <td></td>
+    </tr>
+    <tr>
         <td></td>
+        <td>Build default purchasable terrain buying and rend events</td>
+        <td>Bertoni & Denys</td>
+        <td>5</td>
+        <td>5</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Build default buildable terrain building tokens (houses) event</td>
+        <td>Bertoni & Denys</td>
+        <td>3</td>
+        <td>3</td>
+        <td>3</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Build default global purchasable terrain mortgage event</td>
+        <td>Bertoni & Denys</td>
+        <td>3</td>
+        <td>3</td>
+        <td>3</td>
+        <td>0</td>
+        <td>0</td>
     </tr>
 </table>
