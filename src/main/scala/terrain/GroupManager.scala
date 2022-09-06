@@ -16,7 +16,7 @@ trait GroupManager:
     */
   def isGroupComplete(ownerID: Int, group: String): Boolean
 
-  /** It tells if how many terrains of a certain group a owner possess
+  /** It tells how many terrains of a certain group a owner possess
     * @param ownerID
     *   the owner to consider
     * @param group
@@ -25,6 +25,8 @@ trait GroupManager:
     *   the number of terrains
     */
   def sameGroupTerrainsOwned(ownerID: Int, group: String): Int
+
+  def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable]
 
 object GroupManager:
 
@@ -43,6 +45,10 @@ object GroupManager:
       terrains collect onlyPurchasable count (t =>
         t.state == PurchasableState.OWNED && t.owner.contains(ownerID) && t.group == group
       )
+
+    override def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable] = terrains filter (t => t match
+      case t: Buildable => isGroupComplete(ownerID, t.group)
+      case _ => false) map (t => t.asInstanceOf[Buildable])
 
     private def onlyPurchasable = new PartialFunction[Terrain, Purchasable]:
       def apply(t: Terrain): Purchasable = t.asInstanceOf[Purchasable]

@@ -44,6 +44,10 @@ class GroupManagerTest extends AnyFunSuite:
   test("If a terrain is mortgaged it is not count"){
     assert(gp.sameGroupTerrainsOwned(2, "blue") == 1)
     assert(!gp.isGroupComplete(2, "blue"))
+  }
 
+  test("It is possible to know on which terrains a owner can build on"){
+    assert(gp.terrainsOwnerCanBuildOn(1) equals Seq(t3, t4, t5))
+    assert(gp.terrainsOwnerCanBuildOn(2) equals Seq())
   }
 
