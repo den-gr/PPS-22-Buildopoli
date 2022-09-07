@@ -64,6 +64,5 @@ class GameSessionTest extends AnyFunSuite:
 
   test("game started control") {
     gameSession.startGame()
-    val previousSize: Int = gameStore.playersList.size
     assertThrows[InterruptedException](gameSession.addOnePlayer(Option.apply(2)))
   }
