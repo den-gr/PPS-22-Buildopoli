@@ -7,7 +7,7 @@ import behaviour.event.EventStoryModule.EventStory
 
 import scala.annotation.targetName
 
-object BehaviourModule extends StoryConverter:
+object BehaviourModule extends StoryHelper:
 
   type StoryGroup = Seq[EventStory]
 
