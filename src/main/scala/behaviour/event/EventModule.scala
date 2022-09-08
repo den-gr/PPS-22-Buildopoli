@@ -5,6 +5,8 @@ import scala.annotation.targetName
 import behaviour.event.EventStoryModule
 import behaviour.event.EventStoryModule.*
 
+/** Basic elements of game events
+  */
 object EventModule:
   /** Main logic of event action. Take in input a player id
     */
@@ -57,8 +59,8 @@ object EventModule:
     def copy(nextEv: Option[EventGroup]): Event
 
   object Event:
-    val WITHOUT_PRECONDITION: EventPrecondition = _ => true
-    val WITHOUT_STRATEGY: EventStrategy = _ => ()
+    private val WITHOUT_PRECONDITION: EventPrecondition = _ => true
+    private val WITHOUT_STRATEGY: EventStrategy = _ => ()
 
     /** Allows to adapt EventStory as StoryGenerator
       * @tparam T
@@ -110,9 +112,17 @@ object EventModule:
 
       override def copy(newNextEvent: Option[EventGroup]): Event = this.copy(nextEvent = newNextEvent)
 
+  /** Additional operations for [[Event]]
+    */
   object EventOperation:
     extension [T <: Event](e: T)
       @targetName("append")
+      /** Append to an Event as its nextEvent an another event. Both events must be of the same type
+        * @param nextEvent
+        *   event that will be appended
+        * @return
+        *   new event with a new event successor
+        */
       def ++(nextEvent: T): T =
         if e.getClass != nextEvent.getClass then
           throw new IllegalArgumentException("Both event must be of the same type")

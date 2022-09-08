@@ -78,9 +78,27 @@ object EventStoryModule:
         throw IllegalArgumentException("Each description must have a corresponding action")
       EventStoryInteractionsImpl(desc, choices, interactions)
 
+    /** [[InteractiveEventStory]] constructor
+      * @param desc
+      *   event story description
+      * @param choicesAndInteractions
+      *   tuples with texts of possible player choices and corresponding interaction for each choice
+      * @return
+      *   an interactive event story
+      */
+    def apply(desc: String, choicesAndInteractions: Seq[(String, Interaction)]): InteractiveEventStory =
+      apply(desc, choicesAndInteractions.map(_._1), choicesAndInteractions.map(_._2))
+
+    /** Transform [[EventStory]] in [[InteractiveEventStory]] by adding [[Interaction]]
+      * @param story
+      *   base event story
+      * @param interactions
+      *   that will be added to the event story
+      * @return
+      *   an interactive event story
+      */
     def apply(story: EventStory, interactions: Seq[Interaction]): InteractiveEventStory =
       apply(story.description, story.choices, interactions)
-      
 
     private class EventStoryImpl(
         override val description: String,

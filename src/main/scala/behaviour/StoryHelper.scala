@@ -6,6 +6,9 @@ import behaviour.event.EventGroup
 /** Allows to convert a sequence of [[EventGroup]] to sequence of [[StoryGroup]] and then to a string
   */
 trait StoryHelper:
+  /** @tparam T
+    *   can be a [[EventGroup]] or simply [[StoryGroup]]
+    */
   trait Converter[T]:
     def stories(seq: Seq[T], playerId: Int): Seq[StoryGroup]
 

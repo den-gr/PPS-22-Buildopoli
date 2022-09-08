@@ -41,6 +41,8 @@ object EventFactory:
     private val bank = gameSession.gameBank
     private val dice = gameSession.dice
 
+    private def grMg: GroupManager = gameSession.getGroupManager
+
     override def WithdrawMoneyEvent(story: EventStory, amount: Int): Event =
       val withdrawalStrategy: EventStrategy = playerId => bank.makeTransaction(playerId, amount = amount)
       Event(story, withdrawalStrategy)
@@ -104,7 +106,7 @@ object EventFactory:
       val interaction: Interaction = playerId =>
         val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
-          case t: Purchasable if playerMoney >= t.computeTotalRent(gameSession.getGroupManager) =>
+          case t: Purchasable if playerMoney >= t.computeTotalRent(grMg) =>
             Result.OK
           case _: Purchasable => Result.ERR(notMoneyErrMsg)
 
@@ -113,7 +115,7 @@ object EventFactory:
       val strategy: EventStrategy = playerId =>
         val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
-          case t: Purchasable if playerMoney >= t.computeTotalRent(gameSession.getGroupManager) =>
+          case t: Purchasable if playerMoney >= t.computeTotalRent(grMg) =>
             bank.makeTransaction(
               playerId,
               t.owner.get,
@@ -124,15 +126,29 @@ object EventFactory:
       Event(interactiveStory, strategy, precondition)
 
     override def BuildTokenEvent(storyDescription: String): Event =
-//      val storyGenerator: StoryGenerator = playerId =>
-//        val interactions: Interaction = Seq()
-//        for
-//           val terrain <- groupManager.terrainsOwnerCanBuildOn(playerId)
-//        yield
-//
-//
-//        EventStory(storyDescription, "")
-//      val precondition: EventPrecondition = playerId =>
-//        gameSession.getPlayerTerrain(playerId) match
-//          case t: Buildable if => true //todo temporal group manger
-      ???
+      val eventPrecondition: EventPrecondition = playerId =>
+        grMg.terrainsOwnerCanBuildOn(playerId).exists(_.canBuild(grMg))
+
+      val storyGenerator: StoryGenerator = playerId =>
+        val choicesWithInteractions =
+          for terrain <- grMg.terrainsOwnerCanBuildOn(playerId).filter(_.canBuild(grMg))
+          yield
+            val interaction = (_: Int) =>
+                //TODO controllare prezzo
+//              if bank.getMoneyForPlayer(playerId) > terrain.
+//              gameSession.gameStore.userInputs.addTailInputEvent(terrain.basicInfo.position)
+              Result.OK
+            val choice: String = terrain.basicInfo.name
+            (choice, interaction)
+        EventStory(storyDescription, choicesWithInteractions)
+
+      val eventStrategy: EventStrategy = playerId =>
+        val input = gameSession.gameStore.userInputs.getHeadElement
+        val buildableList = grMg.terrainsOwnerCanBuildOn(playerId)
+        input match
+          case terrainId: Int if buildableList.exists(_.basicInfo.position == terrainId) =>
+            buildableList.find(_.basicInfo.position == terrainId)
+            //TODO sotrrare soldi
+          case _ => throw EventInputException()
+        gameSession.gameStore.userInputs.removeHeadElement()
+      Event(storyGenerator)

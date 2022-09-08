@@ -88,14 +88,14 @@ object BehaviourIterator:
 
     override def currentStories: Seq[StoryGroup] = getStories(this.currentEvents, this.playerId)
 
-  private def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
-    try
-      val event = eventGroup(index)
-      event.run(playerId)
-      if event.nextEvent.nonEmpty then
-        val next = event.nextEvent.get
-        Some(next.replaceEvents(next.filter(_.hasToRun(playerId))))
-      else None
-    catch
-      case _: IndexOutOfBoundsException =>
-        throw IllegalArgumentException("Chose index of a not existing event. -> " + index)
+    private def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
+      try
+        val event = eventGroup(index)
+        event.run(playerId)
+        if event.nextEvent.nonEmpty then
+          val next = event.nextEvent.get
+          Some(next.replaceEvents(next.filter(_.hasToRun(playerId))))
+        else None
+      catch
+        case _: IndexOutOfBoundsException =>
+          throw IllegalArgumentException("Chose index of a not existing event. -> " + index)
