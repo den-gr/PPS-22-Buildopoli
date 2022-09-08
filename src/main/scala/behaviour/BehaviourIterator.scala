@@ -1,20 +1,21 @@
 package behaviour
 
-import behaviour.BehaviourModule.{Behaviour, Index}
+import behaviour.BehaviourModule.*
 import behaviour.event.EventGroup
+import behaviour.event.EventStoryModule.EventStory
 
 import scala.collection.mutable
 
-/** Allows correctly navigate between event groups and their successors of a Behaviour
+/** Allows correctly navigate between event groups and their successors of a Behaviour. Encapsulate a sequence of
+  * [[EventGroup]]
   */
 trait BehaviourIterator:
-  /**
-   * Id of player that iterate behaviours events
-   */
-  val playerId: Int 
-  
+  /** Id of player that iterate behaviours events
+    */
+  val playerId: Int
+
   /** @return
-    *   false if there are not available EventGroup
+    *   false if there are not available EventGroups
     */
   def hasNext: Boolean
 
@@ -29,12 +30,41 @@ trait BehaviourIterator:
     */
   def currentEvents: Seq[EventGroup]
 
+  /** Get stories of current event groups
+    * @return
+    *   grouped event stories
+    */
+  def currentStories: Seq[StoryGroup]
+
 object BehaviourIterator:
+
+  /** Constructor of behaviour iterator
+    * @param events
+    *   the event groups that must be iterated
+    * @param playerId
+    *   id of player that interact with behaviour
+    * @return
+    *   behaviour iterator that allows to a player to use game events
+    */
   def apply(events: Seq[EventGroup], playerId: Int): BehaviourIterator =
     if events.count(_.isAtomic) > 1 then throw IllegalStateException("Only one event group can be atomic")
     BehaviourIteratorImpl(events, playerId)
 
-  private case class BehaviourIteratorImpl(events: Seq[EventGroup], override val playerId: Int) extends BehaviourIterator:
+  /** Add a new event group to the current event groups of behaviour iterator. Can be useful if behaviour can has random
+    * events. It is better to use this constructor if behaviour iterator did not call next() method
+    *
+    * @param it
+    *   behaviour iterator that will receive a new event group
+    * @param eventGroup
+    *   new event group that must be appended to iterator
+    * @return
+    *   behaviour iterator with new event group
+    */
+  def apply(it: BehaviourIterator, eventGroup: EventGroup): BehaviourIterator =
+    apply(eventGroup +: it.currentEvents, it.playerId)
+
+  private case class BehaviourIteratorImpl(events: Seq[EventGroup], override val playerId: Int)
+      extends BehaviourIterator:
     val eventStack: mutable.Stack[Seq[EventGroup]] = mutable.Stack(events)
 
     override def hasNext: Boolean = eventStack.nonEmpty
@@ -56,11 +86,16 @@ object BehaviourIterator:
 
     override def currentEvents: Seq[EventGroup] = eventStack.head
 
+    override def currentStories: Seq[StoryGroup] = getStories(this.currentEvents, this.playerId)
+
   private def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
     try
       val event = eventGroup(index)
       event.run(playerId)
-      event.nextEvent
+      if event.nextEvent.nonEmpty then
+        val next = event.nextEvent.get
+        Some(EventGroup(next.filter(_.hasToRun(playerId)), next.isAtomic))
+      else None
     catch
       case _: IndexOutOfBoundsException =>
         throw IllegalArgumentException("Chose index of a not existing event. -> " + index)

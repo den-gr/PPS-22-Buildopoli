@@ -17,7 +17,7 @@ trait EventGroup extends Seq[Event]:
 // TODO def isMandatory: Boolean
 
 object EventGroup:
-  
+
   /** Constructor of a not atomic [[EventGroup]]
     *
     * @param elems
@@ -38,4 +38,4 @@ object EventGroup:
     */
   def apply(elems: Seq[Event], isAtomic: Boolean = false): EventGroup = EventGroupImpl(elems, isAtomic)
 
-  private class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean) extends EventGroup
+  private case class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean) extends EventGroup

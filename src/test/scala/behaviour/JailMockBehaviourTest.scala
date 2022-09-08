@@ -10,6 +10,8 @@ import util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
+/** Test Behaviour by using a jail terrain behaviour. Jail is replaces by a mock
+  */
 class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   var jail: JailMock = _
   val PLAYER_1: Int = 1
@@ -84,4 +86,13 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     events = behaviour.getBehaviourIterator(PLAYER_1).currentEvents
     assert(events.length == 1)
     assert(events.head.length == 2)
+  }
+
+  test("To behaviour iterator is possible to add new events") {
+    val it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+    assert(it.currentEvents.length == 1)
+    val newGroup = EventGroup(Event(EventStory("dfdff", "")))
+    val newIt = BehaviourIterator(it, newGroup)
+    assert(newIt.currentEvents.length == 2)
+    assert(newIt.currentEvents.head == newGroup)
   }
