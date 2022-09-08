@@ -6,17 +6,21 @@ import player.Player
 
 import scala.collection.mutable.ListBuffer
 
-/**
- * Basic implementation of GameTurn
- * @param gameOptions to access selector Lambda that selects the next player
- * @param gameStore to access playersList in the game
- */
+/** Basic (possible) implementation of GameTurn
+  * @param gameOptions
+  *   to access selector Lambda that selects the next player
+  * @param gameStore
+  *   to access playersList in the game
+  */
 case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) extends GameTurn:
   override def selectNextPlayer(): Int =
+    if !isNextTurnOpen then throw new RuntimeException("Previous player input values not emptied")
     val selection: Int = gameOptions.playerTurnSelector.apply(gameStore.playersList, playerWithTurn)
     playerWithTurn = playerWithTurn.::(selection)
     everyoneHasDoneOneTurn()
     selection
+
+  override protected def isNextTurnOpen: Boolean = gameStore.userInputs.isListEmpty
 
   override def playerHasDoneTheActualTurn(playerId: Int): Boolean = playerWithTurn.contains(playerId)
 
