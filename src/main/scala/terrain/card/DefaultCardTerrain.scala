@@ -22,7 +22,8 @@ case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
   override def getCard(name: String): Card = cards.filter(el => el.name == name).head
 
   def getCasualCardFromList: Card =
-    cards.apply(randomGenerator.nextInt(cards.size) + 1)
+    cards.head
+      // cards.apply(randomGenerator.nextInt(cards.size) + 1)
 
   def exchangeElement(card: Card): Unit =
     removeCard(card.name)
@@ -31,4 +32,4 @@ case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
   override def getBehaviourIterator(playerID: Int): BehaviourIterator =
     val card: Card = getCasualCardFromList
     exchangeElement(card)
-    BehaviourIterator.apply(terrain.getBehaviourIterator(playerID), card)
+    BehaviourIterator.apply(terrain.getBehaviourIterator(playerID), card.consequences)

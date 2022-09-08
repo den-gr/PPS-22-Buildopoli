@@ -2,6 +2,8 @@ package terrain.card
 
 import behaviour.BehaviourModule.Behaviour
 import behaviour.event.EventGroup
+import behaviour.event.EventModule.{Event, EventStrategy}
+import behaviour.event.EventStoryModule.EventStory
 import gameManagement.gameBank.{Bank, GameBankImpl}
 import gameManagement.gameOptions.GameOptions
 import gameManagement.gameSession.{GameSession, GameSessionImpl}
@@ -27,8 +29,35 @@ class CardTerrainTest extends AnyFunSuite:
 
   val gameSession: GameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
 
-  val t: Terrain = Terrain(TerrainInfo("carta probabilità", 1), Behaviour(EventGroup(Seq())))
-  val t1: Terrain = Terrain(TerrainInfo("carta imprevisti", 1), Behaviour())
+  val t: Terrain = Terrain(TerrainInfo("carta probabilità", 1), Behaviour())
+  val t1: Terrain = Terrain(TerrainInfo("carta imprevisti", 2), Behaviour())
 
-  val probabilityTerrain: CardTerrain = CardTerrain.apply(t, gameSession, false)
+  val probabilityTerrain: CardTerrain = CardTerrain.apply(t)
   val surpriseTerrain: CardTerrain = CardTerrain.apply(t1, gameSession, true)
+
+  test("adding 4 players to gameSession") {
+    gameSession.addManyPlayers(4)
+    gameSession.gameStore.putTerrain(probabilityTerrain, surpriseTerrain)
+    gameStore.startGame()
+
+    assert(gameSession.gameStore.terrainList.size == 2)
+    assert(gameSession.gameStore.playersList.size == 4)
+  }
+
+  test("Player being in the probability terrain, take a cart, so his money should be incremented from 200 to 700") {
+    val addMoneyStory: EventStory = EventStory("Test", "Add 500 money")
+    val addMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(receiverId = id, 500)
+    val addMoney = DefaultCards(EventGroup(Event(addMoneyStory, addMoneyStrategy)), "add money")
+    probabilityTerrain.addCards(addMoney)
+
+    gameSession.setPlayerPosition(1, 1)
+    assert(gameSession.getPlayerPosition(1) == 1)
+    assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
+
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    println(behaviour.currentStories)
+
+    behaviour.next()
+
+    assert(gameSession.gameBank.getMoneyForPlayer(1) == 700)
+  }

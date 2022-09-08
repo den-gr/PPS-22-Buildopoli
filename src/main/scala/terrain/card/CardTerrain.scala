@@ -47,17 +47,17 @@ object CardTerrain:
     List(giveMoneyAll, goToPrison, doOneLapWithoutReward)
 
   def createProbabilityCards(gameSession: GameSession): List[Card] =
-    val removeMoneyStory: EventStory = EventStory("Test", "Remove 500 money")
-    val removeMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(id, amount = 500)
-    val removeMoney = DefaultCards(EventGroup(Event(removeMoneyStory, removeMoneyStrategy)), "remove money")
+//    val removeMoneyStory: EventStory = EventStory("Test", "Remove 500 money")
+//    val removeMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(id, amount = 500)
+//    val removeMoney = DefaultCards(EventGroup(Event(removeMoneyStory, removeMoneyStrategy)), "remove money")
 
     val addMoneyStory: EventStory = EventStory("Test", "Add 500 money")
     val addMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(receiverId = id, 500)
     val addMoney = DefaultCards(EventGroup(Event(addMoneyStory, addMoneyStrategy)), "add money")
 
-    val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
-    val doOneLapStrategy: EventStrategy = id =>
-      gameSession.setPlayerPosition(id, gameSession.gameOptions.nCells - gameSession.getPlayerPosition(id))
-    val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
+//    val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
+//    val doOneLapStrategy: EventStrategy = id =>
+//      gameSession.setPlayerPosition(id, gameSession.gameOptions.nCells - gameSession.getPlayerPosition(id))
+//    val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
 
-    List(removeMoney, addMoney, doOneLap)
+    List(addMoney)
