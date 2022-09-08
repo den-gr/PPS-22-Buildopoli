@@ -94,7 +94,7 @@ object BehaviourIterator:
       event.run(playerId)
       if event.nextEvent.nonEmpty then
         val next = event.nextEvent.get
-        Some(EventGroup(next.filter(_.hasToRun(playerId)), next.isAtomic))
+        Some(next.replaceEvents(next.filter(_.hasToRun(playerId))))
       else None
     catch
       case _: IndexOutOfBoundsException =>

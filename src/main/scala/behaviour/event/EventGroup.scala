@@ -14,7 +14,14 @@ trait EventGroup extends Seq[Event]:
     */
   val isAtomic: Boolean
 
-// TODO def isMandatory: Boolean
+  /** Create a new EventGroup with new events but old setup
+    * @param events
+    *   events of new event group
+    * @return
+    *   an new event group
+    */
+  def replaceEvents(events: Seq[Event]): EventGroup
+  // TODO def isMandatory: Boolean
 
 object EventGroup:
 
@@ -38,4 +45,5 @@ object EventGroup:
     */
   def apply(elems: Seq[Event], isAtomic: Boolean = false): EventGroup = EventGroupImpl(elems, isAtomic)
 
-  private case class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean) extends EventGroup
+  private case class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean) extends EventGroup:
+    override def replaceEvents(events: Seq[Event]): EventGroup = EventGroup(events, this.isAtomic)

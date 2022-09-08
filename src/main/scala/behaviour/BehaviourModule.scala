@@ -30,5 +30,5 @@ object BehaviourModule extends StoryHelper:
 
       private def getInitialEvents(playerId: Int): Seq[EventGroup] =
         initialEvents
-          .map(gr => EventGroup(gr.filter(_.hasToRun(playerId)), gr.isAtomic))
+          .map(gr => gr.replaceEvents(gr.filter(_.hasToRun(playerId))))
           .filter(_.nonEmpty)
