@@ -55,9 +55,58 @@ class CardTerrainTest extends AnyFunSuite:
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
 
     val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
-    println(behaviour.currentStories)
-
     behaviour.next()
 
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 700)
+
+    probabilityTerrain.removeCard(addMoney.name)
+    assert(probabilityTerrain.cardList.isEmpty)
+  }
+
+  test("removing money from player 1, giving one card of probability") {
+    val removeMoneyStory: EventStory = EventStory("Test", "Remove 500 money")
+    val removeMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(id, amount = 500)
+    val removeMoney = DefaultCards(EventGroup(Event(removeMoneyStory, removeMoneyStrategy)), "remove money")
+    probabilityTerrain.addCards(removeMoney)
+
+    assert(gameSession.getPlayerPosition(1) == 1)
+    assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
+
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    behaviour.next()
+
+    assert(gameSession.gameBank.getMoneyForPlayer(1) == 200)
+
+    probabilityTerrain.removeCard(removeMoney.name)
+    assert(probabilityTerrain.cardList.isEmpty)
+  }
+
+  test("player have to do one entire lap to get an extra bonus") {
+    val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
+    val doOneLapStrategy: EventStrategy =
+      id => gameSession.setPlayerPosition(id, (gameSession.gameOptions.nCells - gameSession.getPlayerPosition(id)) + 1)
+    val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
+    probabilityTerrain.addCards(doOneLap)
+
+    assert(gameSession.getPlayerPosition(1) == 1)
+    assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
+
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    behaviour.next()
+
+    assert(gameSession.getPlayerPosition(1) == 1)
+    assert(gameSession.gameBank.getMoneyForPlayer(1) == 400)
+
+    probabilityTerrain.removeCard(doOneLap.name)
+    assert(probabilityTerrain.cardList.isEmpty)
+  }
+
+  test("testing some surprises cards") {
+    gameSession.setPlayerPosition(1, 1)
+    assert(gameSession.getPlayerPosition(1) == 2)
+    assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == surpriseTerrain)
+
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    println(behaviour.currentStories)
+    behaviour.next()
   }
