@@ -27,12 +27,14 @@ trait Bank:
   def makeTransaction(senderId: Int = 0, receiverId: Int = 0, amount: Int): Unit
 
   /**
-   * To make global transactions. Where one player, requests some amount to all the other players.
+   * To make global transactions. 
+   * One player can, requests some amount to all the other players.
+   * Or one player can send some amount to all other players.
    * Those transactions will complete also when some player has debit. It will be increased.
    * @param receiverId of the transaction
    * @param amount of the transaction
    */
-  def makeGlobalTransaction(receiverId: Int, amount: Int): Unit
+  def makeGlobalTransaction(senderId: Int = 0, receiverId: Int = 0, amount: Int): Unit
 
   /**
    * @return a map[key, value] = [playerId, debit value]

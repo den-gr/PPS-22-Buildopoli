@@ -13,7 +13,7 @@ class GameBankTest extends AnyFunSuite:
   val selector: (Seq[Player], Seq[Int]) => Int =
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
-  
+
   val gameStore: GameStore = GameStoreImpl()
   val gameOptions: GameOptions = GameOptions(0, 2, 10, 6, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
@@ -97,9 +97,9 @@ class GameBankTest extends AnyFunSuite:
     gameBank.makeTransaction(receiverId = 8, 1000)
     assert(gameBank.getMoneyForPlayer(7) === 200)
     assert(gameBank.getMoneyForPlayer(8) === 1000)
-    gameBank.makeGlobalTransaction(8, 300)
+    gameBank.makeGlobalTransaction(receiverId = 8, 300)
     assert(gameBank.getMoneyForPlayer(7) === 0)
-    assert(gameBank.getDebtsForPlayer(7)=== 100)
+    assert(gameBank.getDebtsForPlayer(7) === 100)
 
     assertThrows[IllegalStateException](gameBank.makeTransaction(7, 8, 100))
   }

@@ -20,11 +20,17 @@ case class GameBankImpl(override val gameOptions: GameOptions, override val game
       decreasePlayerMoney(send, amount)
       increasePlayerMoney(receive, amount)
 
-  override def makeGlobalTransaction(receiverId: Int, amount: Int): Unit =
-    gameStore.playersList.foreach(p =>
-      decreasePlayerMoney(p.playerId, amount)
-      increasePlayerMoney(receiverId, amount)
-    )
+  override def makeGlobalTransaction(senderId: Int, receiverId: Int, amount: Int): Unit = (senderId, receiverId) match
+    case (0, _) =>
+      gameStore.playersList.foreach(p =>
+        decreasePlayerMoney(p.playerId, amount)
+        increasePlayerMoney(receiverId, amount)
+      )
+    case (_, 0) =>
+      gameStore.playersList.foreach(p =>
+        decreasePlayerMoney(senderId, amount)
+        increasePlayerMoney(p.playerId, amount)
+      )
 
   def increasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = gameStore.getPlayer(playerId)
