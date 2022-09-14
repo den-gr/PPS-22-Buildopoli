@@ -23,6 +23,7 @@ class WithdrawalMoneyEventTest extends AnyFunSuite with BeforeAndAfterEach:
     val gameSession = DefaultGameSession(1)
     bank = gameSession.gameBank
     behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT))
+    gameSession.startGame()
 
   test("Withdraw money behaviour must simply withdraw player money") {
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)

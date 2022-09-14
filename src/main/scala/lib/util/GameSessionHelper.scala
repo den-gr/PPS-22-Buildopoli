@@ -15,18 +15,16 @@ object GameSessionHelper:
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
   val playerInitialMoney = 200
-  val playerInitialCells = 2
-  val nCells = 10
+  val playerInitialCells = 0
   val diceFaces = 6
 
   def DefaultGameSession(numPlayers: Int): GameSession =
     val gameOptions: GameOptions =
-      GameOptions(playerInitialMoney, playerInitialCells, nCells, diceFaces, selector)
+      GameOptions(playerInitialMoney, playerInitialCells, numPlayers, diceFaces, selector)
     val gameStore: GameStore = GameStoreImpl()
     val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
     val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 
     val gs = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
-    gs.addManyPlayers(numPlayers)
     gs

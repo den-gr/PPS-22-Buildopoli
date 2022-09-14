@@ -8,8 +8,8 @@ import scala.collection.mutable.ListBuffer
   *   how much money to give to each player at start
   * @param playerInitialCells
   *   how many cells to assign at each player at game start
-  * @param nCells
-  *   Setting number of cells for one game session
+  * @param nUsers
+  *   Setting number of users in the game
   * @param diceFaces
   *   Number of faces in the dice used to play the game
   * @param playerTurnSelector
@@ -18,7 +18,7 @@ import scala.collection.mutable.ListBuffer
 case class GameOptions(
     playerInitialMoney: Int,
     playerInitialCells: Int,
-    nCells: Int,
+    nUsers: Int,
     diceFaces: Int,
     playerTurnSelector: (Seq[Player], Seq[Int]) => Int
 )
