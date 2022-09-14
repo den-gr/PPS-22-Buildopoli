@@ -7,10 +7,11 @@ import lib.gameManagement.gameStore.GameStore
 import lib.gameManagement.gameTurn.GameTurn
 import lib.lap.Lap
 import lib.player.{Player, PlayerImpl}
-import lib.terrain.{Buildable, GroupManager, Purchasable, Terrain}
+import lib.terrain.{Buildable, GroupManager, Purchasable, PurchasableState, Terrain}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.mutable.ListBuffer
+import scala.util.Random
 
 case class GameSessionImpl(
     override val gameOptions: GameOptions,
@@ -27,19 +28,39 @@ case class GameSessionImpl(
   override def getGroupManager: GroupManager = this.groupManager
 
   override def startGame(): Unit =
+    this.addManyPlayers(gameOptions.nUsers)
+    initializePlayers()
     this.gameStore.startGame()
     this.groupManager = GroupManager(gameStore.terrainList.toList)
 
-  override def addManyPlayers(n: Int): Unit =
+  private def addManyPlayers(n: Int): Unit =
     for _ <- 0 until n do this.addOnePlayer(Option.empty)
 
-  override def addOnePlayer(playerId: Option[Int]): Unit =
+  private def addOnePlayer(playerId: Option[Int]): Unit =
     if playerId.isEmpty then this.gameStore.playerIdsCounter += 1
     this.gameStore.addPlayer(PlayerImpl(this.checkPlayerId(playerId)))
-    initializePlayer(this.gameStore.playersList.last)
 
-  def initializePlayer(lastPlayer: Player): Unit =
-    lastPlayer.setPlayerMoney(gameOptions.playerInitialMoney)
+  private def initializePlayers(): Unit =
+    this.gameStore.playersList.foreach(pl => pl.setPlayerMoney(gameOptions.playerInitialMoney))
+    giveTerrains()
+
+  private def giveTerrains(): Unit =
+    if enoughPurchasableTerrains() then
+      this.gameStore.playersList.foreach(pl =>
+        for _ <- 0 until this.gameOptions.playerInitialCells do
+          val purchasableTerrainList: Seq[Terrain] = this.gameStore.getTypeOfTerrains(tr =>
+            tr.isInstanceOf[Purchasable] && tr.asInstanceOf[Purchasable].state == PurchasableState.IN_BANK
+          )
+          purchasableTerrainList(Random.nextInt(purchasableTerrainList.size))
+            .asInstanceOf[Purchasable]
+            .changeOwner(Option.apply(pl.playerId))
+      )
+    else throw new IllegalStateException("Not enough terrains !")
+
+  def enoughPurchasableTerrains(): Boolean =
+    this.gameStore.getNumberOfTerrains(tr =>
+      tr.isInstanceOf[Purchasable]
+    ) >= this.gameOptions.nUsers * this.gameOptions.playerInitialCells
 
   def checkPlayerId(playerId: Option[Int]): Int =
     playerId match
@@ -56,6 +77,7 @@ case class GameSessionImpl(
 
   override def setPlayerPosition(playerId: Int, nSteps: Int, isValidLap: Boolean): Unit =
     val player = gameStore.getPlayer(playerId)
-    val result = gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nSteps, gameOptions.nCells)
+    val result =
+      gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nSteps, gameStore.getNumberOfTerrains(_ => true))
     player.setPlayerPawnPosition(result._1)
     if result._2 then gameLap.giveReward(playerId)

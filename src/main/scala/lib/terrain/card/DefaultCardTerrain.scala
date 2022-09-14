@@ -24,7 +24,7 @@ case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
 
   def getCasualCardFromList: Card =
     if cards.size == 1 then cards.head
-    else cards.apply(randomGenerator.nextInt(cards.size) + 1)
+    else cards.apply(randomGenerator.nextInt(cards.size))
 
   def exchangeElement(card: Card): Unit =
     removeCard(card.name)

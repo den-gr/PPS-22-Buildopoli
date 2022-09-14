@@ -2,7 +2,7 @@ package lib.gameManagement.gameStore
 
 import lib.gameManagement.gameStore.gameInputs.GameInputs
 import lib.player.Player
-import lib.terrain.Terrain
+import lib.terrain.{Purchasable, Terrain}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -15,16 +15,16 @@ trait GameStore:
     */
   var playersList: Seq[Player]
 
+  /** @return
+    *   Mutable list of terrains in the game
+    */
+  var terrainList: Seq[Terrain]
+
   /** Used to assing an incremental id to players being created
     */
   var playerIdsCounter: Int = 0
 
   def userInputs: GameInputs
-
-  /** @return
-    *   Mutable list of terrains in the game
-    */
-  def terrainList: ListBuffer[Terrain]
 
   /** @param playerId
     *   identifying one player
@@ -49,6 +49,12 @@ trait GameStore:
     *   to put into the list
     */
   def putTerrain(terrain: Terrain*): Unit
+
+  /** @return
+    *   actual number of terrains into the game
+    */
+  def getNumberOfTerrains(predicate: Terrain => Boolean): Int = terrainList.count(predicate)
+  def getTypeOfTerrains(predicate: Terrain => Boolean): Seq[Terrain] = terrainList.filter(predicate)
 
   def startGame(): Unit
 

@@ -50,18 +50,6 @@ trait GameSession:
     */
   def logger: Logger
 
-  /** To add a single player in the game
-    * @param playerId,
-    *   optionally used to assign a specific ID to a player being created
-    */
-  def addOnePlayer(playerId: Option[Int]): Unit
-
-  /** To add multiple players at one time
-    * @param n
-    *   players
-    */
-  def addManyPlayers(n: Int): Unit
-
   /** To set a new position of a player, after launching the dice for example
     * @param playerId
     *   the player being moved

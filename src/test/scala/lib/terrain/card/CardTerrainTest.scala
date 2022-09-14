@@ -23,7 +23,7 @@ class CardTerrainTest extends AnyFunSuite:
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
   val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(200, 2, 10, 6, selector)
+  val gameOptions: GameOptions = GameOptions(200, 0, 5, 6, selector)
   val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
   val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
   val gameLap: Lap = Lap(MoneyReward(200, gameBank))
@@ -37,12 +37,11 @@ class CardTerrainTest extends AnyFunSuite:
   val surpriseTerrain: CardTerrain = CardTerrain.apply(t1, gameSession, true)
 
   test("adding 4 players to gameSession") {
-    gameSession.addManyPlayers(4)
     gameSession.gameStore.putTerrain(probabilityTerrain, surpriseTerrain)
-    gameStore.startGame()
+    gameSession.startGame()
 
     assert(gameSession.gameStore.terrainList.size == 2)
-    assert(gameSession.gameStore.playersList.size == 4)
+    assert(gameSession.gameStore.playersList.size == 5)
   }
 
   test("Player being in the probability terrain, take a cart, so his money should be incremented from 200 to 700") {
@@ -85,7 +84,11 @@ class CardTerrainTest extends AnyFunSuite:
   test("player have to do one entire lap to get an extra bonus") {
     val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
     val doOneLapStrategy: EventStrategy =
-      id => gameSession.setPlayerPosition(id, (gameSession.gameOptions.nCells - gameSession.getPlayerPosition(id)) + 1)
+      id =>
+        gameSession.setPlayerPosition(
+          id,
+          (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
+        )
     val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
     probabilityTerrain.addCards(doOneLap)
 

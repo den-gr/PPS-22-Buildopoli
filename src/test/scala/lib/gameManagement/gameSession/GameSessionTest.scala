@@ -8,61 +8,61 @@ import lib.gameManagement.gameSession.{GameSession, GameSessionImpl}
 import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
 import lib.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
 import lib.lap.Lap
-import lib.player.Player
+import lib.player.{Player, PlayerImpl}
 import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.RentStrategyWithBonus
 import lib.terrain.{Purchasable, Terrain, TerrainInfo}
+import org.scalatest.BeforeAndAfterEach
 
 import scala.collection.immutable.Seq
 import scala.collection.mutable.ListBuffer
 
-class GameSessionTest extends AnyFunSuite:
+class GameSessionTest extends AnyFunSuite with BeforeAndAfterEach:
 
-  val selector: (Seq[Player], Seq[Int]) => Int =
-    (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
-      playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
+  var gameSession: GameSession = _
+  var gameStore: GameStore = _
 
-  val gameStore: GameStore = GameStoreImpl()
-  val gameOptions: GameOptions = GameOptions(200, 2, 10, 6, selector)
-  val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
-  val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
-  val gameLap: Lap = Lap(MoneyReward(200, gameBank))
-
-  val gameSession: GameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
+  override def beforeEach(): Unit =
+    val selector: (Seq[Player], Seq[Int]) => Int =
+      (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
+        playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
+    gameStore = GameStoreImpl()
+    val gameOptions: GameOptions = GameOptions(200, 2, 10, 6, selector)
+    val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
+    val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
+    val gameLap: Lap = Lap(MoneyReward(200, gameBank))
+    gameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
+    for i <- 0 until 20 do
+      val t: Terrain = Terrain(TerrainInfo("terreno" + i, i), null)
+      val p: Purchasable = Purchasable(t, 1000, null, DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
+      gameSession.gameStore.putTerrain(p)
 
   test("playersList has initial size at zero") {
     assert(gameStore.playersList.size === 0)
   }
 
-  test("playerList size increased after adding one element") {
-    val previousSize: Int = gameStore.playersList.size
-    gameSession.addOnePlayer(Option.empty)
-    assert(gameStore.playersList.size === (previousSize + 1))
-    assert(gameSession.gameBank.gameStore.playersList.size === (previousSize + 1))
-    assert(gameSession.gameStore.playersList.size === (previousSize + 1))
+  test("There should be 10 users inside playersList") {
+    this.gameSession.startGame()
+    assert(gameStore.playersList.size === 10)
+    assert(gameSession.gameBank.gameStore.playersList.size === 10)
+    assert(gameSession.gameStore.playersList.size === 10)
   }
 
-  test("playerList size increased after adding multiple elements") {
-    val previousSize: Int = gameStore.playersList.size
-    gameSession.addManyPlayers(5)
-    assert(gameStore.playersList.size === (previousSize + 5))
+  test("All players created inside playersList are initialized with 200 money") {
+    this.gameSession.startGame()
+    assert(gameStore.playersList.size === 10)
+    gameSession.gameStore.playersList.foreach(pl => assert(pl.getPlayerMoney === 200))
   }
 
-  test("last inserted player has money of 1000 after being created") {
-    val previousSize: Int = gameStore.playersList.size
-    gameSession.addOnePlayer(Option.apply(15))
-    assert(gameStore.playersList.size === (previousSize + 1))
-    assert(gameStore.playersList.last.playerId === 15)
-    assert(gameSession.gameStore.playersList.last.getPlayerMoney === 200)
-  }
+  test("giving one terrain to each user at start game") {
+    this.gameSession.startGame()
 
-  test("duplicate player ID existence") {
-    val previousSize: Int = gameStore.playersList.size
-    gameSession.addOnePlayer(Option.apply(2))
-    assert(gameStore.playersList.size === (previousSize + 1))
-  }
-
-  test("game started control") {
-    gameSession.startGame()
-    assertThrows[InterruptedException](gameSession.addOnePlayer(Option.apply(2)))
+    gameSession.gameStore.playersList.foreach(pl =>
+      assert(
+        gameSession.gameStore.getNumberOfTerrains(tr =>
+          tr.isInstanceOf[Purchasable] &&
+            tr.asInstanceOf[Purchasable].owner === Option.apply(pl.playerId)
+        ) == 2
+      )
+    )
   }
