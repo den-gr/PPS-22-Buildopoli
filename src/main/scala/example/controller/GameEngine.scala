@@ -13,7 +13,7 @@ class GameEngineImpl(gameSession: GameSession) extends GameEngine:
         gameSession.setPlayerPosition(playerId, gameSession.dice.rollOneDice())
       val behaviourIterator = gameSession.getPlayerTerrain(playerId).getBehaviourIterator(playerId)
       while behaviourIterator.hasNext do
-        println(behaviourIterator.currentEvents) // todo show to user
+        println(behaviourIterator.currentStories) // todo show to user
         behaviourIterator.next() // todo user make a choice
-        // todo if user click endturn then exit from the cycle
+        // todo if user click end turn then exit from the cycle
       // todo control endgame
