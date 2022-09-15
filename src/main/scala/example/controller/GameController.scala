@@ -3,6 +3,7 @@ package example.controller
 import example.view.View
 import lib.behaviour.event.EventStoryModule.InteractiveEventStory
 import lib.gameManagement.gameSession.GameSession
+import lib.gameManagement.log.Observer
 
 trait GameController:
   def start(): Unit
@@ -10,6 +11,9 @@ trait GameController:
 class GameControllerImpl(gameSession: GameSession, view: View) extends GameController:
   override def start(): Unit =
     gameSession.startGame()
+    val observer: Observer = new Observer:
+      override def update(msg: String): Unit = view.printLog(msg)
+    gameSession.logger.registerObserver(observer)
     while true do
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId)

@@ -1,17 +1,17 @@
 package lib.gameManagement.diceGenerator
 
+import lib.gameManagement.log.GameLogger
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.Random
 
-case class SingleDice(sides: Int) extends Dice:
+case class SingleDice(sides: Int, logger: GameLogger) extends Dice:
   override val random: Random = new Random()
   var tempValue = 0
-  val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   override def rollOneDice(): Int =
     val res = random.nextInt(sides) + 1
-    logger.info(s"Dice rolled -> $res")
+    logger.log(s"Dice rolled -> $res")
     res
 
   override def rollMoreDice(nDice: Int): Int =
@@ -22,5 +22,5 @@ case class SingleDice(sides: Int) extends Dice:
       this.tempValue = result
       rollDice(tempValue + rollOneDice(), nDice - 1)
     case _ =>
-      logger.info(s"Dices sum -> $result")
+      logger.log(s"Dices sum -> $result")
       result
