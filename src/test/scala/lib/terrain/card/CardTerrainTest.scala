@@ -31,11 +31,11 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
     val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
+
     gameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
 
     val t: Terrain = Terrain(TerrainInfo("carta probabilità"), Behaviour())
     val t1: Terrain = Terrain(TerrainInfo("carta imprevisti"), Behaviour())
-
     probabilityTerrain = CardTerrain.apply(t)
     surpriseTerrain = CardTerrain.apply(t1, gameSession, true)
     gameSession.gameStore.putTerrain(Terrain(TerrainInfo("partenza"), Behaviour()), probabilityTerrain, surpriseTerrain)
@@ -52,6 +52,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
       "so his money should be incremented from 200 to 700"
   ) {
     gameSession.startGame()
+
     val addMoneyStory: EventStory = EventStory("Test", "Add 500 money")
     val addMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(receiverId = id, 500)
     val addMoney = DefaultCards(EventGroup(Event(addMoneyStory, addMoneyStrategy)), "add money")
@@ -65,9 +66,6 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     behaviour.next()
 
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 700)
-
-    probabilityTerrain.removeCard(addMoney.name)
-    assert(probabilityTerrain.cardList.isEmpty)
   }
 
   test("removing money from player 1, giving one card of probability") {
@@ -88,25 +86,20 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     behaviour.next()
 
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 200)
-
-    probabilityTerrain.removeCard(removeMoney.name)
-    assert(probabilityTerrain.cardList.isEmpty)
   }
 
   test("player have to do one entire lap to get an extra bonus") {
     gameSession.startGame()
 
     val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
-    val doOneLapStrategy: EventStrategy =
-      id =>
-        gameSession.setPlayerPosition(
-          id,
-          (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
-        )
+    val doOneLapStrategy: EventStrategy = id =>
+      gameSession.setPlayerPosition(
+        id,
+        (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
+      )
     val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
     probabilityTerrain.addCards(doOneLap)
 
-    assert(gameSession.getPlayerPosition(1) == 0)
     gameSession.setPlayerPosition(1, 1)
     assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
@@ -114,11 +107,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
     behaviour.next()
 
-    assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 400)
-
-    probabilityTerrain.removeCard(doOneLap.name)
-    assert(probabilityTerrain.cardList.isEmpty)
   }
 
   test("testing some surprises cards") {
