@@ -37,8 +37,8 @@ class GameInputsTest extends AnyFunSuite:
   }
 
   test("adding two players and testing turns with list not empty") {
-    gameStore.addPlayer(PlayerImpl(1))
-    gameStore.addPlayer(PlayerImpl(2))
+    gameStore.addPlayer()
+    gameStore.addPlayer()
     assert(gameTurn.selectNextPlayer() === 1)
     assert(gameTurn.playerWithTurn.head === 1)
     gameStore.userInputs.addTailInputEvent("inputElement")

@@ -10,9 +10,9 @@ case class SingleDice(sides: Int) extends Dice:
   val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   override def rollOneDice(): Int =
-    val ris = random.nextInt(sides) + 1
-    logger.info(s"Dice rolled -> $ris")
-    ris
+    val res = random.nextInt(sides) + 1
+    logger.info(s"Dice rolled -> $res")
+    res
 
   override def rollMoreDice(nDice: Int): Int =
     rollDice(0, nDice)

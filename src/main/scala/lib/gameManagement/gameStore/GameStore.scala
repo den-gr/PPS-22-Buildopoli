@@ -20,10 +20,6 @@ trait GameStore:
     */
   var terrainList: Seq[Terrain]
 
-  /** Used to assing an incremental id to players being created
-    */
-  var playerIdsCounter: Int = 0
-
   def userInputs: GameInputs
 
   /** @param playerId
@@ -33,10 +29,9 @@ trait GameStore:
     */
   def getPlayer(playerId: Int): Player
 
-  /** @param player
-    *   to put into playersList
+  /** to put a new player into playersList
     */
-  def addPlayer(player: Player): Unit
+  def addPlayer(): Unit
 
   /** @param position
     *   identifying one terrain
@@ -53,7 +48,7 @@ trait GameStore:
   /** @return
     *   actual number of terrains into the game
     */
-  def getNumberOfTerrains(predicate: Terrain => Boolean): Int = terrainList.count(predicate)
+  def getNumberOfTerrains(predicate: Terrain => Boolean): Int = getTypeOfTerrains(predicate).size
   def getTypeOfTerrains(predicate: Terrain => Boolean): Seq[Terrain] = terrainList.filter(predicate)
 
   def startGame(): Unit

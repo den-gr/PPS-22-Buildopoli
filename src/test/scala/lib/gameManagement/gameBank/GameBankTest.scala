@@ -43,32 +43,32 @@ class GameBankTest extends AnyFunSuite:
     addPlayer(3)
     gameBank.makeTransaction(receiverId = 3, 500)
     gameBank.makeTransaction(3, amount = 600)
-    assert(gameBank.getDebtsForPlayer(3) === 100)
+    assert(gameBank.getDebitForPlayer(3) === 100)
     assert(gameBank.getMoneyForPlayer(3) === 0)
   }
 
   test("player has decreased debit after money increase") {
-    assert(gameBank.getDebtsForPlayer(3) === 100)
+    assert(gameBank.getDebitForPlayer(3) === 100)
     gameBank.makeTransaction(receiverId = 3, 50)
-    assert(gameBank.getDebtsForPlayer(3) === 50)
+    assert(gameBank.getDebitForPlayer(3) === 50)
   }
 
   test("player has increased debit after money decrease") {
-    assert(gameBank.getDebtsForPlayer(3) === 50)
+    assert(gameBank.getDebitForPlayer(3) === 50)
     gameBank.makeTransaction(3, amount = 150)
-    assert(gameBank.getDebtsForPlayer(3) === 200)
+    assert(gameBank.getDebitForPlayer(3) === 200)
   }
 
   test("player has zero debit") {
-    assert(gameBank.getDebtsForPlayer(3) === 200)
+    assert(gameBank.getDebitForPlayer(3) === 200)
     gameBank.makeTransaction(receiverId = 3, 250)
-    assert(gameBank.getDebtsForPlayer(3) === 0)
+    assert(gameBank.getDebitForPlayer(3) === 0)
     assert(gameBank.getMoneyForPlayer(3) === 50)
   }
 
   test("initial player has debit 0") {
     addPlayer(4)
-    assert(gameBank.getDebtsForPlayer(4) === 0)
+    assert(gameBank.getDebitForPlayer(4) === 0)
   }
 
   test("throw exception when debit not enabled and player does not have enough money") {
@@ -99,12 +99,12 @@ class GameBankTest extends AnyFunSuite:
     assert(gameBank.getMoneyForPlayer(8) === 1000)
     gameBank.makeGlobalTransaction(receiverId = 8, 300)
     assert(gameBank.getMoneyForPlayer(7) === 0)
-    assert(gameBank.getDebtsForPlayer(7) === 100)
+    assert(gameBank.getDebitForPlayer(7) === 100)
 
     assertThrows[IllegalStateException](gameBank.makeTransaction(7, 8, 100))
   }
 
   def addPlayer(id: Int): Unit =
-    gameStore.addPlayer(PlayerImpl(id))
+    gameStore.addPlayer()
     playerCounter += 1
     assert(gameStore.playersList.size === playerCounter)

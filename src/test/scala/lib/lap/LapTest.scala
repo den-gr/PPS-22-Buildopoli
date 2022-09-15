@@ -23,7 +23,7 @@ class LapTest extends AnyFunSuite:
 
   val nCells: Int = 20
   val currentPosition = 17
-  test("The game lap checks if a player has completed a lap and can return the new position"){
+  test("The game lap checks if a player has completed a lap and can return the new position") {
     assert(lap.isNewLap(true, currentPosition, 2, nCells)._1 == 19)
     assert(!lap.isNewLap(true, currentPosition, 2, nCells)._2)
 
@@ -46,9 +46,9 @@ class LapTest extends AnyFunSuite:
     assert(!lap.isNewLap(true, 2, -3, nCells)._2)
   }
 
-  test("The game lap can give a reward to the player that has completed a lap"){
-    gameStore.addPlayer(PlayerImpl(1))
-    gameStore.addPlayer(PlayerImpl(2))
+  test("The game lap can give a reward to the player that has completed a lap") {
+    gameStore.addPlayer()
+    gameStore.addPlayer()
 
     lap.giveReward(1)
     assert(gameStore.getPlayer(1).getPlayerMoney == 500)
