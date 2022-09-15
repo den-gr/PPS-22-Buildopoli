@@ -9,16 +9,16 @@ import scala.collection.mutable.ListBuffer
 case class GameStoreImpl() extends GameStore:
 
   private var listOfTerrains: Seq[Terrain] = List()
-  
+
   override val userInputs: GameInputs = UserInputs()
 
   private var listOfPLayer: Seq[Player] = List()
 
   private var gameStarted: Boolean = false
-  
+
   def playersList: Seq[Player] = listOfPLayer
   def playersList_=(list: Seq[Player]): Unit = this.listOfPLayer = list
-  
+
   def terrainList: Seq[Terrain] = listOfTerrains
   def terrainList_=(list: Seq[Terrain]): Unit = this.listOfTerrains = list
 
@@ -28,8 +28,7 @@ case class GameStoreImpl() extends GameStore:
     checkGameStarted()
     playersList = playersList :+ player
 
-  override def getTerrain(position: Int): Terrain = terrainList
-    .filter(t => t.basicInfo.position.equals(position)).head
+  override def getTerrain(position: Int): Terrain = terrainList(position - 1)
 
   override def putTerrain(terrain: Terrain*): Unit =
     checkGameStarted()

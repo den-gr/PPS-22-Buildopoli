@@ -33,7 +33,7 @@ class GameSessionTest extends AnyFunSuite with BeforeAndAfterEach:
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
     gameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
     for i <- 0 until 20 do
-      val t: Terrain = Terrain(TerrainInfo("terreno" + i, i), null)
+      val t: Terrain = Terrain(TerrainInfo("terreno" + i), null)
       val p: Purchasable = Purchasable(t, 1000, null, DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
       gameSession.gameStore.putTerrain(p)
 
