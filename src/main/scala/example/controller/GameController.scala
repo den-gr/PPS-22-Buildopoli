@@ -1,6 +1,6 @@
 package example.controller
 
-import example.view.View
+import example.view.{PlayerChoice, View}
 import lib.behaviour.event.EventStoryModule.InteractiveEventStory
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.log.Observer
@@ -26,9 +26,11 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
         val stories = behaviourIterator.currentStories
         view.showStoryOptions(stories)
         view.getUserChoices(stories) match
-          case (groupIdx, eventIdx, choiceIdx) if stories(groupIdx)(eventIdx).isInstanceOf[InteractiveEventStory] =>
+          case PlayerChoice.Choice(groupIdx, eventIdx, choiceIdx)
+              if stories(groupIdx)(eventIdx).isInstanceOf[InteractiveEventStory] =>
             stories(groupIdx)(eventIdx).asInstanceOf[InteractiveEventStory].choices(choiceIdx)
             behaviourIterator.next((groupIdx, eventIdx))
-          case (groupIdx, eventIdx, _) => behaviourIterator.next((groupIdx, eventIdx))
+          case PlayerChoice.Choice(groupIdx, eventIdx, _) => behaviourIterator.next((groupIdx, eventIdx))
+          case PlayerChoice.EndTurn =>
         // todo if user click end turn then exit from the cycle
       // todo control endgame
