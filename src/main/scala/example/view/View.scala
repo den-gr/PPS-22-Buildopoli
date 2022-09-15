@@ -42,7 +42,11 @@ case class GameView() extends View:
   @tailrec
   private def getChoice(string: String, num: Int): Int =
     println(string)
-    if readLine().toInt < num then readLine().toInt else println("Wrong choice, try again!"); getChoice(string, num)
+    val v = readLine()
+    if v.toInt < num then v.toInt
+    else
+      println("Wrong choice, try again!")
+      getChoice(string, num)
 
   def getUserChoices(stories: Seq[StoryGroup]): (Int, Int, Int) =
     val gc = getChoice("Choose group event", stories.size)
