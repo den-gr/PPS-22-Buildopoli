@@ -7,6 +7,10 @@ import lib.terrain.Terrain
 import scala.annotation.tailrec
 import scala.io.StdIn.*
 
+enum PlayerChoice:
+  case EndTurn
+  case Choice(groupIdx: Int, eventIdx: Int, choiceIdx: Int)
+
 trait View:
 
   // in base alla scelta si mostra il resto (sempre end turn, dopo il lancio del dado o forse è già gestito dal controller)
@@ -15,7 +19,7 @@ trait View:
   def showCurrentTerrain(terrain: Terrain): Unit
   def showStoryOptions(story: Seq[StoryGroup]): Unit
   def printLog(log: String): Unit // log
-  def getUserChoices(story: Seq[StoryGroup]): (Int, Int, Int)
+  def getUserChoices(story: Seq[StoryGroup]): PlayerChoice
 
 case class GameView() extends View:
 
@@ -37,7 +41,7 @@ case class GameView() extends View:
     )
     println(result)
 
-  def printLog(log: String): Unit = println(log)
+  def printLog(log: String): Unit = println(s"The log message says ----> $log")
 
   @tailrec
   private def getChoice(string: String, num: Int): Int =
@@ -48,11 +52,19 @@ case class GameView() extends View:
       println("Wrong choice, try again!")
       getChoice(string, num)
 
-  def getUserChoices(stories: Seq[StoryGroup]): (Int, Int, Int) =
-    val gc = getChoice("Choose group event", stories.size)
-    val ec = getChoice("Choose event", stories(gc).size)
-    var eec = 0
-    stories(gc)(ec).choices.size match
-      case s if s > 1 => eec = getChoice("Select event choice", s)
-      case _ => println(stories(gc)(ec).choices.head)
-    (gc, ec, eec)
+  def getUserChoices(stories: Seq[StoryGroup]): PlayerChoice =
+    val t: PlayerChoice = PlayerChoice.EndTurn
+    val gc =
+      stories.size match
+        case 0 => -1
+        case s => getChoice("Choose group event", s)
+
+    if gc == -1 then t
+    else
+      val ec = getChoice("Choose event", stories(gc).size)
+
+      val eec = stories(gc)(ec).choices.size match
+        case 1 => println(stories(gc)(ec).choices.head); 1
+        case s => getChoice("Select event choice", s)
+
+      PlayerChoice.Choice(gc, ec, eec)
