@@ -36,8 +36,8 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       EventGroup(factory.BuyTerrainEvent(story), factory.GetRentEvent(rentStory, "Not enough money"))
     )
 
-    simpleTerrain = Terrain(TerrainInfo("Dumb terrain", POSITION_1), behaviour)
-    val t: Terrain = Terrain(TerrainInfo("vicolo corto", POSITION_0), behaviour)
+    simpleTerrain = Terrain(TerrainInfo("Dumb terrain"), behaviour)
+    val t: Terrain = Terrain(TerrainInfo("vicolo corto"), behaviour)
     purchasableTerrain =
       Purchasable(t, TERRAIN_PRICE, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
     gameSession.gameStore.putTerrain(purchasableTerrain)

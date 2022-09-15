@@ -25,7 +25,7 @@ object TerrainInitializer extends TerrainInitializer:
     val eventFactory = EventFactory(gameSession)
     val story = EventStory(s"You spend $amount money on a party", "Oh, noo")
     val behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, amount))
-    Terrain(TerrainInfo("Party", position), behaviour)
+    Terrain(TerrainInfo("Party"), behaviour)
 
   private def createEmptyTerrain(position: Int): Terrain =
-    Terrain(TerrainInfo("Go", position), Behaviour())
+    Terrain(TerrainInfo("Go"), Behaviour())

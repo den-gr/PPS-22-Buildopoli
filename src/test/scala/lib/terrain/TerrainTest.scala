@@ -15,20 +15,19 @@ import lib.util.GameSessionHelper
 class TerrainTest extends AnyFunSuite:
 
   val p: Player = Player(10)
-  val e: Event = Event(EventStory("Test", "Add 500 money"), eventStrategy = id => p.setPlayerMoney(p.getPlayerMoney + 500))
+  val e: Event =
+    Event(EventStory("Test", "Add 500 money"), eventStrategy = id => p.setPlayerMoney(p.getPlayerMoney + 500))
   val b: Behaviour = Behaviour(e)
 
-  val t: Terrain = Terrain(TerrainInfo("tassa di lusso", 1), b)
+  val t: Terrain = Terrain(TerrainInfo("tassa di lusso"), b)
 
   test("A terrain has a name") {
     assert(t.basicInfo.name == "tassa di lusso")
   }
-  test("A terrain has a position") {
-    assert(t.basicInfo.position == 1)
-  }
+
   test("A terrain can trigger a behaviour") {
     p.setPlayerMoney(500)
     assert(p.getPlayerMoney == 500)
-    t.getBehaviourIterator(10).next(0,0)
+    t.getBehaviourIterator(10).next(0, 0)
     assert(p.getPlayerMoney == 1000)
   }

@@ -30,8 +30,8 @@ class CardTerrainTest extends AnyFunSuite:
 
   val gameSession: GameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
 
-  val t: Terrain = Terrain(TerrainInfo("carta probabilità", 1), Behaviour())
-  val t1: Terrain = Terrain(TerrainInfo("carta imprevisti", 2), Behaviour())
+  val t: Terrain = Terrain(TerrainInfo("carta probabilità"), Behaviour())
+  val t1: Terrain = Terrain(TerrainInfo("carta imprevisti"), Behaviour())
 
   val probabilityTerrain: CardTerrain = CardTerrain.apply(t)
   val surpriseTerrain: CardTerrain = CardTerrain.apply(t1, gameSession, true)

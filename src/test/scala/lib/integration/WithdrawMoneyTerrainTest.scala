@@ -25,8 +25,8 @@ class WithdrawMoneyTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val behaviour: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT))
     val behaviour2: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT2))
 
-    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT money", 0), behaviour))
-    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT2 money", 1), behaviour2))
+    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT money"), behaviour))
+    gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT2 money"), behaviour2))
 
     gameSession.startGame()
 

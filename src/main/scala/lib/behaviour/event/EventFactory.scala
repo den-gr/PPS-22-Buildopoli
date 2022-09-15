@@ -147,8 +147,9 @@ object EventFactory:
         val input = gameSession.gameStore.userInputs.getHeadElement
         val buildableList = grMg.terrainsOwnerCanBuildOn(playerId)
         input match
-          case terrainId: Int if buildableList.exists(_.basicInfo.position == terrainId) =>
-            buildableList.find(_.basicInfo.position == terrainId)
+          case terrainId: Int if buildableList.contains(gameSession.gameStore.getTerrain(terrainId)) =>
+            gameSession.gameStore.getTerrain(terrainId)
+          // buildableList.find(_.basicInfo.position == terrainId)
           // TODO sotrrare soldi
           case _ => throw EventInputException()
         gameSession.gameStore.userInputs.removeHeadElement()

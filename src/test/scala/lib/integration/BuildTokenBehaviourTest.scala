@@ -30,7 +30,7 @@ class BuildTokenBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
       EventGroup(factory.BuyTerrainEvent(story), factory.GetRentEvent(rentStory, "Not enough money"))
     )
 
-    val t: Terrain = Terrain(TerrainInfo("vicolo corto", POSITION_0), behaviour)
+    val t: Terrain = Terrain(TerrainInfo("vicolo corto"), behaviour)
     purchasableTerrain =
       Purchasable(t, TERRAIN_PRICE, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
     gameSession.gameStore.putTerrain(purchasableTerrain)

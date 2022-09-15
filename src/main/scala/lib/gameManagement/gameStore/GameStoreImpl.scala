@@ -26,9 +26,7 @@ case class GameStoreImpl() extends GameStore:
     this.playerIdsCounter += 1
     playersList = playersList :+ PlayerImpl(this.playerIdsCounter)
 
-  override def getTerrain(position: Int): Terrain = terrainList
-    .filter(t => t.basicInfo.position.equals(position))
-    .head
+  override def getTerrain(position: Int): Terrain = terrainList(position - 1)
 
   override def putTerrain(terrain: Terrain*): Unit =
     this.checkGameStarted()
