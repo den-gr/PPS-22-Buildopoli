@@ -32,7 +32,7 @@ trait GameSession:
     */
   def gameTurn: GameTurn
 
-  /** current instance of gameStore. Made val type, necessary to export some methods.
+  /** current instance of GameStore
     */
   val gameStore: GameStore
 

@@ -7,7 +7,7 @@ import lib.player.Player
 
 import scala.collection.mutable.ListBuffer
 
-case class GameBankImpl(override val gameOptions: GameOptions, override val gameStore: GameStore) extends Bank:
+case class GameBankImpl(override val gameStore: GameStore) extends Bank:
 
   override val debitManagement: BankDebit = BankDebitImpl()
   override def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit = (senderId, receiverId) match

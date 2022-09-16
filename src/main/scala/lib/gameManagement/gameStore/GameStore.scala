@@ -48,7 +48,7 @@ trait GameStore:
   /** @return
     *   actual number of terrains into the game
     */
-  def getNumberOfTerrains(predicate: Terrain => Boolean): Int = getTypeOfTerrains(predicate).size
+  def getNumberOfTerrains(predicate: Terrain => Boolean): Int = this.getTypeOfTerrains(predicate).size
   def getTypeOfTerrains(predicate: Terrain => Boolean): Seq[Terrain] = terrainList.filter(predicate)
 
   def startGame(): Unit

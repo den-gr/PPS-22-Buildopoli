@@ -28,7 +28,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
         playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
     val gameStore: GameStore = GameStoreImpl()
     val gameOptions: GameOptions = GameOptions(200, 0, 5, 6, selector)
-    val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
+    val gameBank: Bank = GameBankImpl(gameStore)
     val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 

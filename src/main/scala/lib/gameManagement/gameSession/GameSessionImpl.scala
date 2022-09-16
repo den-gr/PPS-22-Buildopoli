@@ -29,20 +29,19 @@ case class GameSessionImpl(
   override def getGroupManager: GroupManager = this.groupManager
 
   override def startGame(): Unit =
-    this.addManyPlayers(gameOptions.nUsers)
+    this.addPlayers(gameOptions.nUsers)
     this.gameStore.startGame()
-    initializePlayers()
+    this.initializePlayers()
     this.groupManager = GroupManager(this.gameStore.terrainList)
 
-  private def addManyPlayers(n: Int): Unit =
+  private def addPlayers(n: Int): Unit =
     for _ <- 0 until n do this.gameStore.addPlayer()
 
   private def initializePlayers(): Unit = this.enoughPurchasableTerrains() match
     case true =>
       this.gameStore.playersList.foreach(pl =>
         pl.setPlayerMoney(gameOptions.playerInitialMoney)
-        this.assignTerrains(pl.playerId)
-      )
+        this.assignTerrains(pl.playerId))
     case _ => throw new IllegalStateException("Not enough terrains !")
 
   private def assignTerrains(playerId: Int): Unit =

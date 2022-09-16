@@ -14,10 +14,6 @@ trait GameTurn:
     */
   var playerWithTurn: List[Int] = List()
 
-  /** List of players blocked in doing some turns. Because of they are in Jail for example.
-    */
-  var blockingList: Map[Int, Int] = Map()
-
   /** @return
     *   the next players selected to play the game. Must be impossible to proceed if next turn is closed.
     */

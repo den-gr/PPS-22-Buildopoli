@@ -18,7 +18,7 @@ class GameBankTest extends AnyFunSuite with BeforeAndAfterEach:
         playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
     val gameStore: GameStore = GameStoreImpl()
     val gameOptions: GameOptions = GameOptions(0, 2, 10, 6, selector)
-    gameBank = GameBankImpl(gameOptions, gameStore)
+    gameBank = GameBankImpl(gameStore)
     gameStore.addPlayer()
     gameStore.addPlayer()
     gameStore.addPlayer()

@@ -10,11 +10,6 @@ import scala.collection.mutable.ListBuffer
 trait Bank:
 
   /** @return
-    *   the gameOptions instance
-    */
-  def gameOptions: GameOptions
-
-  /** @return
     *   the gameStore instance
     */
   def gameStore: GameStore
@@ -50,5 +45,5 @@ trait Bank:
 
   export debitManagement.getDebtsList, debitManagement.getDebitForPlayer
 object Bank:
-  def apply(gameOptions: GameOptions, gameStore: GameStore): Bank =
-    GameBankImpl(gameOptions: GameOptions, gameStore: GameStore)
+  def apply(gameStore: GameStore): Bank =
+    GameBankImpl(gameStore: GameStore)

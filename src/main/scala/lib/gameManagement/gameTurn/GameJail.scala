@@ -1,6 +1,11 @@
 package lib.gameManagement.gameTurn
 
 trait GameJail:
+
+  /** List of players blocked in doing some turns. Because of they are in Jail for example.
+    */
+  var blockingList: Map[Int, Int] = Map()
+
   /** To block a player (ex. in prison)
     *
     * @param playerId

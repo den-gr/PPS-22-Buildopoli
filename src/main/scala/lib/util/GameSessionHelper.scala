@@ -23,7 +23,7 @@ object GameSessionHelper:
       GameOptions(playerInitialMoney, playerInitialCells, numPlayers, diceFaces, selector)
     val gameStore: GameStore = GameStoreImpl()
     val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
-    val gameBank: Bank = GameBankImpl(gameOptions, gameStore)
+    val gameBank: Bank = GameBankImpl(gameStore)
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 
     val gs = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)

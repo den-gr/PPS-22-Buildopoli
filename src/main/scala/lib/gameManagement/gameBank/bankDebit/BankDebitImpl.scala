@@ -7,7 +7,7 @@ case class BankDebitImpl() extends BankDebit :
   override def getDebtsList: Map[Int, Int] = this.debtsList
 
   override def getDebitForPlayer(playerId: Int): Int =
-    this.debtsList.getOrElse(playerId, 0)
+    this.getDebtsList.getOrElse(playerId, 0)
 
   override def increaseDebit(playerId: Int, amount: Int): Unit =
     updateDebtsList(playerId, amount)
