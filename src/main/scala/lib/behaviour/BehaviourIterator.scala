@@ -67,7 +67,7 @@ object BehaviourIterator:
       extends BehaviourIterator:
     val eventStack: mutable.Stack[Seq[EventGroup]] = mutable.Stack(events)
 
-    override def hasNext: Boolean = eventStack.nonEmpty
+    override def hasNext: Boolean = eventStack.nonEmpty && eventStack.head.nonEmpty
 
     override def next(index: Index): Unit =
       val groups = eventStack.pop()

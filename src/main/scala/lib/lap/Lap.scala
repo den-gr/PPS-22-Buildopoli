@@ -59,8 +59,8 @@ object Lap:
   private case class GameLap(reward: Reward) extends Lap:
     override def isNewLap(isRewardable: Boolean, playerCurrentPosition: Int, nSteps: Int, nCells: Int): (Int, Boolean) =
       playerCurrentPosition + nSteps match
-        case pos if pos > nCells => (pos - nCells, isRewardable)
-        case pos if pos < 1 => (pos + nCells, false)
+        case pos if pos >= nCells => (pos - nCells, isRewardable)
+        case pos if pos < 0 => (pos + nCells, false)
         case pos => (pos, false)
 
     override def giveReward(playerID: Int): Unit = reward.triggerBonus(playerID)

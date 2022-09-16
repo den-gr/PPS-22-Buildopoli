@@ -27,8 +27,8 @@ class LapTest extends AnyFunSuite:
     assert(lap.isNewLap(true, currentPosition, 2, nCells)._1 == 19)
     assert(!lap.isNewLap(true, currentPosition, 2, nCells)._2)
 
-    assert(lap.isNewLap(true, currentPosition, 3, nCells)._1 == 20)
-    assert(!lap.isNewLap(true, currentPosition, 3, nCells)._2)
+    assert(lap.isNewLap(true, currentPosition, 3, nCells)._1 == 0)
+    assert(lap.isNewLap(true, currentPosition, 3, nCells)._2)
 
     assert(lap.isNewLap(true, currentPosition, 4, nCells)._1 == 1)
     assert(lap.isNewLap(true, currentPosition, 4, nCells)._2)

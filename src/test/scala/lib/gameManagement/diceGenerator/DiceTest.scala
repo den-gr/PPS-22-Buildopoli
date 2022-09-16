@@ -1,12 +1,8 @@
 package lib.gameManagement.diceGenerator
 
-import ch.qos.logback.classic.Logger
-import ch.qos.logback.classic.spi.ILoggingEvent
-import ch.qos.logback.core.read.ListAppender
-import lib.gameManagement.diceGenerator.{Dice, SingleDice}
+import lib.gameManagement.log.GameLogger
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
-import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ListBuffer
 
@@ -15,7 +11,7 @@ class DiceTest extends AnyFunSuite with BeforeAndAfterEach:
   var diceGenerator: Dice = _
 
   override def beforeEach(): Unit =
-    diceGenerator = SingleDice(FACES)
+    diceGenerator = SingleDice(FACES, GameLogger())
 
   test("launching a single dice with 6 faces") {
     val array: ListBuffer[Int] = ListBuffer()

@@ -6,6 +6,7 @@ import lib.behaviour.event.EventModule.*
 import lib.behaviour.event.EventStoryModule.*
 import lib.behaviour.event.EventStoryModule.Result.*
 import lib.gameManagement.gameSession.GameSession
+import lib.gameManagement.log.GameLogger
 import lib.terrain.*
 import lib.terrain.PurchasableState.*
 import org.slf4j.{Logger, LoggerFactory}
@@ -37,7 +38,7 @@ object EventFactory:
     Event(story, precondition = precondition)
 
   private class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
-    private val logger: Logger = gameSession.logger
+    private val logger: GameLogger = gameSession.logger
     private val gameTurn = gameSession.gameTurn
     private val bank = gameSession.gameBank
     private val dice = gameSession.dice
@@ -60,9 +61,9 @@ object EventFactory:
       val escapeStrategy: EventStrategy = playerId =>
         if dice.rollOneDice() == dice.rollOneDice() then
           gameTurn.liberatePlayer(playerId)
-          logger.info(escapeSuccessMsg(playerId.toString))
+          logger.log(escapeSuccessMsg(playerId.toString))
           gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2), true)
-        else logger.info(escapeFailMsg(playerId.toString))
+        else logger.log(escapeFailMsg(playerId.toString))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       Event(story, escapeStrategy, escapePrecondition)
 

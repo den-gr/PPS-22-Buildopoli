@@ -5,6 +5,7 @@ import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.gameManagement.gameOptions.GameOptions
 import lib.gameManagement.gameStore.GameStore
 import lib.gameManagement.gameTurn.GameTurn
+import lib.gameManagement.log.GameLogger
 import lib.lap.Lap
 import lib.player.{Player, PlayerImpl}
 import lib.terrain.{Buildable, GroupManager, Purchasable, PurchasableState, Terrain}
@@ -21,8 +22,8 @@ case class GameSessionImpl(
     override val gameLap: Lap
 ) extends GameSession:
 
-  override val dice: Dice = SingleDice(gameOptions.diceFaces)
-  override val logger: Logger = LoggerFactory.getLogger("GameSession")
+  override val logger: GameLogger = GameLogger()
+  override val dice: Dice = SingleDice(gameOptions.diceFaces, this.logger)
   private var groupManager: GroupManager = _
 
   override def getGroupManager: GroupManager = this.groupManager

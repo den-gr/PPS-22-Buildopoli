@@ -5,6 +5,7 @@ import lib.gameManagement.gameBank.Bank
 import lib.gameManagement.gameOptions.GameOptions
 import lib.gameManagement.gameStore.GameStore
 import lib.gameManagement.gameTurn.GameTurn
+import lib.gameManagement.log.GameLogger
 import lib.lap.Lap
 import lib.terrain.{Buildable, GroupManager, Terrain}
 import org.slf4j.Logger
@@ -48,7 +49,7 @@ trait GameSession:
   /** @return
     *   current instance of the Logger used by all the game to log info in console
     */
-  def logger: Logger
+  def logger: GameLogger
 
   /** To set a new position of a player, after launching the dice for example
     * @param playerId

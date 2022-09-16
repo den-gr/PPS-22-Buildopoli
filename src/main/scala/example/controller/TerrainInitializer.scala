@@ -13,19 +13,16 @@ object TerrainInitializer extends TerrainInitializer:
 
   def insertGameTerrains(gameSession: GameSession): Seq[Terrain] =
     var terrains: Seq[Terrain] = Seq()
-    var position = 1
-    terrains = terrains :+ createEmptyTerrain(position)
-    position += 1
-    terrains = terrains :+ createWithdrawMoneyTerrain(gameSession, position)(50)
-    position += 1
-    terrains = terrains :+ createWithdrawMoneyTerrain(gameSession, position)(100)
+    terrains = terrains :+ createEmptyTerrain()
+    terrains = terrains :+ createWithdrawMoneyTerrain(gameSession)(50)
+    terrains = terrains :+ createWithdrawMoneyTerrain(gameSession)(100)
     terrains
 
-  private def createWithdrawMoneyTerrain(gameSession: GameSession, position: Int)(amount: Int): Terrain =
+  private def createWithdrawMoneyTerrain(gameSession: GameSession)(amount: Int): Terrain =
     val eventFactory = EventFactory(gameSession)
     val story = EventStory(s"You spend $amount money on a party", "Oh, noo")
     val behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, amount))
     Terrain(TerrainInfo("Party"), behaviour)
 
-  private def createEmptyTerrain(position: Int): Terrain =
+  private def createEmptyTerrain(): Terrain =
     Terrain(TerrainInfo("Go"), Behaviour())
