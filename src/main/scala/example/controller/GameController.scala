@@ -20,7 +20,7 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
       gameSession.movePlayer(playerId)
 
       val terrain = gameSession.getPlayerTerrain(playerId)
-      view.showCurrentTerrain(terrain)
+      view.showCurrentTerrain(terrain, gameSession.getPlayerPosition(playerId))
       val behaviourIterator = terrain.getBehaviourIterator(playerId)
 
       while behaviourIterator.hasNext do
