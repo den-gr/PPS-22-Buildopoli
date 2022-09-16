@@ -27,9 +27,13 @@ object BehaviourFactory:
     override def JailBehaviour(input: JailBehaviourInput): Behaviour =
       val imprisonEvent = eventFactory.ImprisonEvent(input.imprisonStory, input.blockingTurns)
       val escapeEvent = eventFactory.EscapeEvent(input.escapeStory, input.escapeSuccessMsg, input.escapeFailMsg)
-      Behaviour(imprisonEvent, escapeEvent)
+      Behaviour(EventGroup(Seq(imprisonEvent, escapeEvent), isMandatory = true))
 
-    override def PurchasableTerrainBehaviour(payRentStory: EventStoryModule.EventStory, notMoneyErrMsg: String, buyTerrainStory: EventStoryModule.EventStory): Behaviour =
+    override def PurchasableTerrainBehaviour(
+        payRentStory: EventStoryModule.EventStory,
+        notMoneyErrMsg: String,
+        buyTerrainStory: EventStoryModule.EventStory
+    ): Behaviour =
       val buyTerrainEvent = eventFactory.BuyTerrainEvent(buyTerrainStory)
-      val rentTerrainEvent = eventFactory.GetRentEvent(payRentStory,notMoneyErrMsg)
-      Behaviour(buyTerrainEvent, rentTerrainEvent)
+      val rentTerrainEvent = eventFactory.GetRentEvent(payRentStory, notMoneyErrMsg)
+      Behaviour(Seq(EventGroup(buyTerrainEvent), EventGroup(Seq(rentTerrainEvent), isMandatory = true)))

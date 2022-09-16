@@ -5,6 +5,7 @@ import lib.behaviour.event.EventStoryModule.InteractiveEventStory
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.Observer
+import lib.behaviour.event.EventStoryModule.Result.*
 
 trait GameController:
   def start(): Unit
@@ -14,6 +15,8 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
     gameSession.startGame()
     val observer: Observer = (msg: String) => view.printLog(msg)
     gameSession.logger.registerObserver(observer)
+    
+    //todo endgame control
     while true do
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId)
@@ -29,9 +32,10 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
         view.getUserChoices(stories) match
           case PlayerChoice.Choice(groupIdx, eventIdx, choiceIdx)
               if stories(groupIdx)(eventIdx).isInstanceOf[InteractiveEventStory] =>
-            stories(groupIdx)(eventIdx).asInstanceOf[InteractiveEventStory].choices(choiceIdx)
-            behaviourIterator.next((groupIdx, eventIdx))
+            stories(groupIdx)(eventIdx).asInstanceOf[InteractiveEventStory].interactions(choiceIdx)(playerId) match
+              case OK => behaviourIterator.next((groupIdx, eventIdx))
+              case ERR(msg) => view.printLog(msg)
           case PlayerChoice.Choice(groupIdx, eventIdx, _) => behaviourIterator.next((groupIdx, eventIdx))
+          case PlayerChoice.EndTurn if behaviourIterator.canEndExploring => behaviourIterator.endExploring()
           case PlayerChoice.EndTurn =>
-        // todo if user click end turn then exit from the cycle
-      // todo control endgame
+            view.printLog(s"Player $playerId can not end turn because have to explore mandatory events")
