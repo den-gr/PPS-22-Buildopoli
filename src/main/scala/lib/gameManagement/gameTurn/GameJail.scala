@@ -32,3 +32,10 @@ trait GameJail:
     *   remaining blocked movements for the given player. If blocked.
     */
   def getRemainingBlockedMovements(playerId: Int): Option[Int]
+
+  /** @param playerId
+    *   identifying one player
+    * @return
+    *   if player is blocked in prison or not
+    */
+  def isPlayerBlocked(playerId: Int): Boolean

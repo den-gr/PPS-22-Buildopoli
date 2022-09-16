@@ -51,16 +51,14 @@ trait GameSession:
     */
   def logger: GameLogger
 
-  /** To set a new position of a player, after launching the dice for example
+  /** To set a new position of a player, after launching the dice
     * @param playerId
     *   the player being moved
-    * @param nSteps
-    *   that the player makes
     * @param isValidLap
     *   to know if the player crosses the finish line because of some setbacks and so it should not have the reward of
     *   completing one lap.
     */
-  def setPlayerPosition(playerId: Int, nSteps: Int, isValidLap: Boolean = true): Unit
+  def movePlayer(playerId: Int, isValidLap: Boolean = true, steps: Int = 0): Unit
 
   /** @param playerId
     *   to identify the player

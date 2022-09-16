@@ -18,7 +18,7 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId)
       if gameSession.gameTurn.asInstanceOf[GameJail].getRemainingBlockedMovements(playerId).isEmpty then
-        gameSession.setPlayerPosition(playerId, gameSession.dice.rollOneDice())
+        gameSession.movePlayer(playerId)
       val terrain = gameSession.getPlayerTerrain(playerId)
       view.showCurrentTerrain(terrain)
       val behaviourIterator = terrain.getBehaviourIterator(playerId)

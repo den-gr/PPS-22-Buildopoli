@@ -58,7 +58,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val addMoney = DefaultCards(EventGroup(Event(addMoneyStory, addMoneyStrategy)), "add money")
     probabilityTerrain.addCards(addMoney)
 
-    gameSession.setPlayerPosition(1, 1)
+    gameSession.movePlayer(1, steps = 1)
     assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
 
@@ -78,7 +78,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     gameSession.gameBank.makeTransaction(receiverId = 1, 500)
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 700)
     assert(gameSession.getPlayerPosition(1) == 0)
-    gameSession.setPlayerPosition(1, 1)
+    gameSession.movePlayer(1, steps = 1)
     assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
 
@@ -93,14 +93,14 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
 
     val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
     val doOneLapStrategy: EventStrategy = id =>
-      gameSession.setPlayerPosition(
+      gameSession.movePlayer(
         id,
-        (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
+        steps = (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
       )
     val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
     probabilityTerrain.addCards(doOneLap)
 
-    gameSession.setPlayerPosition(1, 1)
+    gameSession.movePlayer(1, steps = 1)
     assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
 
@@ -112,7 +112,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("testing some surprises cards") {
     gameSession.startGame()
-    gameSession.setPlayerPosition(1, 2)
+    gameSession.movePlayer(1, steps = 2)
     assert(gameSession.getPlayerPosition(1) == 2)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == surpriseTerrain)
     val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)

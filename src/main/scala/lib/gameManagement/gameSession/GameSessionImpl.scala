@@ -4,7 +4,7 @@ import lib.gameManagement.diceGenerator.{Dice, SingleDice}
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.gameManagement.gameOptions.GameOptions
 import lib.gameManagement.gameStore.GameStore
-import lib.gameManagement.gameTurn.GameTurn
+import lib.gameManagement.gameTurn.{GameJail, GameTurn}
 import lib.gameManagement.log.GameLogger
 import lib.lap.Lap
 import lib.player.{Player, PlayerImpl}
@@ -41,7 +41,8 @@ case class GameSessionImpl(
     case true =>
       this.gameStore.playersList.foreach(pl =>
         pl.setPlayerMoney(gameOptions.playerInitialMoney)
-        this.assignTerrains(pl.playerId))
+        this.assignTerrains(pl.playerId)
+      )
     case _ => throw new IllegalStateException("Not enough terrains !")
 
   private def assignTerrains(playerId: Int): Unit =
@@ -63,9 +64,16 @@ case class GameSessionImpl(
       tr.isInstanceOf[Purchasable]
     ) >= this.gameOptions.nUsers * this.gameOptions.playerInitialCells
 
-  override def setPlayerPosition(playerId: Int, nSteps: Int, isValidLap: Boolean): Unit =
-    val player = gameStore.getPlayer(playerId)
-    val result =
-      gameLap.isNewLap(isValidLap, player.getPlayerPawnPosition, nSteps, gameStore.getNumberOfTerrains(_ => true))
-    player.setPlayerPawnPosition(result._1)
-    if result._2 then gameLap.giveReward(playerId)
+  private def setPlayerPosition(isValidLap: Boolean, playerPawnPosition: Int, steps: Int): (Int, Boolean) =
+    gameLap.isNewLap(isValidLap, playerPawnPosition, steps, gameStore.getNumberOfTerrains(_ => true))
+
+  override def movePlayer(playerId: Int, isValidLap: Boolean = true, steps: Int = 0): Unit =
+    val player: Player = gameStore.getPlayer(playerId)
+    if gameTurn.asInstanceOf[GameJail].isPlayerBlocked(playerId) then
+      val result: (Int, Boolean) = steps match
+        case 0 => setPlayerPosition(isValidLap, player.getPlayerPawnPosition, launchDice())
+        case _ => setPlayerPosition(isValidLap, player.getPlayerPawnPosition, steps)
+      player.setPlayerPawnPosition(result._1)
+      if result._2 then gameLap.giveReward(playerId)
+
+  private def launchDice(): Int = this.dice.rollOneDice()

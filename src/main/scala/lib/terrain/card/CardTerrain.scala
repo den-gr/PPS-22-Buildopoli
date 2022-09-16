@@ -85,10 +85,9 @@ object CardTerrain:
     val doOneLapWithoutRewardStory: EventStory =
       EventStory("Test", "Do One Lap and stop at the start cell without reward")
     val doOneLapWithoutRewardStrategy: EventStrategy = id =>
-      gameSession.setPlayerPosition(
+      gameSession.movePlayer(
         id,
-        (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1,
-        false
+        steps = (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
       )
     val doOneLapWithoutReward = DefaultCards(
       EventGroup(Event(doOneLapWithoutRewardStory, doOneLapWithoutRewardStrategy)),
@@ -114,9 +113,9 @@ object CardTerrain:
 
     val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
     val doOneLapStrategy: EventStrategy = id =>
-      gameSession.setPlayerPosition(
+      gameSession.movePlayer(
         id,
-        (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
+        steps = (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
       )
     val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
 

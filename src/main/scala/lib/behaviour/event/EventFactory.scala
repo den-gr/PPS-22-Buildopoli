@@ -63,7 +63,7 @@ object EventFactory:
         if dice.rollOneDice() == dice.rollOneDice() then
           gameTurn.liberatePlayer(playerId)
           logger.log(escapeSuccessMsg(playerId.toString))
-          gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2))
+          gameSession.movePlayer(playerId, steps = dice.rollMoreDice(2))
         else logger.log(escapeFailMsg(playerId.toString))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       Event(story, escapeStrategy, escapePrecondition)

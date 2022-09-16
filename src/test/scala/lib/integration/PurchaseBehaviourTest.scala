@@ -49,7 +49,7 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
   Feature("Purchasable Terrain can be bought by a player") {
     Scenario("Buy terrain event is compatible only with Purchasable terrains") {
       When("a player on a simple Terrain with purchasable event")
-      gameSession.setPlayerPosition(PLAYER_1, 1)
+      gameSession.movePlayer(PLAYER_1, steps = 1)
 
       Then("we have illegal state exception")
       assertThrows[IllegalStateException](gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1))

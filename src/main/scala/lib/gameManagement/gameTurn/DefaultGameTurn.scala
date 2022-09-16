@@ -36,3 +36,5 @@ case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) exten
 
   override def getRemainingBlockedMovements(playerId: Int): Option[Int] =
     blockingList.get(playerId)
+
+  override def isPlayerBlocked(playerId: Int): Boolean = this.getRemainingBlockedMovements(playerId).isEmpty
