@@ -114,10 +114,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     gameSession.startGame()
     gameSession.setPlayerPosition(1, 2)
     assert(gameSession.getPlayerPosition(1) == 2)
-    println(gameSession.gameStore.terrainList)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == surpriseTerrain)
-
     val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
-    println(behaviour.currentStories)
     behaviour.next()
   }
