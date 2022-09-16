@@ -36,6 +36,10 @@ trait BehaviourIterator:
     */
   def currentStories: Seq[StoryGroup]
 
+  def canEndExploring: Boolean
+
+  def endExploring(): Unit
+
 object BehaviourIterator:
 
   /** Constructor of behaviour iterator
@@ -65,6 +69,7 @@ object BehaviourIterator:
 
   private case class BehaviourIteratorImpl(events: Seq[EventGroup], override val playerId: Int)
       extends BehaviourIterator:
+
     val eventStack: mutable.Stack[Seq[EventGroup]] = mutable.Stack(events)
 
     override def hasNext: Boolean = eventStack.nonEmpty && eventStack.head.nonEmpty
@@ -75,7 +80,7 @@ object BehaviourIterator:
         case (groupIndex: Int, eventIndex: Int)
             if groupIndex < 0 || groupIndex >= groups.length || eventIndex >= groups(groupIndex).length =>
           eventStack.push(groups) // redo pop
-          throw IllegalArgumentException(s"Chose indexes point to a not existing event. -> $index")
+          throw IllegalArgumentException(s"Chose index point to a not existing event. -> $index")
 
         case (groupIndex: Int, eventIndex: Int) =>
           val newGroup = chooseEvent(groups(groupIndex))(playerId, eventIndex)
@@ -87,6 +92,10 @@ object BehaviourIterator:
     override def currentEvents: Seq[EventGroup] = eventStack.head
 
     override def currentStories: Seq[StoryGroup] = getStories(this.currentEvents, this.playerId)
+
+    override def canEndExploring: Boolean = eventStack.size <= 1 && !eventStack.head.exists(_.isMandatory)
+
+    override def endExploring(): Unit = eventStack.clear()
 
     private def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
       try

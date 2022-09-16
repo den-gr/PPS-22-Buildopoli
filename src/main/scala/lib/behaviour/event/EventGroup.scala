@@ -14,6 +14,11 @@ trait EventGroup extends Seq[Event]:
     */
   val isAtomic: Boolean
 
+  /** When it is true a player must not to be able to end his turn until this event group is present in behaviour
+    * iterator
+    */
+  val isMandatory: Boolean
+
   /** Create a new EventGroup with new events but old setup
     * @param events
     *   events of new event group
@@ -21,7 +26,6 @@ trait EventGroup extends Seq[Event]:
     *   an new event group
     */
   def replaceEvents(events: Seq[Event]): EventGroup
-  // TODO def isMandatory: Boolean
 
 object EventGroup:
 
@@ -32,7 +36,7 @@ object EventGroup:
     * @return
     *   an instantiated event group
     */
-  def apply(elems: Event*): EventGroup = EventGroupImpl(elems, false)
+  def apply(elems: Event*): EventGroup = EventGroupImpl(elems, false, false)
 
   /** Constructor of an [[EventGroup]]
     *
@@ -40,10 +44,17 @@ object EventGroup:
     *   events of event group
     * @param isAtomic
     *   define if event chain of this event group is atomic
+    * @param isMandatory
+    *   true if player can not start new turn when this event group is not explored 
     * @return
     *   an instantiated event group
     */
-  def apply(elems: Seq[Event], isAtomic: Boolean = false): EventGroup = EventGroupImpl(elems, isAtomic)
+  def apply(elems: Seq[Event], isAtomic: Boolean = false, isMandatory: Boolean = false): EventGroup =
+    EventGroupImpl(elems, isAtomic, isMandatory)
 
-  private case class EventGroupImpl(override val events: Seq[Event], override val isAtomic: Boolean) extends EventGroup:
-    override def replaceEvents(events: Seq[Event]): EventGroup = EventGroup(events, this.isAtomic)
+  private case class EventGroupImpl(
+      override val events: Seq[Event],
+      override val isAtomic: Boolean,
+      override val isMandatory: Boolean
+  ) extends EventGroup:
+    override def replaceEvents(events: Seq[Event]): EventGroup = EventGroup(events, this.isAtomic, this.isMandatory)

@@ -33,12 +33,26 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     Event(story, imprisonStrategy)
 
   test("Behaviour with single Jail event that imprison a player") {
-    var it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+    var it = Behaviour(imprisonEvent).getBehaviourIterator(PLAYER_1)
     assertThrows[IllegalArgumentException](it.next((1, 0)))
     assertThrows[IllegalArgumentException](it.next((0, 1)))
 
-    it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+    it = Behaviour(imprisonEvent).getBehaviourIterator(PLAYER_1)
     it.next((0, 0))
+    assert(!it.hasNext)
+  }
+
+  test("If event group is mandatory it is not possible to end exploring behaviour") {
+    val it = Behaviour(EventGroup(Seq(imprisonEvent), isMandatory = true)).getBehaviourIterator(PLAYER_1)
+    assert(it.hasNext)
+    assert(!it.canEndExploring)
+  }
+
+  test("If event group is not mandatory a player can skip all events") {
+    val it = Behaviour(EventGroup(Seq(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+    assert(it.hasNext)
+    assert(it.canEndExploring)
+    it.endExploring()
     assert(!it.hasNext)
   }
 
@@ -64,7 +78,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   val escapeEvent: Event = Event(escapeStory, escapeStrategy, escapePrecondition)
 
   test("Escape event allow to player escape from prison") {
-    val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
+    val behaviour: Behaviour = Behaviour(imprisonEvent, escapeEvent)
     var it = behaviour.getBehaviourIterator(PLAYER_1)
     it.next((0, 0))
 
