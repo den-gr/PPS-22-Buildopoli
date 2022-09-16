@@ -3,6 +3,7 @@ package lib.behaviour.factory
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventModule.Event
 import lib.behaviour.BehaviourModule.Behaviour
+import lib.behaviour.event.EventStoryModule.EventStory
 import lib.behaviour.factory.input.{JailBehaviourDefaultInput, JailBehaviourInput}
 
 /** Allows easily to create basic behaviours
@@ -17,3 +18,5 @@ trait BasicBehaviourFactory:
     *   from prison
     */
   def JailBehaviour(input: JailBehaviourInput = JailBehaviourDefaultInput()): Behaviour
+  
+  def PurchasableTerrainBehaviour(payRentStory: EventStory, notMoneyErrMsg: String, buyTerrainStory: EventStory): Behaviour

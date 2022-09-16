@@ -17,11 +17,12 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
     while true do
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId)
-      if gameSession.gameTurn.asInstanceOf[GameJail].getRemainingBlockedMovements(playerId).isEmpty then
-        gameSession.movePlayer(playerId)
+      gameSession.movePlayer(playerId)
+
       val terrain = gameSession.getPlayerTerrain(playerId)
       view.showCurrentTerrain(terrain)
       val behaviourIterator = terrain.getBehaviourIterator(playerId)
+
       while behaviourIterator.hasNext do
         val stories = behaviourIterator.currentStories
         view.showStoryOptions(stories)
