@@ -12,7 +12,7 @@ import scala.collection.mutable.ListBuffer
   * @param gameStore
   *   to access playersList in the game
   */
-case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) extends GameTurn:
+case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) extends GameTurn with GameJail:
   override def selectNextPlayer(): Int =
     if !isNextTurnOpen then throw new RuntimeException("Previous player input values not emptied")
     val selection: Int = gameOptions.playerTurnSelector.apply(gameStore.playersList, playerWithTurn)
@@ -21,8 +21,6 @@ case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) exten
     selection
 
   override protected def isNextTurnOpen: Boolean = gameStore.userInputs.isListEmpty
-
-  override def playerHasDoneTheActualTurn(playerId: Int): Boolean = playerWithTurn.contains(playerId)
 
   def everyoneHasDoneOneTurn(): Unit =
     if playerWithTurn.size == (gameStore.playersList.size - blockingList.size) then

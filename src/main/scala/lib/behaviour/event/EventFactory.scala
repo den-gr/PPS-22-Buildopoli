@@ -6,6 +6,7 @@ import lib.behaviour.event.EventModule.*
 import lib.behaviour.event.EventStoryModule.*
 import lib.behaviour.event.EventStoryModule.Result.*
 import lib.gameManagement.gameSession.GameSession
+import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.GameLogger
 import lib.terrain.*
 import lib.terrain.PurchasableState.*
@@ -39,7 +40,7 @@ object EventFactory:
 
   private class EventFactoryImpl(gameSession: GameSession) extends BasicEventFactory:
     private val logger: GameLogger = gameSession.logger
-    private val gameTurn = gameSession.gameTurn
+    private val gameTurn = gameSession.gameTurn.asInstanceOf[GameJail]
     private val bank = gameSession.gameBank
     private val dice = gameSession.dice
 
@@ -62,7 +63,7 @@ object EventFactory:
         if dice.rollOneDice() == dice.rollOneDice() then
           gameTurn.liberatePlayer(playerId)
           logger.log(escapeSuccessMsg(playerId.toString))
-          gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2), true)
+          gameSession.setPlayerPosition(playerId, dice.rollMoreDice(2))
         else logger.log(escapeFailMsg(playerId.toString))
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       Event(story, escapeStrategy, escapePrecondition)

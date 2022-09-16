@@ -29,37 +29,5 @@ trait GameTurn:
     */
   protected def isNextTurnOpen: Boolean
 
-  /** @param playerId
-    *   the selected player
-    * @return
-    *   if the given id has already played the game for the actual turn
-    */
-  def playerHasDoneTheActualTurn(playerId: Int): Boolean
-
-  /** To block a player (ex. in prison)
-    * @param playerId
-    *   identifying one player
-    * @param blockingTime
-    *   number of turns to stay blocked
-    */
-  def lockPlayer(playerId: Int, blockingTime: Int): Unit
-
-  /** To liberate player (from prison)
-    * @param playerId
-    *   identifying one player
-    */
-  def liberatePlayer(playerId: Int): Unit
-
-  /** To reduce the time of blocked players
-    */
-  def doTurn(): Unit
-
-  /** @param playerId
-    *   identifying one player
-    * @return
-    *   remaining blocked movements for the given player. If blocked.
-    */
-  def getRemainingBlockedMovements(playerId: Int): Option[Int]
-
 object GameTurn:
   def apply(gameOptions: GameOptions, gameStore: GameStore): GameTurn = DefaultGameTurn(gameOptions, gameStore)

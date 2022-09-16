@@ -7,18 +7,18 @@ import lib.behaviour.event.{EventGroup, EventStoryModule}
 import lib.behaviour.factory.BehaviourFactory
 import lib.behaviour.factory.BehaviourFactory.*
 import lib.behaviour.factory.input.JailBehaviourInput
-import lib.gameManagement.gameTurn.GameTurn
+import lib.gameManagement.gameTurn.{GameJail, GameTurn}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import lib.util.GameSessionHelper.DefaultGameSession
 
 class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
-  private var gameTurn: GameTurn = _
+  private var gameTurn: GameJail = _
   private var behaviour: Behaviour = _
   override def beforeEach(): Unit =
     val gameSession = DefaultGameSession(100)
-    gameTurn = gameSession.gameTurn
+    gameTurn = gameSession.gameTurn.asInstanceOf[GameJail]
     behaviour = BehaviourFactory(gameSession).JailBehaviour()
     gameSession.startGame()
 

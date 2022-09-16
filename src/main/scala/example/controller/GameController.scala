@@ -3,6 +3,7 @@ package example.controller
 import example.view.{PlayerChoice, View}
 import lib.behaviour.event.EventStoryModule.InteractiveEventStory
 import lib.gameManagement.gameSession.GameSession
+import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.Observer
 
 trait GameController:
@@ -11,13 +12,12 @@ trait GameController:
 class GameControllerImpl(gameSession: GameSession, view: View) extends GameController:
   override def start(): Unit =
     gameSession.startGame()
-    val observer: Observer = new Observer:
-      override def update(msg: String): Unit = view.printLog(msg)
+    val observer: Observer = (msg: String) => view.printLog(msg)
     gameSession.logger.registerObserver(observer)
     while true do
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId)
-      if gameSession.gameTurn.getRemainingBlockedMovements(playerId).isEmpty then
+      if gameSession.gameTurn.asInstanceOf[GameJail].getRemainingBlockedMovements(playerId).isEmpty then
         gameSession.setPlayerPosition(playerId, gameSession.dice.rollOneDice())
       val terrain = gameSession.getPlayerTerrain(playerId)
       view.showCurrentTerrain(terrain)

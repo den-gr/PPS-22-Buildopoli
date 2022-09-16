@@ -6,6 +6,7 @@ import lib.behaviour.event.EventStoryModule.EventStory
 import lib.behaviour.event.EventGroup
 import lib.behaviour.event.EventStoryModule.EventStory
 import lib.gameManagement.gameSession.GameSession
+import lib.gameManagement.gameTurn.GameJail
 import lib.terrain.Terrain
 import lib.terrain.*
 
@@ -78,13 +79,17 @@ object CardTerrain:
     val giveMoneyAll = DefaultCards(EventGroup(Event(giveMoneyAllStory, giveMoneyAllStrategy)), "give money all")
 
     val goToPrisonStory: EventStory = EventStory("Test", "Go to prison for 2 turns")
-    val goToPrisonStrategy: EventStrategy = id => gameSession.gameTurn.lockPlayer(id, 2)
+    val goToPrisonStrategy: EventStrategy = id => gameSession.gameTurn.asInstanceOf[GameJail].lockPlayer(id, 2)
     val goToPrison = DefaultCards(EventGroup(Event(goToPrisonStory, goToPrisonStrategy)), "go to prison")
 
     val doOneLapWithoutRewardStory: EventStory =
       EventStory("Test", "Do One Lap and stop at the start cell without reward")
     val doOneLapWithoutRewardStrategy: EventStrategy = id =>
-      gameSession.setPlayerPosition(id, (gameSession.gameStore.getNumberOfTerrains(_ => true)- gameSession.getPlayerPosition(id)) + 1, false)
+      gameSession.setPlayerPosition(
+        id,
+        (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1,
+        false
+      )
     val doOneLapWithoutReward = DefaultCards(
       EventGroup(Event(doOneLapWithoutRewardStory, doOneLapWithoutRewardStrategy)),
       "do one lap without reward"
@@ -109,7 +114,10 @@ object CardTerrain:
 
     val doOneLapStory: EventStory = EventStory("Test", "Do One Lap and stop at the start cell")
     val doOneLapStrategy: EventStrategy = id =>
-      gameSession.setPlayerPosition(id, (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1)
+      gameSession.setPlayerPosition(
+        id,
+        (gameSession.gameStore.getNumberOfTerrains(_ => true) - gameSession.getPlayerPosition(id)) + 1
+      )
     val doOneLap = DefaultCards(EventGroup(Event(doOneLapStory, doOneLapStrategy)), "do one lap")
 
     List(removeMoney, addMoney, doOneLap)
