@@ -13,28 +13,26 @@ enum PlayerChoice:
 
 trait View:
 
-  // in base alla scelta si mostra il resto (sempre end turn, dopo il lancio del dado o forse è già gestito dal controller)
-
   def showCurrentPlayer(playerID: Int): Unit
   def showCurrentTerrain(terrain: Terrain): Unit
   def showStoryOptions(story: Seq[StoryGroup]): Unit
-  def printLog(log: String): Unit // log
+  def printLog(log: String): Unit
   def getUserChoices(story: Seq[StoryGroup]): PlayerChoice
 
 case class GameView() extends View:
 
-  def showCurrentPlayer(playerID: Int): Unit = println("* It is player" + playerID + "turn *")
-  def showCurrentTerrain(terrain: Terrain): Unit = println("* We are currently in " + terrain.basicInfo.name + '*')
+  def showCurrentPlayer(playerID: Int): Unit = println(s"* It is player $playerID turn *")
+  def showCurrentTerrain(terrain: Terrain): Unit = println(s"* We are currently in ${terrain.basicInfo.name} *")
 
   def showStoryOptions(stories: Seq[StoryGroup]): Unit =
-    var i: Int = 0
+    var ei: Int = 0
+    var a: Int = 0
     var result: String = ""
-    stories.foreach(storyGroup =>
-      result += "Option " + i + "\n";
-      i += 1;
-      storyGroup.foreach(story =>
-        result += s"\t ${story.description}. Available actions:\n\t\t";
-        result += story.choices.mkString("\n\t\t")
+    stories.zipWithIndex.foreach((storyGroup, i) =>
+      result += s"Group Choice $i \n";
+      storyGroup.zipWithIndex.foreach((story, i) =>
+        result += s"\t Event Choice $i: ${story.description} \n\t\t Available actions:\n";
+        story.choices.zipWithIndex.foreach((e, i) => result += s"\t\t\t Action Choice $i: $e")
         result +=
           "\n"
       )
