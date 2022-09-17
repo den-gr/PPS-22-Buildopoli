@@ -6,12 +6,13 @@ import lib.behaviour.event.EventStoryModule.EventStory
 import lib.behaviour.event.EventFactory
 import lib.gameManagement.gameBank.Bank
 import lib.util.GameSessionHelper
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.funsuite.AnyFunSuite
 import GameSessionHelper.DefaultGameSession
 import lib.terrain.{Terrain, TerrainInfo}
+import org.scalatest.featurespec.AnyFeatureSpec
 
-class WithdrawMoneyTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
+class WithdrawMoneyTerrainTest extends AnyFeatureSpec with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1
   private val AMOUNT = 100
   private val AMOUNT2 = 50
@@ -30,16 +31,18 @@ class WithdrawMoneyTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
 
     gameSession.startGame()
 
-  test("Use behaviour of a terrain where player is located") {
-    assert(gameSession.getPlayerPosition(PLAYER_1) == 0)
-    val explorer = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
-    testAmount(explorer, AMOUNT)
-  }
+  Feature("Player arrived in the terrain with a behaviour that withdraw player money") {
+    Scenario("Use behaviour of a terrain where player is located") {
+      assert(gameSession.getPlayerPosition(PLAYER_1) == 0)
+      val explorer = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
+      testAmount(explorer, AMOUNT)
+    }
 
-  test("When player moves explorer arrives in new terrain with new behaviour that withdraw another amount of money") {
-    gameSession.movePlayer(PLAYER_1, steps = 1)
-    val explorer = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
-    testAmount(explorer, AMOUNT2)
+    Scenario("Player moves to a second terrain and its behaviour withdraws another amount of money") {
+      gameSession.movePlayer(PLAYER_1, steps = 1)
+      val explorer = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
+      testAmount(explorer, AMOUNT2)
+    }
   }
 
   private def testAmount(explorer: BehaviourExplorer, amount: Int): Unit =
