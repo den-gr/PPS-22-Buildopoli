@@ -9,14 +9,10 @@ import lib.behaviour.event.EventStoryModule.EventStory
 
 import scala.annotation.targetName
 
-object BehaviourModule extends StoryHelper:
+object BehaviourModule:
   /** Sequence of [[EventStory]]
     */
   type StoryGroup = Seq[EventStory]
-
-  /** A choose of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
-    */
-  type Index = (Int, Int)
 
   /** Behaviour encapsulate a sequence of game events that can be used/visualized by a player. For every new interaction
     * (a new player turn) Behaviour supply a fresh [[BehaviourExplorer]]
@@ -46,13 +42,14 @@ object BehaviourModule extends StoryHelper:
       *   a new Behaviour
       */
     def apply(singleEventGroup: EventGroup): Behaviour = apply(Seq(singleEventGroup))
-    
+
     @targetName("Constructor with events of a simple single event group")
-    /**
-     * Construct a [[Behaviour]] with only one event group, take in input events of this event group
-     * @param eventsOfSingleEventGroup events
-     * @return a new Behaviour
-     */
+    /** Construct a [[Behaviour]] with only one event group, take in input events of this event group
+      * @param eventsOfSingleEventGroup
+      *   events
+      * @return
+      *   a new Behaviour
+      */
     def apply(eventsOfSingleEventGroup: Event*): Behaviour = apply(EventGroup(eventsOfSingleEventGroup))
 
     private case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:

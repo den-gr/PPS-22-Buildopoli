@@ -9,7 +9,13 @@ import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.RentStrategyPreviousPriceMultiplier
 import lib.terrain.{Purchasable, Terrain, TerrainInfo}
 
+/**
+ * Create terrain for one specific game setup
+ */
 trait TerrainInitializer:
+  /**
+   * @return an ordered sequence of game terrains
+   */
   def buildGameTerrains(): Seq[Terrain]
 
 object TerrainInitializer:

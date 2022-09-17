@@ -1,6 +1,7 @@
 package example.controller
 
 import example.view.{PlayerChoice, View}
+import lib.behaviour.{BehaviourExplorer, StoryConverter}
 import lib.behaviour.event.EventStoryModule.InteractiveEventStory
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
@@ -15,8 +16,8 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
     gameSession.startGame()
     val observer: Observer = (msg: String) => view.printLog(msg)
     gameSession.logger.registerObserver(observer)
-    
-    //todo endgame control
+
+    // todo endgame control
     while true do
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId)

@@ -119,10 +119,9 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("EventStory of casino must have interactions") {
     val explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
-    val events: Seq[EventGroup] = explorer.currentEvents
-    val interactions: Seq[StoryGroup] = getStories(events, PLAYER_1)
+    val interactions: Seq[StoryGroup] = explorer.currentStories
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
     explorer.next()
-    assert(getStories(explorer.currentEvents, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
+    assert(explorer.currentStories.head.head.isInstanceOf[InteractiveEventStory])
   }

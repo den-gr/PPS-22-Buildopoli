@@ -56,7 +56,7 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       Given("interactive Story of event that allows to buy the terrains")
       val terrain = gameSession.getPlayerTerrain(PLAYER_1)
       val explorer = terrain.getBehaviourExplorer(PLAYER_1)
-      val story = getStories(explorer.currentEvents, explorer.playerId).head.head
+      val story = explorer.currentStories.head.head
       assert(story.isInstanceOf[InteractiveEventStory])
       val interactiveStory = story.asInstanceOf[InteractiveEventStory]
 
@@ -104,7 +104,7 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       Then("event interaction return OK if player 2 has money to pay rent")
       assert(explorer.currentEvents.nonEmpty)
       val interactiveStory =
-        getStories(explorer.currentEvents, explorer.playerId).head.head.asInstanceOf[InteractiveEventStory]
+        explorer.currentStories.head.head.asInstanceOf[InteractiveEventStory]
       assert(interactiveStory.interactions.head(explorer.playerId) == Result.OK)
 
       Then("event interaction return ERR if player 2 cannot pay rent")

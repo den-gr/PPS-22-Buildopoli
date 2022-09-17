@@ -2,48 +2,35 @@ package lib.behaviour
 
 import BehaviourModule.*
 import lib.behaviour.event.EventStoryModule.EventStory
-import lib.behaviour.event.EventGroup
-
+import lib.behaviour.event.{EventGroup, GenericBehaviourExplorer}
 import scala.collection.mutable
 
 /** Allows correctly navigate between event groups and their successors of a Behaviour. Encapsulate a sequence of
   * [[EventGroup]]
   */
-trait BehaviourExplorer:
-  /** Id of player that explore behaviour events
+trait BehaviourExplorer extends GenericBehaviourExplorer[Seq[EventGroup]] with StoryConverter:
+  /** Index of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
     */
-  val playerId: Int
-
-  /** @return
-    *   false if there are not available event groups to explore
-    */
-  def hasNext: Boolean
+  override type Index = (Int, Int)
 
   /** Choice of next event
     * @param index
-    *   is a double tuple where first element is event group index, and second is an event index
+    *   is a double tuple where first element is event group index, and second is an event index. Default value (0, 0)
     */
-  def next(index: Index = (0, 0)): Unit
+  override def next(index: (Int, Int) = (0, 0)): Unit
 
-  /** @return
-    *   current, available to the player, sequence of events
-    */
-  def currentEvents: Seq[EventGroup]
+/** Allows extract stories from event groups
+  */
+trait StoryConverter:
+  ex: GenericBehaviourExplorer[Seq[EventGroup]] =>
 
   /** Get stories of current event groups
+    *
     * @return
     *   grouped event stories
     */
-  def currentStories: Seq[StoryGroup]
-
-  /** @return
-    *   true if there are not mandatory event groups, so a player can end his turn
-    */
-  def canEndExploring: Boolean
-
-  /** Empty explorer
-    */
-  def endExploring(): Unit
+  def currentStories: Seq[StoryGroup] =
+    ex.currentEvents.map(eventGroup => eventGroup.map(m => m.eventStory(ex.playerId)))
 
 object BehaviourExplorer:
 
@@ -55,7 +42,7 @@ object BehaviourExplorer:
     * @return
     *   behaviour explorer that allows to a player to use game events
     */
-  def apply(events: Seq[EventGroup], playerId: Int): BehaviourExplorer =
+  def apply(events: Seq[EventGroup], playerId: Int): BehaviourExplorer with StoryConverter =
     BehaviourExplorerImpl(events, playerId)
 
   /** Add a new event group to the current event groups of behaviour explorer. Can be useful if behaviour can has random
@@ -68,11 +55,15 @@ object BehaviourExplorer:
     * @return
     *   behaviour explorer with new event group
     */
-  def apply(explorer: BehaviourExplorer, eventGroup: EventGroup): BehaviourExplorer =
+  def apply(
+      explorer: BehaviourExplorer,
+      eventGroup: EventGroup
+  ): BehaviourExplorer with StoryConverter =
     apply(eventGroup +: explorer.currentEvents, explorer.playerId)
 
   private case class BehaviourExplorerImpl(events: Seq[EventGroup], override val playerId: Int)
-      extends BehaviourExplorer:
+      extends BehaviourExplorer
+      with StoryConverter:
 
     val eventStack: mutable.Stack[Seq[EventGroup]] = mutable.Stack(events)
 
@@ -94,8 +85,6 @@ object BehaviourExplorer:
           else if newGroup.nonEmpty then eventStack.push(newGroup.get +: groups.patch(groupIndex, Nil, 1))
 
     override def currentEvents: Seq[EventGroup] = eventStack.head
-
-    override def currentStories: Seq[StoryGroup] = getStories(this.currentEvents, this.playerId)
 
     override def canEndExploring: Boolean = eventStack.size <= 1 && !eventStack.head.exists(_.isMandatory)
 
