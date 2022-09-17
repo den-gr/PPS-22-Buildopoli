@@ -4,7 +4,7 @@ import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.*
 import lib.behaviour.BehaviourModule.Behaviour.*
 import lib.behaviour.event.EventModule.*
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.event.{EventGroup, EventModule}
 import lib.util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach

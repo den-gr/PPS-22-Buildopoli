@@ -2,7 +2,7 @@ package lib.integration
 
 import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.event.EventFactory
 import lib.gameManagement.gameBank.Bank
 import lib.util.GameSessionHelper

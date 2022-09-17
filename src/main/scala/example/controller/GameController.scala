@@ -2,11 +2,11 @@ package example.controller
 
 import example.view.{PlayerChoice, View}
 import lib.behaviour.{BehaviourExplorer, StoryConverter}
-import lib.behaviour.event.EventStoryModule.InteractiveEventStory
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.Observer
-import lib.behaviour.event.EventStoryModule.Result.*
+import lib.behaviour.event.story.InteractiveEventStory.InteractiveEventStory
+import lib.behaviour.event.story.InteractiveEventStory.Result.*
 
 trait GameController:
   def start(): Unit

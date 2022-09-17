@@ -2,8 +2,8 @@ package lib.behaviour.factory.input
 
 import lib.behaviour.BehaviourModule
 import lib.behaviour.event.EventFactory.EventLogMsg
-import lib.behaviour.event.EventStoryModule.EventStory
-import lib.behaviour.event.EventStoryModule
+import lib.behaviour.event.story.EventStoryModule
+import lib.behaviour.event.story.EventStoryModule.EventStory
 
 /** A simple template with default values of the input to [[StandardBehaviourFactory]] that allows to crete a jail
   * [[BehaviourModule.Behaviour]] object

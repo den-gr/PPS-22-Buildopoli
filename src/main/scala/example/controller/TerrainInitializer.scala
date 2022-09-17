@@ -2,7 +2,7 @@ package example.controller
 
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.{BasicEventFactory, EventFactory}
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.factory.{BasicBehaviourFactory, BehaviourFactory}
 import lib.gameManagement.gameSession.GameSession
 import lib.terrain.Mortgage.DividePriceMortgage

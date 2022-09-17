@@ -2,7 +2,7 @@ package lib.integration
 
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.{EventFactory, EventGroup}
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.gameManagement.gameSession.GameSession
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.funsuite.AnyFunSuite

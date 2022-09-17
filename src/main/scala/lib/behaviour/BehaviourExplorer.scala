@@ -1,8 +1,9 @@
 package lib.behaviour
 
 import BehaviourModule.*
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
 import lib.behaviour.event.{EventGroup, GenericBehaviourExplorer}
+
 import scala.collection.mutable
 
 /** Allows correctly navigate between event groups and their successors of a Behaviour. Encapsulate a sequence of

@@ -2,7 +2,7 @@ package lib.terrain.card
 
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventModule.{Event, EventStrategy}
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.lap.Lap.MoneyReward
 import lib.behaviour.event.EventGroup
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}

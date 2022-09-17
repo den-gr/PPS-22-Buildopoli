@@ -2,9 +2,9 @@ package lib.terrain.card
 
 import lib.behaviour.BehaviourExplorer
 import lib.behaviour.event.EventModule.{Event, EventStrategy}
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.event.EventGroup
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.terrain.Terrain

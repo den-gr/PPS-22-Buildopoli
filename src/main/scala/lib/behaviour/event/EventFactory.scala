@@ -3,8 +3,8 @@ package lib.behaviour.event
 import lib.behaviour.event.*
 import lib.behaviour.event.EventModule.Event
 import lib.behaviour.event.EventModule.*
-import lib.behaviour.event.EventStoryModule.*
-import lib.behaviour.event.EventStoryModule.Result.*
+import lib.behaviour.event.story.EventStoryModule.*
+import lib.behaviour.event.story.InteractiveEventStory.*
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.GameLogger

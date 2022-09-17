@@ -5,11 +5,12 @@ import org.scalatest.funsuite.AnyFunSuite
 import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.{BasicRentStrategyFactor, RentStrategyWithBonus}
 import lib.behaviour.BehaviourModule.*
-import lib.behaviour.event.EventStoryModule.{EventStory, Interaction, InteractiveEventStory, Result}
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.gameManagement.gameSession.GameSession
 import lib.util.GameSessionHelper
 import org.scalatest.featurespec.AnyFeatureSpec
 import GameSessionHelper.DefaultGameSession
+import lib.behaviour.event.story.InteractiveEventStory.*
 import lib.behaviour.event.{EventFactory, EventGroup}
 import lib.behaviour.factory.BehaviourFactory
 import lib.terrain.{GroupManager, Purchasable, Terrain, TerrainInfo}

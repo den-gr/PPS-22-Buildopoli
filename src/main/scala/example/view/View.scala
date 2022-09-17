@@ -1,7 +1,6 @@
 package example.view
 
-import lib.behaviour.BehaviourModule.StoryGroup
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.*
 import lib.terrain.Terrain
 
 import scala.annotation.tailrec

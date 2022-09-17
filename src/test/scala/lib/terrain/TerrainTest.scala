@@ -4,7 +4,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import lib.terrain.Terrain.*
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventModule.Event
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.event.EventGroup
 import lib.behaviour.factory.BehaviourFactory
 import lib.gameManagement.gameSession.GameSession

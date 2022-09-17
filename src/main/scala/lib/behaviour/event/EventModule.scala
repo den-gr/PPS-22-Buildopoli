@@ -2,8 +2,9 @@ package lib.behaviour.event
 
 import java.awt.Choice
 import scala.annotation.targetName
-import EventStoryModule.*
-import lib.behaviour.event.EventStoryModule.{EventStory, InteractiveEventStory}
+import lib.behaviour.event.story.EventStoryModule.*
+import lib.behaviour.event.story.EventStoryModule.EventStory
+import lib.behaviour.event.story.InteractiveEventStory.InteractiveEventStory
 
 /** Basic elements of game events
   */

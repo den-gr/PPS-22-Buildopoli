@@ -1,8 +1,14 @@
-package lib.behaviour.event
+package lib.behaviour.event.story
+
+import lib.behaviour.event.story.InteractiveEventStory.*
 
 /** Define interactive and not interactive event stories
   */
 object EventStoryModule:
+  /** Sequence of [[EventStory]]
+    */
+  type StoryGroup = Seq[EventStory]
+
   /** Description and possible action of an event
     */
   trait EventStory:
@@ -17,38 +23,6 @@ object EventStoryModule:
       *   textual reactions of player to event
       */
     def choices: Seq[String]
-
-  /** Result of [[Interaction]]
-    */
-  enum Result:
-    case ERR(msg: String)
-    case OK
-
-  /** Event interaction allows to player react to event with some action. Take in input player id
-    */
-  type Interaction = Int => Result
-
-  /** [[EventStory]] extension that for each choice define an [[Interaction]]
-    */
-  trait StoryInteraction:
-    evSt: EventStory =>
-
-    /** @return
-      *   list of story interaction
-      */
-    def interactions: Seq[Interaction]
-
-    /** Derivable method that group story choices with interaction
-      * @return
-      *   grouped story choices with interaction
-      */
-    def choicesAndInteractions: Seq[(String, Interaction)] =
-      for i <- choices.indices
-      yield (choices(i), interactions(i))
-
-  /** Event story with story interactions
-    */
-  trait InteractiveEventStory extends EventStory with StoryInteraction
 
   object EventStory:
     /** [[EventStory]]constructor

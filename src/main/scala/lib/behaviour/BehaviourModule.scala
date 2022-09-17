@@ -1,18 +1,14 @@
 package lib.behaviour
 
-import BehaviourModule.StoryGroup
 import lib.behaviour.event.EventModule.*
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.event.{EventGroup, EventModule}
 import lib.behaviour.event.EventModule.Event
-import lib.behaviour.event.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.EventStory
 
 import scala.annotation.targetName
 
 object BehaviourModule:
-  /** Sequence of [[EventStory]]
-    */
-  type StoryGroup = Seq[EventStory]
 
   /** Behaviour encapsulate a sequence of game events that can be used/visualized by a player. For every new interaction
     * (a new player turn) Behaviour supply a fresh [[BehaviourExplorer]]

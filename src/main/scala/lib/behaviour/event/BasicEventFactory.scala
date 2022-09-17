@@ -1,7 +1,7 @@
 package lib.behaviour.event
 
 import EventModule.EventPrecondition
-import EventStoryModule.{EventStory, InteractiveEventStory}
+import lib.behaviour.event.story.EventStoryModule.EventStory
 import EventModule.*
 import EventFactory.EventLogMsg
 
@@ -39,17 +39,19 @@ trait BasicEventFactory:
   def EscapeEvent(story: EventStory, escapeSuccessMsg: EventLogMsg, escapeFailMsg: EventLogMsg): Event
 
   /** @param story
-    *   event description, story choice will be united with a story interaction 
-    * @return event that allows to player to buy terrain to became its owner
+    *   event description, story choice will be united with a story interaction
+    * @return
+    *   event that allows to player to buy terrain to became its owner
     */
   def BuyTerrainEvent(story: EventStory): Event
 
-  /**
-   * 
-   * @param story event description, story choice will be united with a story interaction 
-   * @param notMoneyErrMsg If a player has not enough money to pay rent, he will see this msg after click on story choice
-   * @return Event that force to pay rent to the terrain owner
-   */
+  /** @param story
+    *   event description, story choice will be united with a story interaction
+    * @param notMoneyErrMsg
+    *   If a player has not enough money to pay rent, he will see this msg after click on story choice
+    * @return
+    *   Event that force to pay rent to the terrain owner
+    */
   def GetRentEvent(story: EventStory, notMoneyErrMsg: String): Event
 
   def BuildTokenEvent(storyDescription: String): Event

@@ -5,7 +5,7 @@ import org.scalatest.*
 import lib.behaviour.event.EventModule.*
 import lib.util.mock.BankHelper.*
 import lib.util.mock.BankHelper.BankMock.*
-import lib.behaviour.event.EventStoryModule.*
+import lib.behaviour.event.story.EventStoryModule.*
 
 class EventTest extends AnyFunSuite with BeforeAndAfterEach:
 
