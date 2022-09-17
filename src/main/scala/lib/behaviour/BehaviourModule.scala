@@ -56,3 +56,18 @@ object BehaviourModule:
         initialEvents
           .map(gr => gr.replaceEvents(gr.filter(_.hasToRun(playerId))))
           .filter(_.nonEmpty)
+
+    /** Combine [[BehaviourExplorer]] of two behaviour
+      * @param b1
+      *   first behaviour
+      * @param b2
+      *   second behaviour
+      * @param playerId
+      *   player for which the behaviour explorer will be created
+      * @return a combination of two behaviour explorers
+      */
+    def combineExplorers(b1: Behaviour, b2: Behaviour, playerId: Int): BehaviourExplorer =
+      Behaviour(
+        b1.getBehaviourExplorer(playerId).currentEvents ++
+          b2.getBehaviourExplorer(playerId).currentEvents
+      ).getBehaviourExplorer(playerId)
