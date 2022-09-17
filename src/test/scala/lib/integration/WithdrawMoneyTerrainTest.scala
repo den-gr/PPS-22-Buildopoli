@@ -9,6 +9,7 @@ import lib.util.GameSessionHelper
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.funsuite.AnyFunSuite
 import GameSessionHelper.DefaultGameSession
+import lib.behaviour.factory.BehaviourFactory
 import lib.terrain.{Terrain, TerrainInfo}
 import org.scalatest.featurespec.AnyFeatureSpec
 
@@ -23,8 +24,9 @@ class WithdrawMoneyTerrainTest extends AnyFeatureSpec with BeforeAndAfterEach:
   override def beforeEach(): Unit =
     gameSession = DefaultGameSession(1)
     bank = gameSession.gameBank
-    val behaviour: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT))
-    val behaviour2: Behaviour = Behaviour(EventFactory(gameSession).WithdrawMoneyEvent(story, AMOUNT2))
+    val eventFactory = EventFactory(gameSession)
+    val behaviour: Behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, AMOUNT))
+    val behaviour2: Behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, AMOUNT2))
 
     gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT money"), behaviour))
     gameSession.gameStore.putTerrain(Terrain(TerrainInfo(s"Loosing $AMOUNT2 money"), behaviour2))

@@ -11,6 +11,7 @@ import lib.util.GameSessionHelper
 import org.scalatest.featurespec.AnyFeatureSpec
 import GameSessionHelper.DefaultGameSession
 import lib.behaviour.event.{EventFactory, EventGroup}
+import lib.behaviour.factory.BehaviourFactory
 import lib.terrain.{GroupManager, Purchasable, Terrain, TerrainInfo}
 
 /** Test purchasable events produced by factory that allow buying terrains and pay rent to the owner
@@ -18,8 +19,6 @@ import lib.terrain.{GroupManager, Purchasable, Terrain, TerrainInfo}
 class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
   private val PLAYER_2 = 2
-  private val POSITION_0 = 0
-  private val POSITION_1 = 1
   private var simpleTerrain: Terrain = _
   private var purchasableTerrain: Purchasable = _
   private val TERRAIN_PRICE = 100
@@ -29,12 +28,10 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
   override def beforeEach(): Unit =
     gameSession = DefaultGameSession(2)
 
-    val story: EventStory = EventStory("Do you want but this terrain?", "Buy")
+    val buyTerrainStory: EventStory = EventStory("Do you want but this terrain?", "Buy")
     val rentStory: EventStory = EventStory("You need to pay rent", "Pay")
-    val factory = EventFactory(gameSession)
-    val behaviour: Behaviour = Behaviour(
-      EventGroup(factory.BuyTerrainEvent(story), factory.GetRentEvent(rentStory, "Not enough money"))
-    )
+    val factory = BehaviourFactory(gameSession)
+    val behaviour: Behaviour = factory.PurchasableTerrainBehaviour(rentStory, "Not enough money", buyTerrainStory)
 
     simpleTerrain = Terrain(TerrainInfo("Dumb terrain"), behaviour)
     val t: Terrain = Terrain(TerrainInfo("vicolo corto"), behaviour)
@@ -106,7 +103,8 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
       Then("event interaction return OK if player 2 has money to pay rent")
       assert(explorer.currentEvents.nonEmpty)
-      val interactiveStory = getStories(explorer.currentEvents, explorer.playerId).head.head.asInstanceOf[InteractiveEventStory]
+      val interactiveStory =
+        getStories(explorer.currentEvents, explorer.playerId).head.head.asInstanceOf[InteractiveEventStory]
       assert(interactiveStory.interactions.head(explorer.playerId) == Result.OK)
 
       Then("event interaction return ERR if player 2 cannot pay rent")

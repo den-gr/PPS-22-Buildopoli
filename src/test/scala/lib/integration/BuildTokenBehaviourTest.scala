@@ -4,14 +4,15 @@ import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.{EventFactory, EventGroup}
 import lib.behaviour.event.EventStoryModule.EventStory
 import lib.gameManagement.gameSession.GameSession
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.funsuite.AnyFunSuite
 import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.BasicRentStrategyFactor
 import lib.terrain.{Purchasable, Terrain, TerrainInfo}
 import lib.util.GameSessionHelper.DefaultGameSession
+import org.scalatest.featurespec.AnyFeatureSpec
 
-class BuildTokenBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
+class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
   private val POSITION_0 = 0
   private var purchasableTerrain: Purchasable = _
