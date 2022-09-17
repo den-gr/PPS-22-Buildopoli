@@ -10,41 +10,41 @@ import lib.terrain.RentStrategy.RentStrategyPreviousPriceMultiplier
 import lib.terrain.{Purchasable, Terrain, TerrainInfo}
 
 trait TerrainInitializer:
-  def insertGameTerrains(gameSession: GameSession): Seq[Terrain]
+  def buildGameTerrains(): Seq[Terrain]
 
-object TerrainInitializer extends TerrainInitializer:
+object TerrainInitializer:
+  def apply(gameSession: GameSession): TerrainInitializer = TerrainInitializerImpl(gameSession)
 
-  def insertGameTerrains(gameSession: GameSession): Seq[Terrain] =
-    val eventFactory = EventFactory(gameSession)
-    val behaviourFactory = BehaviourFactory(gameSession)
+  private case class TerrainInitializerImpl(gameSession: GameSession) extends TerrainInitializer:
+    private val eventFactory = EventFactory(gameSession)
+    private val behaviourFactory = BehaviourFactory(gameSession)
 
-    var terrains: Seq[Terrain] = Seq()
-    val STATION_GROUP = "station"
-    terrains = terrains :+ createEmptyTerrain()
-    terrains = terrains :+ createWithdrawMoneyTerrain(eventFactory)(50)
-    terrains = terrains :+ createTransportStationTerrain(behaviourFactory)("Train station", 300, STATION_GROUP)
-    terrains = terrains :+ createWithdrawMoneyTerrain(eventFactory)(100)
-    terrains = terrains :+ createTransportStationTerrain(behaviourFactory)("Bus station", 300, STATION_GROUP)
-    terrains
+    override def buildGameTerrains(): Seq[Terrain] =
+      var terrains: Seq[Terrain] = Seq()
+      val STATION_GROUP = "station"
+      terrains = terrains :+ createEmptyTerrain()
+      terrains = terrains :+ createWithdrawMoneyTerrain(50)
+      terrains = terrains :+ createTransportStationTerrain("Train station", 300, STATION_GROUP)
+      terrains = terrains :+ createWithdrawMoneyTerrain(100)
+      terrains = terrains :+ createTransportStationTerrain("Bus station", 300, STATION_GROUP)
+      terrains
 
-  private def createWithdrawMoneyTerrain(eventFactory: BasicEventFactory)(amount: Int): Terrain =
-    val story = EventStory(s"You spend $amount money on a party", "Oh, noo")
-    val behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, amount))
-    Terrain(TerrainInfo("Party"), behaviour)
+    private def createWithdrawMoneyTerrain(amount: Int): Terrain =
+      val story = EventStory(s"You spend $amount money on a party", "Oh, noo")
+      val behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, amount))
+      Terrain(TerrainInfo("Party"), behaviour)
 
-  private def createEmptyTerrain(): Terrain = Terrain(TerrainInfo("Go"), Behaviour())
+    private def createEmptyTerrain(): Terrain = Terrain(TerrainInfo("Go"), Behaviour())
 
-  private def createTransportStationTerrain(
-      behaviourFactory: BasicBehaviourFactory
-  )(stationName: String, price: Int, group: String): Terrain =
-    val buyStory = EventStory(s"You have an incredible opportunity to buy $stationName", "Buy station")
-    val rentStory = EventStory(s"You are at $stationName and must pay for the ticket", "Pay for ticket")
-    val errMsg = "You have not enough money to pay for the ticket"
-    val behaviour = behaviourFactory.PurchasableTerrainBehaviour(rentStory, errMsg, buyStory)
-    Purchasable(
-      Terrain(TerrainInfo(stationName), behaviour),
-      price,
-      group,
-      DividePriceMortgage(price, 2),
-      RentStrategyPreviousPriceMultiplier(50, 2)
-    )
+    private def createTransportStationTerrain(stationName: String, price: Int, group: String): Terrain =
+      val buyStory = EventStory(s"You have an incredible opportunity to buy $stationName", "Buy station")
+      val rentStory = EventStory(s"You are at $stationName and must pay for the ticket", "Pay for ticket")
+      val errMsg = "You have not enough money to pay for the ticket"
+      val behaviour = behaviourFactory.PurchasableTerrainBehaviour(rentStory, errMsg, buyStory)
+      Purchasable(
+        Terrain(TerrainInfo(stationName), behaviour),
+        price,
+        group,
+        DividePriceMortgage(price, 2),
+        RentStrategyPreviousPriceMultiplier(50, 2)
+      )
