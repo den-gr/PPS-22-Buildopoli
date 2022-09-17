@@ -33,6 +33,8 @@ trait Buildable extends Purchasable:
     */
   def getNumToken(name: String): Int
 
+  def listAvailableToken(): Seq[String]
+
   /** It is used to add a token
     * @param name
     *   of the token
@@ -80,9 +82,10 @@ object Buildable:
           total
         case false => terrain.computeTotalRent(gm)
     override def canBuild(groupManager: GroupManager): Boolean =
-      owner.nonEmpty && groupManager.isGroupComplete(owner.get, group)
+      owner.nonEmpty && groupManager.isGroupComplete(owner.get, group) && token.listAvailableToken().nonEmpty
     override def getNumToken(name: String): Int = token.getNumToken(name)
     override def addToken(name: String, num: Int): Unit = token = token.addToken(name, num)
     override def destroyToken(name: String, num: Int): Unit = token = token.removeToken(name, num)
     override def tokenBuyingPrice(name: String): Int = token.buyingPrice(name)
     override def tokenSellingPrice(name: String): Int = token.buyingPrice(name) / 2
+    override def listAvailableToken(): Seq[String] = token.listAvailableToken()

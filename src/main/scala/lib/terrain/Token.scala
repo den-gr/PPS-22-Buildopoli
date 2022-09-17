@@ -29,6 +29,8 @@ trait Token:
     */
   def totalBonusPrice(name: String): Seq[Int]
 
+  def listAvailableToken(): Seq[String]
+
   /** It is used to add an amount of the specific token
     * @param name
     *   of the token
@@ -58,64 +60,46 @@ trait Token:
 
 object Token:
 
-  /** Factory to create a token
-    * @param tokenTypeToRentBonus
-    *   a map which keys determine the name of the tokens. Each value is the list of money bonus each additional token
-    *   gives
-    * @param maxValues
-    *   the maximum number of tokens that can be built
-    * @param buyingPrices
-    *   the price at which each different type of token can be built
-    * @param numToken
-    *   the number of initial token
-    * @return
-    *   the token object desired
-    */
-  def apply(
-      tokenTypeToRentBonus: Map[String, Seq[Int]],
-      maxValues: Seq[Int],
-      buyingPrices: Seq[Int],
-      numToken: Map[String, Int]
-  ): Token =
-    TokenWithBonus(tokenTypeToRentBonus, maxValues, buyingPrices, numToken)
+  def apply(levels: Seq[String], maxNumToken: Seq[Int], rentBonuses: Seq[Seq[Int]], buyingPrices: Seq[Int]): Token =
+    TokenWithBonus(levels, maxNumToken, rentBonuses, buyingPrices, List.fill(levels.size)(0))
 
   private case class TokenWithBonus(
-      tokenTypeToRentBonus: Map[String, Seq[Int]],
-      maxValues: Seq[Int],
-      buyingPrices: Seq[Int],
-      numToken: Map[String, Int]
+      private val levels: Seq[String],
+      private val maxNumToken: Seq[Int],
+      private val rentBonuses: Seq[Seq[Int]],
+      private val buyingPrices: Seq[Int],
+      private val numToken: Seq[Int]
   ) extends Token:
 
-    private val maxToken: Map[String, Int] = (tokenTypeToRentBonus.keys zip maxValues).toMap
-    private var check: Boolean = tokenTypeToRentBonus.keys.equals(numToken.keys)
-    check match
-      case false => throw Exception("Map keys are not the same"); case _ =>
-    check =
-      check && tokenTypeToRentBonus.size == maxValues.size && maxValues.size == buyingPrices.size && buyingPrices.size == numToken.size
-    for i <- tokenTypeToRentBonus.keys do check = check && maxToken(i) == tokenTypeToRentBonus(i).size
-    check match
-      case false => throw Exception("Arrays size or map size do not match!!!")
-      case true =>
-    private val buyingPricesList: Map[String, Int] = (tokenTypeToRentBonus.keys zip buyingPrices).toMap
+    if levels.size != levels.distinct.size then throw Exception("Levels must have different names!!!")
+    if !(levels.size == maxNumToken.size && levels.size == rentBonuses.size && rentBonuses.size == buyingPrices.size && rentBonuses.size == numToken.size)
+    then throw Exception("Arrays size do not match!!!")
+    for l <- levels do
+      if maxNumToken(l) != totalBonusPrice(l).size then throw Exception("Arrays size or map size do not match!!!")
 
-    override def tokenNames: Seq[String] = tokenTypeToRentBonus.keys.toList
-    override def maxNumToken(name: String): Int = maxToken(name)
-    override def buyingPrice(name: String): Int = buyingPricesList(name)
-    override def totalBonusPrice(name: String): Seq[Int] = tokenTypeToRentBonus(name)
-    override def getNumToken(name: String): Int = numToken(name)
-    override def addToken(name: String, num: Int): Token = num > 0 && getNumToken(name) + num <= maxToken(name) match
-      case true => changeToken(name, num)
+    override def tokenNames: Seq[String] = levels
+    override def listAvailableToken(): Seq[String] = tokenNames filter (l => canBuildToken(l))
+    override def maxNumToken(name: String): Int = maxNumToken(fromLevelNameToNumber(name))
+    override def buyingPrice(name: String): Int = buyingPrices(fromLevelNameToNumber(name))
+    override def totalBonusPrice(name: String): Seq[Int] = rentBonuses(fromLevelNameToNumber(name))
+    override def getNumToken(name: String): Int = numToken(fromLevelNameToNumber(name))
+    override def addToken(name: String, num: Int): Token = num > 0 && getNumToken(name) + num <= maxNumToken(name) match
+      case true =>
+        (fromLevelNameToNumber(name), getNumToken(name)) match
+          case (l, n) if l == 0 => changeToken(name, num)
+          case (l, n) if l > 0 && getNumToken(previousLevel(l)) == maxNumToken(previousLevel(l)) =>
+            changeToken(name, num).removeToken(previousLevel(l), maxNumToken(previousLevel(l)))
+
     override def removeToken(name: String, num: Int): Token = num > 0 && getNumToken(name) - num >= 0 match
       case true => changeToken(name, -num)
 
+    private def fromLevelNameToNumber(name: String): Int = levels.indexOf(name)
+    private def previousLevel(level: Int): String = levels(level - 1)
     private def changeToken(name: String, num: Int): Token =
-      TokenWithBonus(
-        tokenTypeToRentBonus,
-        maxValues,
-        buyingPrices,
-        numToken.map((k, v) =>
-          k match
-            case `name` => (k, v + num)
-            case _ => (k, v)
-        )
-      )
+      copy(numToken = levels map (n => if n == name then getNumToken(n) + num else getNumToken(n)))
+    private def isFull(name: String): Boolean = maxNumToken(name) == getNumToken(name)
+    private def areHigherLevelsEmpty: Boolean =
+      !(tokenNames exists (n => fromLevelNameToNumber(n) != 0 && getNumToken(n) > 0))
+    private def canBuildToken(name: String): Boolean =
+      val l = fromLevelNameToNumber(name)
+      (l == 0 && !isFull(levels.head) && areHigherLevelsEmpty) || (l != 0 && isFull(previousLevel(l)))
