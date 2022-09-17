@@ -5,10 +5,15 @@ import lib.terrain.Mortgage.{DividePriceMortgage, MortgageStrategy}
 import lib.terrain.RentStrategy.RentStrategyWithBonus
 import lib.terrain.{Purchasable, Terrain, TerrainInfo}
 
-class PurchasableTest extends AnyFunSuite:
+import org.scalatest.BeforeAndAfterEach
 
-  val t: Terrain = Terrain(TerrainInfo("vicolo corto"), null)
-  val p: Purchasable = Purchasable(t, 1000, "fucsia", DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
+class PurchasableTest extends AnyFunSuite with BeforeAndAfterEach:
+  var t: Terrain = _
+  var p: Purchasable = _
+
+  override def beforeEach(): Unit =
+    t = Terrain(TerrainInfo("vicolo corto"), null)
+    p = Purchasable(t, 1000, "fucsia", DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))
 
   test("A property has a buying price") {
     assert(p.price == 1000)
@@ -33,4 +38,13 @@ class PurchasableTest extends AnyFunSuite:
     p.mortgage()
     assert(p.owner.get == 2)
     assert(p.state == PurchasableState.MORTGAGED)
+  }
+
+  test("A property can be removed from mortage") {
+    p.changeOwner(Some(2))
+    p.mortgage()
+    assert(p.state == PurchasableState.MORTGAGED)
+    p.removeMortgage()
+    assert(p.state == PurchasableState.OWNED)
+
   }
