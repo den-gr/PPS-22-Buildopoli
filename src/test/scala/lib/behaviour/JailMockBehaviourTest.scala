@@ -33,35 +33,35 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     Event(story, imprisonStrategy)
 
   test("Behaviour with single Jail event that imprison a player") {
-    var it = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)
-    assertThrows[IllegalArgumentException](it.next((1, 0)))
-    assertThrows[IllegalArgumentException](it.next((0, 1)))
+    var explorer = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)
+    assertThrows[IllegalArgumentException](explorer.next((1, 0)))
+    assertThrows[IllegalArgumentException](explorer.next((0, 1)))
 
-    it = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)
-    it.next((0, 0))
-    assert(!it.hasNext)
+    explorer = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)
+    explorer.next((0, 0))
+    assert(!explorer.hasNext)
   }
 
-  test("If event group is mandatory it is not possible to end exploring behaviour") {
-    val it = Behaviour(EventGroup(Seq(imprisonEvent), isMandatory = true)).getBehaviourExplorer(PLAYER_1)
-    assert(it.hasNext)
-    assert(!it.canEndExploring)
+  test("If event group is mandatory explorer is not possible to end exploring behaviour") {
+    val explorer = Behaviour(EventGroup(Seq(imprisonEvent), isMandatory = true)).getBehaviourExplorer(PLAYER_1)
+    assert(explorer.hasNext)
+    assert(!explorer.canEndExploring)
   }
 
   test("If event group is not mandatory a player can skip all events") {
-    val it = Behaviour(EventGroup(Seq(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
-    assert(it.hasNext)
-    assert(it.canEndExploring)
-    it.endExploring()
-    assert(!it.hasNext)
+    val explorer = Behaviour(EventGroup(Seq(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
+    assert(explorer.hasNext)
+    assert(explorer.canEndExploring)
+    explorer.endExploring()
+    assert(!explorer.hasNext)
   }
 
   test("On the next turns player must be released from the Jail") {
 
     val behaviour: Behaviour = Behaviour(imprisonEvent)
-    val it = behaviour.getBehaviourExplorer(PLAYER_1)
+    val explorer = behaviour.getBehaviourExplorer(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    it.next((0, 0))
+    explorer.next((0, 0))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
     jail.doTurn()
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
@@ -79,23 +79,23 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Escape event allow to player escape from prison") {
     val behaviour: Behaviour = Behaviour(imprisonEvent, escapeEvent)
-    var it = behaviour.getBehaviourExplorer(PLAYER_1)
-    it.next((0, 0))
+    var explorer = behaviour.getBehaviourExplorer(PLAYER_1)
+    explorer.next((0, 0))
 
     jail.doTurn()
-    it = behaviour.getBehaviourExplorer(PLAYER_1)
+    explorer = behaviour.getBehaviourExplorer(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).nonEmpty)
-    it.next((0, 1))
+    explorer.next((0, 1))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
   }
 
   test("Some event may need a precondition before to be available to players") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
-    val it = behaviour.getBehaviourExplorer(PLAYER_1)
-    var events = it.currentEvents
+    val explorer = behaviour.getBehaviourExplorer(PLAYER_1)
+    var events = explorer.currentEvents
     assert(events.length == 1)
     assert(events.head.length == 1)
-    it.next((0, 0))
+    explorer.next((0, 0))
     jail.doTurn()
     events = behaviour.getBehaviourExplorer(PLAYER_1).currentEvents
     assert(events.length == 1)
@@ -103,10 +103,10 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("To behaviour explorer is possible to add new events") {
-    val it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
-    assert(it.currentEvents.length == 1)
+    val explorer = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
+    assert(explorer.currentEvents.length == 1)
     val newGroup = EventGroup(Event(EventStory("dfdff", "")))
-    val newIt = BehaviourExplorer(it, newGroup)
+    val newIt = BehaviourExplorer(explorer, newGroup)
     assert(newIt.currentEvents.length == 2)
     assert(newIt.currentEvents.head == newGroup)
   }

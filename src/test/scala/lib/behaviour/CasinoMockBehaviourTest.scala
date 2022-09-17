@@ -82,8 +82,8 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Check exceptions of behaviour explorer") {
     def checkWrongIndexes(x: Int, y: Int): Unit =
-      val it = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
-      assertThrows[IllegalArgumentException](it.next(x, y))
+      val explorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
+      assertThrows[IllegalArgumentException](explorer.next(x, y))
     checkWrongIndexes(Int.MinValue, 0)
     checkWrongIndexes(0, Int.MinValue)
     checkWrongIndexes(Int.MinValue, Int.MinValue)
@@ -92,37 +92,37 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("Check casino behaviour when choose lose game event") {
-    val it: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
-    it.next()
-    val events = it.currentEvents
+    val explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
+    explorer.next()
+    val events = explorer.currentEvents
     assert(events.length == 2)
     assert(events.head.length == 1)
     val story = events.head.head.eventStory(PLAYER_1).asInstanceOf[InteractiveEventStory]
     assert(story.choices.length == NUMBER_CHOICES)
     assert(story.interactions.head(PLAYER_1) == Result.OK) // run story interaction
-    it.next()
-    assert(!it.hasNext)
+    explorer.next()
+    assert(!explorer.hasNext)
   }
 
   test("Check casino behaviour when choose win game event") {
-    val it: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
-    it.next((1, 0))
-    val events = it.currentEvents
+    val explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
+    explorer.next((1, 0))
+    val events = explorer.currentEvents
     assert(events.length == 1) // second event group is ignored
     assert(events.head.length == 1)
     val story = events.head.head.eventStory(PLAYER_1).asInstanceOf[InteractiveEventStory]
     assert(story.choices.length == NUMBER_CHOICES)
     assert(story.interactions.head(PLAYER_1) == Result.OK) // run story interaction
-    it.next()
-    assert(it.hasNext)
+    explorer.next()
+    assert(explorer.hasNext)
   }
 
   test("EventStory of casino must have interactions") {
-    val it: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
-    val events: Seq[EventGroup] = it.currentEvents
+    val explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
+    val events: Seq[EventGroup] = explorer.currentEvents
     val interactions: Seq[StoryGroup] = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
-    it.next()
-    assert(getStories(it.currentEvents, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
+    explorer.next()
+    assert(getStories(explorer.currentEvents, PLAYER_1).head.head.isInstanceOf[InteractiveEventStory])
   }

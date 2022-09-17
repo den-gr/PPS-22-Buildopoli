@@ -58,30 +58,30 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
     Scenario("Terrain interaction return different answer based on money of the player") {
       Given("interactive Story of event that allows to buy the terrains")
       val terrain = gameSession.getPlayerTerrain(PLAYER_1)
-      val it = terrain.getBehaviourExplorer(PLAYER_1)
-      val story = getStories(it.currentEvents, it.playerId).head.head
+      val explorer = terrain.getBehaviourExplorer(PLAYER_1)
+      val story = getStories(explorer.currentEvents, explorer.playerId).head.head
       assert(story.isInstanceOf[InteractiveEventStory])
       val interactiveStory = story.asInstanceOf[InteractiveEventStory]
 
       When("when player have money to buy the terrain")
       val terrainPrice = terrain.asInstanceOf[Purchasable].price
-      assert(gameSession.gameBank.getMoneyForPlayer(it.playerId) >= terrainPrice)
+      assert(gameSession.gameBank.getMoneyForPlayer(explorer.playerId) >= terrainPrice)
 
       Then("event interaction return OK")
-      assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
+      assert(interactiveStory.interactions.head(explorer.playerId) == Result.OK)
 
       When("player have no money to buy the terrain")
-      gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
+      gameSession.gameBank.makeTransaction(explorer.playerId, amount = GameSessionHelper.playerInitialMoney)
 
       Then("event interaction return an ERR")
-      assert(interactiveStory.interactions.head(it.playerId) match
+      assert(interactiveStory.interactions.head(explorer.playerId) match
         case Result.ERR(_) => true
         case _ => false
       )
     }
 
     Scenario("Player 1 buy a terrain") {
-      Given("Terrain has not an owner and player 1 has money to buy it ")
+      Given("Terrain has not an owner and player 1 has money to buy explorer ")
       val terrainPrice = gameSession.getPlayerTerrain(PLAYER_1).asInstanceOf[Purchasable].price
       assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) >= terrainPrice)
       assert(purchasableTerrain.owner.isEmpty)
@@ -102,16 +102,16 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1).next()
 
       When("player 2 arrived on the terrain")
-      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourExplorer(PLAYER_2)
+      val explorer = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourExplorer(PLAYER_2)
 
       Then("event interaction return OK if player 2 has money to pay rent")
-      assert(it.currentEvents.nonEmpty)
-      val interactiveStory = getStories(it.currentEvents, it.playerId).head.head.asInstanceOf[InteractiveEventStory]
-      assert(interactiveStory.interactions.head(it.playerId) == Result.OK)
+      assert(explorer.currentEvents.nonEmpty)
+      val interactiveStory = getStories(explorer.currentEvents, explorer.playerId).head.head.asInstanceOf[InteractiveEventStory]
+      assert(interactiveStory.interactions.head(explorer.playerId) == Result.OK)
 
       Then("event interaction return ERR if player 2 cannot pay rent")
-      gameSession.gameBank.makeTransaction(it.playerId, amount = GameSessionHelper.playerInitialMoney)
-      assert(interactiveStory.interactions.head(it.playerId) match
+      gameSession.gameBank.makeTransaction(explorer.playerId, amount = GameSessionHelper.playerInitialMoney)
+      assert(interactiveStory.interactions.head(explorer.playerId) match
         case Result.ERR(_) => true
         case _ => false
       )
@@ -122,8 +122,8 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1).next()
 
       When("player 2 pay the rent")
-      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourExplorer(PLAYER_2)
-      it.next()
+      val explorer = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourExplorer(PLAYER_2)
+      explorer.next()
 
       Then("player 2 loses his money and player 1 receives the payment")
       assert(

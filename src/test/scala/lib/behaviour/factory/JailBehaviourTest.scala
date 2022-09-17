@@ -26,19 +26,19 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   val PLAYER_1: Int = 1
 
   test("Behaviour imprison a player") {
-    var it = behaviour.getBehaviourExplorer(PLAYER_1)
-    assertThrows[IllegalArgumentException](it.next((1, 0)))
-    assertThrows[IllegalArgumentException](it.next((0, 1)))
+    var explorer = behaviour.getBehaviourExplorer(PLAYER_1)
+    assertThrows[IllegalArgumentException](explorer.next((1, 0)))
+    assertThrows[IllegalArgumentException](explorer.next((0, 1)))
 
-    it = behaviour.getBehaviourExplorer(PLAYER_1)
-    it.next()
-    assert(!it.hasNext)
+    explorer = behaviour.getBehaviourExplorer(PLAYER_1)
+    explorer.next()
+    assert(!explorer.hasNext)
   }
 
   test("On the next turns player must be released from the Jail") {
-    val it = behaviour.getBehaviourExplorer(PLAYER_1)
+    val explorer = behaviour.getBehaviourExplorer(PLAYER_1)
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    it.next()
+    explorer.next()
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
     gameTurn.doTurn()
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)
@@ -51,12 +51,12 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   test("Escape event allow to the player escape from prison") {
     var liberated = false
     for i <- 1 to 100 if !liberated do
-      var it = behaviour.getBehaviourExplorer(i)
-      it.next()
+      var explorer = behaviour.getBehaviourExplorer(i)
+      explorer.next()
       gameTurn.doTurn()
-      it = behaviour.getBehaviourExplorer(i)
+      explorer = behaviour.getBehaviourExplorer(i)
       assert(gameTurn.getRemainingBlockedMovements(i).nonEmpty)
-      it.next((0, 1))
+      explorer.next((0, 1))
       val remainingTurns = gameTurn.getRemainingBlockedMovements(i)
       if remainingTurns.isEmpty then
         liberated = true
