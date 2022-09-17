@@ -52,13 +52,13 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       gameSession.movePlayer(PLAYER_1, steps = 1)
 
       Then("we have illegal state exception")
-      assertThrows[IllegalStateException](gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1))
+      assertThrows[IllegalStateException](gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1))
     }
 
     Scenario("Terrain interaction return different answer based on money of the player") {
       Given("interactive Story of event that allows to buy the terrains")
       val terrain = gameSession.getPlayerTerrain(PLAYER_1)
-      val it = terrain.getBehaviourIterator(PLAYER_1)
+      val it = terrain.getBehaviourExplorer(PLAYER_1)
       val story = getStories(it.currentEvents, it.playerId).head.head
       assert(story.isInstanceOf[InteractiveEventStory])
       val interactiveStory = story.asInstanceOf[InteractiveEventStory]
@@ -87,7 +87,7 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       assert(purchasableTerrain.owner.isEmpty)
 
       When("player buy the terrain")
-      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
+      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1).next()
 
       Then("player 1 become owner of the terrain")
       assert(purchasableTerrain.owner.nonEmpty)
@@ -99,10 +99,10 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
     Scenario("When terrain is bought another player on this terrain must see the rent event") {
       Given("player 1 buys the terrain")
-      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
+      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1).next()
 
       When("player 2 arrived on the terrain")
-      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourIterator(PLAYER_2)
+      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourExplorer(PLAYER_2)
 
       Then("event interaction return OK if player 2 has money to pay rent")
       assert(it.currentEvents.nonEmpty)
@@ -119,10 +119,10 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
     Scenario("Player 2 pay rent to player 1") {
       Given("player 1 buys the terrain")
-      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1).next()
+      gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1).next()
 
       When("player 2 pay the rent")
-      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourIterator(PLAYER_2)
+      val it = gameSession.getPlayerTerrain(PLAYER_2).getBehaviourExplorer(PLAYER_2)
       it.next()
 
       Then("player 2 loses his money and player 1 receives the payment")

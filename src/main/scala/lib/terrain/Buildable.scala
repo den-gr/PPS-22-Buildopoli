@@ -4,7 +4,7 @@ import Purchasable.*
 import Terrain.*
 import Token.*
 import GroupManager.*
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.Behaviour
 
 /** The properties of a Buildable terrain

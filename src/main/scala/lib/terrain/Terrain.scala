@@ -1,6 +1,6 @@
 package lib.terrain
 
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.Behaviour
 
 /** It represents the basic functionalities of a Terrain
@@ -14,7 +14,7 @@ trait Terrain:
   /** @return
     *   the object representing the correct sequence of events that need to be triggered
     */
-  def getBehaviourIterator(playerID: Int): BehaviourIterator
+  def getBehaviourExplorer(playerID: Int): BehaviourExplorer
 
 object Terrain:
 
@@ -26,4 +26,4 @@ object Terrain:
 
   private case class BasicTerrain(override val basicInfo: TerrainInfo, private val behaviour: Behaviour)
       extends Terrain:
-    export behaviour.getBehaviourIterator
+    export behaviour.getBehaviourExplorer

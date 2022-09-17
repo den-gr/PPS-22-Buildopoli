@@ -9,13 +9,13 @@ import scala.collection.mutable
 /** Allows correctly navigate between event groups and their successors of a Behaviour. Encapsulate a sequence of
   * [[EventGroup]]
   */
-trait BehaviourIterator:
-  /** Id of player that iterate behaviours events
+trait BehaviourExplorer:
+  /** Id of player that explore behaviour events
     */
   val playerId: Int
 
   /** @return
-    *   false if there are not available EventGroups
+    *   false if there are not available event groups to explore
     */
   def hasNext: Boolean
 
@@ -36,39 +36,43 @@ trait BehaviourIterator:
     */
   def currentStories: Seq[StoryGroup]
 
+  /** @return
+    *   true if there are not mandatory event groups, so a player can end his turn
+    */
   def canEndExploring: Boolean
 
+  /** Empty explorer
+    */
   def endExploring(): Unit
 
-object BehaviourIterator:
+object BehaviourExplorer:
 
-  /** Constructor of behaviour iterator
+  /** Constructor of behaviour explorer
     * @param events
-    *   the event groups that must be iterated
+    *   the event groups that must be explored
     * @param playerId
     *   id of player that interact with behaviour
     * @return
-    *   behaviour iterator that allows to a player to use game events
+    *   behaviour explorer that allows to a player to use game events
     */
-  def apply(events: Seq[EventGroup], playerId: Int): BehaviourIterator =
-    if events.count(_.isAtomic) > 1 then throw IllegalStateException("Only one event group can be atomic")
-    BehaviourIteratorImpl(events, playerId)
+  def apply(events: Seq[EventGroup], playerId: Int): BehaviourExplorer =
+    BehaviourExplorerImpl(events, playerId)
 
-  /** Add a new event group to the current event groups of behaviour iterator. Can be useful if behaviour can has random
-    * events. It is better to use this constructor if behaviour iterator did not call next() method
+  /** Add a new event group to the current event groups of behaviour explorer. Can be useful if behaviour can has random
+    * events. It is better to use this constructor if behaviour explorer was not used
     *
-    * @param it
-    *   behaviour iterator that will receive a new event group
+    * @param explorer
+    *   behaviour explorer that will receive a new event group
     * @param eventGroup
-    *   new event group that must be appended to iterator
+    *   new event group that will be appended to explorer
     * @return
-    *   behaviour iterator with new event group
+    *   behaviour explorer with new event group
     */
-  def apply(it: BehaviourIterator, eventGroup: EventGroup): BehaviourIterator =
-    apply(eventGroup +: it.currentEvents, it.playerId)
+  def apply(explorer: BehaviourExplorer, eventGroup: EventGroup): BehaviourExplorer =
+    apply(eventGroup +: explorer.currentEvents, explorer.playerId)
 
-  private case class BehaviourIteratorImpl(events: Seq[EventGroup], override val playerId: Int)
-      extends BehaviourIterator:
+  private case class BehaviourExplorerImpl(events: Seq[EventGroup], override val playerId: Int)
+      extends BehaviourExplorer:
 
     val eventStack: mutable.Stack[Seq[EventGroup]] = mutable.Stack(events)
 

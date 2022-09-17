@@ -15,7 +15,7 @@ trait EventGroup extends Seq[Event]:
   val isAtomic: Boolean
 
   /** When it is true a player must not to be able to end his turn until this event group is present in behaviour
-    * iterator
+    * explorer
     */
   val isMandatory: Boolean
 

@@ -1,6 +1,6 @@
 package lib.terrain.card
 
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.terrain.{Terrain, TerrainInfo}
 
 import scala.util.Random
@@ -30,7 +30,7 @@ case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
     removeCard(card.name)
     addCards(card)
 
-  override def getBehaviourIterator(playerID: Int): BehaviourIterator =
+  override def getBehaviourExplorer(playerID: Int): BehaviourExplorer =
     val card: Card = getCasualCardFromList
     exchangeElement(card)
-    BehaviourIterator.apply(terrain.getBehaviourIterator(playerID), card.consequences)
+    BehaviourExplorer.apply(terrain.getBehaviourExplorer(playerID), card.consequences)

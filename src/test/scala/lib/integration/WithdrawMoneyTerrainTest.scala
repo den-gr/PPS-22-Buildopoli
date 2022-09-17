@@ -1,6 +1,6 @@
 package lib.integration
 
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventStoryModule.EventStory
 import lib.behaviour.event.EventFactory
@@ -32,17 +32,17 @@ class WithdrawMoneyTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Use behaviour of a terrain where player is located") {
     assert(gameSession.getPlayerPosition(PLAYER_1) == 0)
-    val it = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1)
+    val it = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
     testAmount(it, AMOUNT)
   }
 
   test("When player moves it arrives in new terrain with new behaviour that withdraw another amount of money") {
     gameSession.movePlayer(PLAYER_1, steps = 1)
-    val it = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourIterator(PLAYER_1)
+    val it = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
     testAmount(it, AMOUNT2)
   }
 
-  private def testAmount(it: BehaviourIterator, amount: Int): Unit =
+  private def testAmount(it: BehaviourExplorer, amount: Int): Unit =
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)
     it.next()
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - amount)

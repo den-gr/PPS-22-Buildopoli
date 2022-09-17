@@ -62,7 +62,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
 
-    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourExplorer(1)
     behaviour.next()
 
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 700)
@@ -82,7 +82,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
 
-    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourExplorer(1)
     behaviour.next()
 
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 200)
@@ -104,7 +104,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(gameSession.getPlayerPosition(1) == 1)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == probabilityTerrain)
 
-    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourExplorer(1)
     behaviour.next()
 
     assert(gameSession.gameBank.getMoneyForPlayer(1) == 400)
@@ -115,6 +115,6 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     gameSession.movePlayer(1, steps = 2)
     assert(gameSession.getPlayerPosition(1) == 2)
     assert(gameSession.getTerrain(gameSession.getPlayerPosition(1)) == surpriseTerrain)
-    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourIterator(1)
+    val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourExplorer(1)
     behaviour.next()
   }

@@ -5,7 +5,7 @@ Abbiamo definito e concluso le implementazioni di alcune delle principali entit√
  * Bank: Modifica delle strategie di gestione del debito
  * Terrain: progettazione dei token personalizzabili (house, hotel etc.)
  * GroupManager: gestione delle informazioni dei gruppi di terreni
- * BehaviourIterator: un comodo meccanismo per esplorare gli eventi durante il gioco
+ * BehaviourExplorer: un comodo meccanismo per esplorare gli eventi durante il gioco
  * BehaviourFactory e EventFactory: implementati eventi e behaviour per prigione e terreni acquistabili.
 
 Inoltre √® stato effetuato il refactoring di gran parte del codice.

@@ -19,16 +19,16 @@ object BehaviourModule extends StoryHelper:
   type Index = (Int, Int)
 
   /** Behaviour encapsulate a sequence of game events that can be used/visualized by a player. For every new interaction
-    * (a new player turn) Behaviour supply a fresh [[BehaviourIterator]]
+    * (a new player turn) Behaviour supply a fresh [[BehaviourExplorer]]
     */
   trait Behaviour:
-    /** Supply behaviour iterator that is needed to choose events and to see only available event to the specific player
+    /** Supply behaviour explorer that is needed to choose events and to see only available event to the specific player
       * @param playerId
       *   id of the player that will be interact with the behaviour
       * @return
-      *   a fresh behaviour iterator
+      *   a fresh behaviour explorer
       */
-    def getBehaviourIterator(playerId: Int): BehaviourIterator
+    def getBehaviourExplorer(playerId: Int): BehaviourExplorer
 
   object Behaviour:
     /** Constructor a [[Behaviour]] based on a sequence of event groups
@@ -56,8 +56,8 @@ object BehaviourModule extends StoryHelper:
     def apply(eventsOfSingleEventGroup: Event*): Behaviour = apply(EventGroup(eventsOfSingleEventGroup))
 
     private case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
-      override def getBehaviourIterator(playerId: Int): BehaviourIterator =
-        BehaviourIterator(getInitialEvents(playerId), playerId)
+      override def getBehaviourExplorer(playerId: Int): BehaviourExplorer =
+        BehaviourExplorer(getInitialEvents(playerId), playerId)
 
       private def getInitialEvents(playerId: Int): Seq[EventGroup] =
         initialEvents

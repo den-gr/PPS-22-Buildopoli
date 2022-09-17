@@ -181,7 +181,7 @@
     </tr>
     <tr>
         <td></td>
-        <td>Define behaviour iterator for navigation between event groups</td>
+        <td>Define behaviour explorer for navigation between event groups</td>
         <td>Grushchak</td>
         <td>7</td>
         <td>7</td>

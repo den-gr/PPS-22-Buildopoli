@@ -1,6 +1,6 @@
 package lib.behaviour.factory
 
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventStoryModule.EventStory
 import lib.behaviour.event.EventFactory
@@ -27,7 +27,7 @@ class WithdrawalMoneyEventTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Withdraw money behaviour must simply withdraw player money") {
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)
-    val it = behaviour.getBehaviourIterator(PLAYER_1)
+    val it = behaviour.getBehaviourExplorer(PLAYER_1)
     assert(it.hasNext)
     it.next()
     assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - AMOUNT)

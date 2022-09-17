@@ -24,18 +24,18 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
 
       val terrain = gameSession.getPlayerTerrain(playerId)
       view.showCurrentTerrain(terrain, gameSession.getPlayerPosition(playerId))
-      val behaviourIterator = terrain.getBehaviourIterator(playerId)
+      val behaviourExplorer = terrain.getBehaviourExplorer(playerId)
 
-      while behaviourIterator.hasNext do
-        val stories = behaviourIterator.currentStories
+      while behaviourExplorer.hasNext do
+        val stories = behaviourExplorer.currentStories
         view.showStoryOptions(stories)
         view.getUserChoices(stories) match
           case PlayerChoice.Choice(groupIdx, eventIdx, choiceIdx)
               if stories(groupIdx)(eventIdx).isInstanceOf[InteractiveEventStory] =>
             stories(groupIdx)(eventIdx).asInstanceOf[InteractiveEventStory].interactions(choiceIdx)(playerId) match
-              case OK => behaviourIterator.next((groupIdx, eventIdx))
+              case OK => behaviourExplorer.next((groupIdx, eventIdx))
               case ERR(msg) => view.printLog(msg)
-          case PlayerChoice.Choice(groupIdx, eventIdx, _) => behaviourIterator.next((groupIdx, eventIdx))
-          case PlayerChoice.EndTurn if behaviourIterator.canEndExploring => behaviourIterator.endExploring()
+          case PlayerChoice.Choice(groupIdx, eventIdx, _) => behaviourExplorer.next((groupIdx, eventIdx))
+          case PlayerChoice.EndTurn if behaviourExplorer.canEndExploring => behaviourExplorer.endExploring()
           case PlayerChoice.EndTurn =>
             view.printLog(s"Player $playerId can not end turn because have to explore mandatory events")

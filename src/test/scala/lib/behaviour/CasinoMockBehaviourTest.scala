@@ -13,7 +13,7 @@ import lib.behaviour.event.EventStoryModule.*
 import lib.behaviour.event.EventStoryModule.Result.*
 import lib.behaviour.event.EventFactory.*
 import EventOperation.*
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.*
 import lib.behaviour.event.EventGroup
 
@@ -72,7 +72,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   private val casinoBehaviour = Behaviour(eventGroups)
 
   test("Check casino behaviour event groups") {
-    val events = casinoBehaviour.getBehaviourIterator(PLAYER_1).currentEvents
+    val events = casinoBehaviour.getBehaviourExplorer(PLAYER_1).currentEvents
     assert(events.length == 2)
     assert(events.head.length == 1)
     assert(events.last.length == 1)
@@ -80,9 +80,9 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(events.last.head.eventStory(PLAYER_1).choices.length == 1)
   }
 
-  test("Check exceptions of behaviour iterator") {
+  test("Check exceptions of behaviour explorer") {
     def checkWrongIndexes(x: Int, y: Int): Unit =
-      val it = casinoBehaviour.getBehaviourIterator(PLAYER_1)
+      val it = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
       assertThrows[IllegalArgumentException](it.next(x, y))
     checkWrongIndexes(Int.MinValue, 0)
     checkWrongIndexes(0, Int.MinValue)
@@ -92,7 +92,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("Check casino behaviour when choose lose game event") {
-    val it: BehaviourIterator = casinoBehaviour.getBehaviourIterator(PLAYER_1)
+    val it: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
     it.next()
     val events = it.currentEvents
     assert(events.length == 2)
@@ -105,7 +105,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("Check casino behaviour when choose win game event") {
-    val it: BehaviourIterator = casinoBehaviour.getBehaviourIterator(PLAYER_1)
+    val it: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
     it.next((1, 0))
     val events = it.currentEvents
     assert(events.length == 1) // second event group is ignored
@@ -118,7 +118,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("EventStory of casino must have interactions") {
-    val it: BehaviourIterator = casinoBehaviour.getBehaviourIterator(PLAYER_1)
+    val it: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
     val events: Seq[EventGroup] = it.currentEvents
     val interactions: Seq[StoryGroup] = getStories(events, PLAYER_1)
     assert(interactions.head.head.isInstanceOf[EventStory])

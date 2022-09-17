@@ -1,6 +1,6 @@
 package lib.terrain.card
 
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.behaviour.event.EventModule.{Event, EventStrategy}
 import lib.behaviour.event.EventStoryModule.EventStory
 import lib.behaviour.event.EventGroup
@@ -11,7 +11,7 @@ import lib.terrain.Terrain
 import lib.terrain.*
 
 /** Representing the card terrain. Each terrain has a list of cards and some methods to manage them When player arrives
-  * and calls getBehaviourIterator, consequences of one sorted card are applied
+  * and calls getBehaviourExplorer, consequences of one sorted card are applied
   */
 trait CardTerrain extends Terrain:
 

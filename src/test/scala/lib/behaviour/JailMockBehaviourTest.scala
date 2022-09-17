@@ -1,6 +1,6 @@
 package lib.behaviour
 
-import lib.behaviour.BehaviourIterator
+import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.*
 import lib.behaviour.BehaviourModule.Behaviour.*
 import lib.behaviour.event.EventModule.*
@@ -33,23 +33,23 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     Event(story, imprisonStrategy)
 
   test("Behaviour with single Jail event that imprison a player") {
-    var it = Behaviour(imprisonEvent).getBehaviourIterator(PLAYER_1)
+    var it = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)
     assertThrows[IllegalArgumentException](it.next((1, 0)))
     assertThrows[IllegalArgumentException](it.next((0, 1)))
 
-    it = Behaviour(imprisonEvent).getBehaviourIterator(PLAYER_1)
+    it = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)
     it.next((0, 0))
     assert(!it.hasNext)
   }
 
   test("If event group is mandatory it is not possible to end exploring behaviour") {
-    val it = Behaviour(EventGroup(Seq(imprisonEvent), isMandatory = true)).getBehaviourIterator(PLAYER_1)
+    val it = Behaviour(EventGroup(Seq(imprisonEvent), isMandatory = true)).getBehaviourExplorer(PLAYER_1)
     assert(it.hasNext)
     assert(!it.canEndExploring)
   }
 
   test("If event group is not mandatory a player can skip all events") {
-    val it = Behaviour(EventGroup(Seq(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+    val it = Behaviour(EventGroup(Seq(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
     assert(it.hasNext)
     assert(it.canEndExploring)
     it.endExploring()
@@ -59,7 +59,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   test("On the next turns player must be released from the Jail") {
 
     val behaviour: Behaviour = Behaviour(imprisonEvent)
-    val it = behaviour.getBehaviourIterator(PLAYER_1)
+    val it = behaviour.getBehaviourExplorer(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
     it.next((0, 0))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
@@ -79,11 +79,11 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Escape event allow to player escape from prison") {
     val behaviour: Behaviour = Behaviour(imprisonEvent, escapeEvent)
-    var it = behaviour.getBehaviourIterator(PLAYER_1)
+    var it = behaviour.getBehaviourExplorer(PLAYER_1)
     it.next((0, 0))
 
     jail.doTurn()
-    it = behaviour.getBehaviourIterator(PLAYER_1)
+    it = behaviour.getBehaviourExplorer(PLAYER_1)
     assert(jail.getRemainingBlockedMovements(PLAYER_1).nonEmpty)
     it.next((0, 1))
     assert(jail.getRemainingBlockedMovements(PLAYER_1).isEmpty)
@@ -91,22 +91,22 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("Some event may need a precondition before to be available to players") {
     val behaviour: Behaviour = Behaviour(Seq(EventGroup(imprisonEvent, escapeEvent)))
-    val it = behaviour.getBehaviourIterator(PLAYER_1)
+    val it = behaviour.getBehaviourExplorer(PLAYER_1)
     var events = it.currentEvents
     assert(events.length == 1)
     assert(events.head.length == 1)
     it.next((0, 0))
     jail.doTurn()
-    events = behaviour.getBehaviourIterator(PLAYER_1).currentEvents
+    events = behaviour.getBehaviourExplorer(PLAYER_1).currentEvents
     assert(events.length == 1)
     assert(events.head.length == 2)
   }
 
-  test("To behaviour iterator is possible to add new events") {
-    val it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourIterator(PLAYER_1)
+  test("To behaviour explorer is possible to add new events") {
+    val it = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
     assert(it.currentEvents.length == 1)
     val newGroup = EventGroup(Event(EventStory("dfdff", "")))
-    val newIt = BehaviourIterator(it, newGroup)
+    val newIt = BehaviourExplorer(it, newGroup)
     assert(newIt.currentEvents.length == 2)
     assert(newIt.currentEvents.head == newGroup)
   }
