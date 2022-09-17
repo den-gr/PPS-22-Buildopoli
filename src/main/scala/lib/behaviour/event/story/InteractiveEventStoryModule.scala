@@ -4,7 +4,7 @@ import lib.behaviour.event.story.EventStoryModule.EventStory
 
 /** Module with all elements of interactive event stories
   */
-object InteractiveEventStory:
+object InteractiveEventStoryModule:
   /** [[EventStory]] extension that for each choice define an [[Interaction]]
     */
   trait StoryInteraction:

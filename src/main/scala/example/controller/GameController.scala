@@ -5,8 +5,8 @@ import lib.behaviour.{BehaviourExplorer, StoryConverter}
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.Observer
-import lib.behaviour.event.story.InteractiveEventStory.InteractiveEventStory
-import lib.behaviour.event.story.InteractiveEventStory.Result.*
+import lib.behaviour.event.story.InteractiveEventStoryModule.InteractiveEventStory
+import lib.behaviour.event.story.InteractiveEventStoryModule.Result.*
 
 trait GameController:
   def start(): Unit

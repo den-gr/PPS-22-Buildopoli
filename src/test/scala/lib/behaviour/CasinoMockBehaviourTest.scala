@@ -10,13 +10,13 @@ import lib.behaviour.BehaviourModule.*
 import lib.behaviour.event.*
 import lib.behaviour.event.EventModule.*
 import lib.behaviour.event.story.EventStoryModule.*
-import lib.behaviour.event.story.InteractiveEventStory.Result.*
+import lib.behaviour.event.story.InteractiveEventStoryModule.Result.*
 import lib.behaviour.event.EventFactory.*
 import EventOperation.*
 import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.*
 import lib.behaviour.event.EventGroup
-import lib.behaviour.event.story.InteractiveEventStory.*
+import lib.behaviour.event.story.InteractiveEventStoryModule.*
 
 /** Test Behaviour by using a casino terrain behaviour. Game bank is replaces by a mock
   */

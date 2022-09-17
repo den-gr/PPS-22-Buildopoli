@@ -1,6 +1,6 @@
 package lib.behaviour.event.story
 
-import lib.behaviour.event.story.InteractiveEventStory.*
+import lib.behaviour.event.story.InteractiveEventStoryModule.*
 
 /** Define interactive and not interactive event stories
   */

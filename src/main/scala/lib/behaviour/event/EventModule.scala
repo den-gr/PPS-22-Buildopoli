@@ -4,7 +4,7 @@ import java.awt.Choice
 import scala.annotation.targetName
 import lib.behaviour.event.story.EventStoryModule.*
 import lib.behaviour.event.story.EventStoryModule.EventStory
-import lib.behaviour.event.story.InteractiveEventStory.InteractiveEventStory
+import lib.behaviour.event.story.InteractiveEventStoryModule.InteractiveEventStory
 
 /** Basic elements of game events
   */

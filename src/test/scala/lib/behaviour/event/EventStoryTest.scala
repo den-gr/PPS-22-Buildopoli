@@ -1,7 +1,7 @@
 package lib.behaviour.event
 
 import lib.behaviour.event.story.EventStoryModule.*
-import lib.behaviour.event.story.InteractiveEventStory.*
+import lib.behaviour.event.story.InteractiveEventStoryModule.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import lib.util.mock.BankHelper.BankMock
