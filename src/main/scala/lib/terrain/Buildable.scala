@@ -70,7 +70,7 @@ object Buildable:
 
   private case class BuildableTerrain(private val terrain: Purchasable, private var token: Token) extends Buildable:
 
-    export terrain.{computeTotalRent as _, *}
+    export terrain.{computeTotalRent as _, mortgage as _, *}
 
     override def computeTotalRent(gm: GroupManager): Int =
       var numToken: Int = 0
@@ -81,6 +81,11 @@ object Buildable:
           token.tokenNames.foreach(tn => total = total + token.totalBonusPrice(tn).take(token.getNumToken(tn)).sum);
           total
         case false => terrain.computeTotalRent(gm)
+
+    override def mortgage(): Unit =
+      terrain.mortgage()
+      for n <- token.tokenNames do destroyToken(n, getNumToken(n))
+
     override def canBuild(groupManager: GroupManager): Boolean =
       owner.nonEmpty && groupManager.isGroupComplete(owner.get, group) && token.listAvailableToken().nonEmpty
     override def getNumToken(name: String): Int = token.getNumToken(name)
