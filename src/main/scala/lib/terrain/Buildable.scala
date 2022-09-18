@@ -33,6 +33,8 @@ trait Buildable extends Purchasable:
     */
   def getNumToken(name: String): Int
 
+  def listAvailableToken(): Seq[String]
+
   /** It is used to add a token
     * @param name
     *   of the token
@@ -68,7 +70,7 @@ object Buildable:
 
   private case class BuildableTerrain(private val terrain: Purchasable, private var token: Token) extends Buildable:
 
-    export terrain.{computeTotalRent as _, *}
+    export terrain.{computeTotalRent as _, mortgage as _, *}
 
     override def computeTotalRent(gm: GroupManager): Int =
       var numToken: Int = 0
@@ -79,10 +81,16 @@ object Buildable:
           token.tokenNames.foreach(tn => total = total + token.totalBonusPrice(tn).take(token.getNumToken(tn)).sum);
           total
         case false => terrain.computeTotalRent(gm)
+
+    override def mortgage(): Unit =
+      terrain.mortgage()
+      for n <- token.tokenNames do destroyToken(n, getNumToken(n))
+
     override def canBuild(groupManager: GroupManager): Boolean =
-      owner.nonEmpty && groupManager.isGroupComplete(owner.get, group)
+      owner.nonEmpty && groupManager.isGroupComplete(owner.get, group) && token.listAvailableToken().nonEmpty
     override def getNumToken(name: String): Int = token.getNumToken(name)
     override def addToken(name: String, num: Int): Unit = token = token.addToken(name, num)
     override def destroyToken(name: String, num: Int): Unit = token = token.removeToken(name, num)
     override def tokenBuyingPrice(name: String): Int = token.buyingPrice(name)
     override def tokenSellingPrice(name: String): Int = token.buyingPrice(name) / 2
+    override def listAvailableToken(): Seq[String] = token.listAvailableToken()

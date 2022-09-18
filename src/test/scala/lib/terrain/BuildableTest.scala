@@ -4,12 +4,13 @@ import org.scalatest.funsuite.AnyFunSuite
 import lib.terrain.Purchasable.*
 import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.*
-import lib.terrain.{Buildable, GroupManager, Purchasable, Terrain, TerrainInfo, Token}
+import lib.terrain.{Buildable, GroupManager, Purchasable, Terrain, TerrainInfo}
 import lib.terrain.Buildable.*
 import lib.terrain.Token.*
 import lib.terrain.GroupManager.*
+import org.scalatest.BeforeAndAfterEach
 
-class BuildableTest extends AnyFunSuite:
+class BuildableTest extends AnyFunSuite with BeforeAndAfterEach:
 
   val t: Terrain = Terrain(TerrainInfo("vicolo corto"), null)
   val p1: Purchasable = Purchasable(
@@ -43,40 +44,21 @@ class BuildableTest extends AnyFunSuite:
 
   val t1: String = "house"
   val t2: String = "hotel"
-  val token: Token =
-    Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0))
-  var b1: Buildable = Buildable(p1, token)
-  val b2: Buildable = Buildable(p2, token)
-  val b3: Buildable = Buildable(p3, token)
-  val b4: Buildable = Buildable(p4, token)
 
-  val gm: GroupManager = GroupManager(Array(b1, b2, b3, b4))
+  var token: Token = _
+  var b1: Buildable = _
+  var b2: Buildable = _
+  var b3: Buildable = _
+  var b4: Buildable = _
+  var gm: GroupManager = _
 
-  test("A token where the array size is not coherent is not valid") {
-    assertThrows[Exception](
-      Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4, 1), Array(25, 50), Map(t2 -> 0))
-    )
-    assertThrows[Exception](
-      Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(4), Array(25, 50), Map(t1 -> 0, t2 -> 0))
-    )
-  }
-
-  test("A token where the number of bonus is not the same as the max is not valid") {
-    assertThrows[Exception](
-      Token(Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)), Array(5, 1), Array(25, 50), Map(t1 -> 0, t2 -> 0))
-    )
-  }
-
-  test("A token where the name types do not match is not valid") {
-    assertThrows[Exception](
-      Token(
-        Map(t1 -> Array(250, 500, 1125, 375), t2 -> Array(500)),
-        Array(4, 1),
-        Array(25, 50),
-        Map(t1 -> 0, "wrong" -> 0)
-      )
-    )
-  }
+  override def beforeEach(): Unit =
+    token = Token(Seq(t1, t2), Seq(4, 1), Seq(Seq(250, 500, 1125, 375), Seq(500)), Seq(25, 50))
+    b1 = Buildable(p1, token)
+    b2 = Buildable(p2, token)
+    b3 = Buildable(p3, token)
+    b4 = Buildable(p4, token)
+    gm = GroupManager(Array(b1, b2, b3, b4))
 
   test("If there are no token and the group is complete the price is the basic one multiplied by the factor") {
     assert(b1.getNumToken(t1) == 0)
@@ -98,14 +80,23 @@ class BuildableTest extends AnyFunSuite:
     assert(!b3.canBuild(gm))
   }
 
+  test("It is possible to know which tokens can be added") {
+    assert(b1.listAvailableToken() == Seq(t1))
+  }
+
   test("Tokens can be added") {
     b1.addToken(t1, 3)
     assert(b1.getNumToken(t1) == 3)
   }
 
-  test(
-    "If there are token the total rent is given by the sum of the basic price with the bonuses given by the tokens"
-  ) {
+  test("If we try to build on a terrain full it is not possible") {
+    b1.addToken(t1, 4)
+    b1.addToken(t2, 1)
+    assert(!b1.canBuild(gm))
+  }
+
+  test("If there are tokens the total rent is given by the sum of the basic price with the token bonuses") {
+    b1.addToken(t1, 3)
     assert(b1.computeTotalRent(gm) == 1875)
   }
 
@@ -114,6 +105,7 @@ class BuildableTest extends AnyFunSuite:
   }
 
   test("Tokens can be destroyed") {
+    b1.addToken(t1, 3)
     b1.destroyToken(t1, 2)
     assert(b1.getNumToken(t1) == 1)
     assert(b1.computeTotalRent(gm) == 250)
