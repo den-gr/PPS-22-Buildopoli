@@ -6,7 +6,7 @@ import lib.terrain.{Terrain, TerrainInfo}
 import scala.util.Random
 
 case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
-  export terrain.basicInfo
+  export terrain.{basicInfo, behaviour}
 
   private var cards: List[Card] = List()
   private val randomGenerator: Random = new Random()
