@@ -57,7 +57,7 @@ trait Buildable extends Purchasable:
     *   the price at which the token can be sold
     */
   def tokenSellingPrice(name: String): Int
-  
+
   def remainingTokens(name: String): Int
 
 object Buildable:
@@ -86,7 +86,7 @@ object Buildable:
 
     override def mortgage(): Unit =
       terrain.mortgage()
-      for n <- token.tokenNames do destroyToken(n, getNumToken(n))
+      for n <- token.tokenNames if getNumToken(n) > 0 do destroyToken(n, getNumToken(n))
 
     override def canBuild(groupManager: GroupManager): Boolean =
       owner.nonEmpty && groupManager.isGroupComplete(owner.get, group) && token.listAvailableToken().nonEmpty

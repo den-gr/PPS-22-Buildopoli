@@ -15,6 +15,7 @@ import lib.util.GameSessionHelper
 import lib.util.GameSessionHelper.DefaultGameSession
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.featurespec.AnyFeatureSpec
+import lib.terrain.PurchasableState
 
 import scala.collection.immutable.Seq
 
@@ -41,15 +42,11 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       behaviourFactory.PurchasableTerrainBehaviour(rentStory, "Not enough money", buyTerrainStory)
 
     val t: Terrain = Terrain(TerrainInfo("Nome1"), PurchasableBehaviour)
-    val t2: Terrain = Terrain(TerrainInfo("NOme2"), PurchasableBehaviour)
     val purchasableTerrain =
       Purchasable(t, TERRAIN_PRICE, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
-    val purchasableTerrain2 =
-      Purchasable(t2, TERRAIN_PRICE, "fucsia2", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
 
     val token = Token(Seq("house"), Seq(4), Seq(Seq(20, 20, 20, 20)), Seq(25))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain, token))
-    gameSession.gameStore.putTerrain(purchasableTerrain2)
     gameSession.startGame()
 
   def getFreshExplorer: BehaviourExplorer =
@@ -93,6 +90,11 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
           .head(explorer.playerId) == Result.OK
       )
       explorer.next()
+
+      Then("the state of terrain changed and player receive money")
       assert(gameSession.gameBank.getMoneyForPlayer(explorer.playerId) > GameSessionHelper.playerInitialMoney)
+      assert(
+        gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Purchasable].state == PurchasableState.MORTGAGED
+      )
     }
   }

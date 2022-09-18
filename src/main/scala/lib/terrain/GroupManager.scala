@@ -43,9 +43,11 @@ object GroupManager:
         t.state == PurchasableState.OWNED && t.owner.contains(ownerID) && t.group == group
       )
 
-    override def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable] = terrains filter (t => t match
-      case t: Buildable => isGroupComplete(ownerID, t.group)
-      case _ => false) map (t => t.asInstanceOf[Buildable])
+    override def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable] = terrains filter (t =>
+      t match
+        case t: Buildable => isGroupComplete(ownerID, t.group)
+        case _ => false
+    ) map (t => t.asInstanceOf[Buildable])
 
     private def onlyPurchasable = new PartialFunction[Terrain, Purchasable]:
       def apply(t: Terrain): Purchasable = t.asInstanceOf[Purchasable]
