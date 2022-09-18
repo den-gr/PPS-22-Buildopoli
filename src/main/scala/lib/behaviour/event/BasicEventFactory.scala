@@ -54,4 +54,4 @@ trait BasicEventFactory:
     */
   def GetRentEvent(story: EventStory, notMoneyErrMsg: String): Event
 
-  def BuildTokenEvent(storyDescription: String): Event
+  def BuildTokenEvent(terrainSelectionStory: String, tokenSelectionStory: String, numberOfTokenSelectionStory: String,  notEnoughMoneyMsgErr: String): Event

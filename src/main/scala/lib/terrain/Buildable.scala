@@ -57,6 +57,8 @@ trait Buildable extends Purchasable:
     *   the price at which the token can be sold
     */
   def tokenSellingPrice(name: String): Int
+  
+  def remainingTokens(name: String): Int
 
 object Buildable:
 
@@ -94,3 +96,5 @@ object Buildable:
     override def tokenBuyingPrice(name: String): Int = token.buyingPrice(name)
     override def tokenSellingPrice(name: String): Int = token.buyingPrice(name) / 2
     override def listAvailableToken(): Seq[String] = token.listAvailableToken()
+
+    override def remainingTokens(name: String): Int = token.maxNumToken(name) - getNumToken(name)
