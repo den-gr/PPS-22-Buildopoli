@@ -23,7 +23,7 @@ case class GameView() extends View:
   def END_TURN: Int = -1
   def showCurrentPlayer(playerID: Int): Unit = println(s"* It is player $playerID turn *")
   def showCurrentTerrain(terrain: Terrain, position: Int): Unit = println(
-    s"* We are currently in ${terrain.basicInfo.name} at position number $position *"
+    s"* We are currently in >>>${terrain.basicInfo.name}<<< at position number $position *"
   )
 
   def showStoryOptions(stories: Seq[StoryGroup]): Unit =
