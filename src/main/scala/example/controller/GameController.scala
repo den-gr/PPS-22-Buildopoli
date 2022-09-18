@@ -1,6 +1,8 @@
 package example.controller
 
 import example.view.{PlayerChoice, View}
+import lib.behaviour.BehaviourModule.Behaviour
+import lib.behaviour.event.{EventFactory, EventGroup}
 import lib.behaviour.{BehaviourExplorer, StoryConverter}
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
@@ -25,7 +27,8 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
 
       val terrain = gameSession.getPlayerTerrain(playerId)
       view.showCurrentTerrain(terrain, gameSession.getPlayerPosition(playerId))
-      val behaviourExplorer = terrain.getBehaviourExplorer(playerId)
+
+      val behaviourExplorer = Behaviour.combineExplorers(terrain.behaviour, globalBehaviour, playerId)
 
       while behaviourExplorer.hasNext do
         val stories = behaviourExplorer.currentStories
@@ -40,3 +43,14 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
           case PlayerChoice.EndTurn if behaviourExplorer.canEndExploring => behaviourExplorer.endExploring()
           case PlayerChoice.EndTurn =>
             view.printLog(s"Player $playerId can not end turn because have to explore mandatory events")
+
+  val globalBehaviour = Behaviour(
+    EventGroup(
+      EventFactory(gameSession).BuildTokenEvent(
+        "Terrain where you can build",
+        "Select type of building",
+        "Select number of building",
+        "Not enough money for"
+      )
+    )
+  )
