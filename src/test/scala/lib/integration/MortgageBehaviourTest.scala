@@ -22,7 +22,8 @@ import scala.collection.immutable.Seq
 class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
   private var globalBehaviour: Behaviour = _
-  private var globalBuildableEvent: Event = _
+  private var globalMortgageEvent: Event = _
+  private var globalRetrieveMortgageEvent: Event = _
   private val TERRAIN_PRICE = 50
   private val RENT = 50
 
@@ -32,8 +33,13 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
     gameSession = DefaultGameSession(2)
     val factory = EventFactory(gameSession)
 
-    globalBuildableEvent = factory.MortgageEvent("You can mortgage your terrain and receive money")
-    globalBehaviour = Behaviour(globalBuildableEvent)
+    globalMortgageEvent = factory.MortgageEvent("You can mortgage your terrain and receive money")
+    globalRetrieveMortgageEvent = factory.RetrieveFromMortgageEvent(
+      "You can retrieve your terrain from mortgage",
+      "You have not enough money to retrieve the terrain"
+    )
+
+    globalBehaviour = Behaviour(globalMortgageEvent, globalRetrieveMortgageEvent)
 
     val buyTerrainStory: EventStory = EventStory("Do you want but this terrain?", "Buy")
     val rentStory: EventStory = EventStory("You need to pay rent", "Pay")
@@ -64,10 +70,10 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
       Then("player start to see the global event for mortgage event")
       explorer = getFreshExplorer
-      assert(explorer.currentEvents.head.head == globalBuildableEvent)
+      assert(explorer.currentEvents.head.head == globalMortgageEvent)
     }
 
-    Scenario("Player buy a terrain and mortgage it") {
+    Scenario("player buy a terrain and mortgage it") {
       Given("player 1 start its turn")
       var explorer = getFreshExplorer
 
@@ -95,6 +101,64 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       assert(gameSession.gameBank.getMoneyForPlayer(explorer.playerId) > GameSessionHelper.playerInitialMoney)
       assert(
         gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Purchasable].state == PurchasableState.MORTGAGED
+      )
+    }
+  }
+
+  Feature("Player is able to retrieve his terrain from mortgage") {
+    Scenario("Player put and remove terrain from mortgage") {
+      Given("player buy and mortgage a terrain")
+      var explorer = getFreshExplorer
+      explorer.next()
+      explorer = getFreshExplorer
+      explorer.currentStories.head.head
+        .asInstanceOf[InteractiveEventStory]
+        .interactions
+        .head(explorer.playerId)
+      explorer.next()
+
+      When("player check available events")
+      explorer = getFreshExplorer
+
+      Then("there is visible only retrieve mortgage event ")
+      assert(explorer.currentEvents.length == 1)
+      assert(explorer.currentEvents.head.length == 1)
+      assert(explorer.currentEvents.head.head == globalRetrieveMortgageEvent)
+
+      When("player has not money")
+      gameSession.gameBank.makeTransaction(
+        explorer.playerId,
+        amount = gameSession.gameBank.getMoneyForPlayer(explorer.playerId)
+      )
+
+      Then("it is not possible to retrieve the terrain")
+      assert(
+        explorer.currentStories.head.head
+          .asInstanceOf[InteractiveEventStory]
+          .interactions
+          .head(explorer.playerId) match
+          case Result.ERR(_) => true
+          case Result.OK => false
+      )
+
+      When("player have money")
+      val aLotOfMoney = 99999
+      gameSession.gameBank.makeTransaction(receiverId = explorer.playerId, amount = aLotOfMoney)
+
+      Then("terrain is retrieved successfully")
+      assert(
+        explorer.currentStories.head.head
+          .asInstanceOf[InteractiveEventStory]
+          .interactions
+          .head(explorer.playerId) == Result.OK
+      )
+      explorer.next()
+      assert(gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Purchasable].state == PurchasableState.OWNED)
+      assert(
+        gameSession.gameBank.getMoneyForPlayer(explorer.playerId) == aLotOfMoney - gameSession
+          .getPlayerTerrain(explorer.playerId)
+          .asInstanceOf[Purchasable]
+          .computeMortgage
       )
     }
   }
