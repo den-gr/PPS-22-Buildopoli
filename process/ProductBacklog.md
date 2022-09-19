@@ -135,8 +135,8 @@
         <td>5</td>
         <td>5</td>
         <td>4</td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <!-- <tr>
         <td></td>
@@ -197,7 +197,7 @@
         <td>5</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
+        <td>5</td>
         <td></td>
     </tr>
     <tr>
@@ -207,7 +207,7 @@
         <td>5</td>
         <td>3</td>
         <td>1</td>
-        <td></td>
+        <td>1</td>
         <td></td>
     </tr>
      <!-- 5 item-->
@@ -218,17 +218,17 @@
         <td>10</td>
         <td>10</td>
         <td>10</td>
-        <td></td>
+        <td>2</td>
         <td></td>
     </tr>
         <tr>
         <td></td>
         <td>Create CLI to play the game</td>
-        <td>Bertoni & Bacca</td>
+        <td>Bertoni</td>
         <td>10</td>
         <td>10</td>
         <td>10</td>
-        <td></td>
+        <td>2</td>
         <td></td>
     </tr>
      <!-- 4 item-->
@@ -239,8 +239,8 @@
         <td>5</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
@@ -249,8 +249,8 @@
         <td>5</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
-        <td></td>
+        <td>0</td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
@@ -266,9 +266,9 @@
         <td></td>
         <td>Build default buildable terrain building tokens (houses) event</td>
         <td>Bertoni & Denys</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
+        <td>5</td>
+        <td>5</td>
+        <td>5</td>
         <td>0</td>
         <td>0</td>
     </tr>
@@ -276,10 +276,10 @@
         <td></td>
         <td>Build default global purchasable terrain mortgage event</td>
         <td>Bertoni & Denys</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>0</td>
-        <td>0</td>
+        <td>5</td>
+        <td>5</td>
+        <td>5</td>
+        <td>1</td>
+        <td></td>
     </tr>
 </table>
