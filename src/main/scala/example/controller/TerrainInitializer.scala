@@ -7,6 +7,7 @@ import lib.behaviour.factory.{BasicBehaviourFactory, BehaviourFactory}
 import lib.gameManagement.gameSession.GameSession
 import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.RentStrategyPreviousPriceMultiplier
+import lib.terrain.card.CardTerrain
 import lib.terrain.{Buildable, Purchasable, Terrain, TerrainInfo, Token}
 
 /** Create terrain for one specific game setup
@@ -33,7 +34,9 @@ object TerrainInitializer:
       terrains = terrains :+ createWithdrawMoneyTerrain(50)
       terrains = terrains :+ createTransportStationTerrain("Train station", 300, STATION_GROUP)
       terrains = terrains :+ createWithdrawMoneyTerrain(100)
+      terrains = terrains :+ createProbabilityTerrain()
       terrains = terrains :+ createTransportStationTerrain("Bus station", 300, STATION_GROUP)
+      terrains = terrains :+ createSurprisesTerrain()
       terrains
 
     private def createWithdrawMoneyTerrain(amount: Int): Terrain =
@@ -55,6 +58,14 @@ object TerrainInitializer:
         DividePriceMortgage(price, 2),
         RentStrategyPreviousPriceMultiplier(50, 2)
       )
+
+    private def createProbabilityTerrain(): Terrain =
+      val t: Terrain = Terrain(TerrainInfo("Probabilities"), Behaviour())
+      CardTerrain(t, gameSession, false)
+
+    private def createSurprisesTerrain(): Terrain =
+      val t: Terrain = Terrain(TerrainInfo("Surprises"), Behaviour())
+      CardTerrain(t, gameSession, true)
 
     private def createSimpleStreet(streetName: String, price: Int, group: String): Terrain =
       val buyStory = EventStory(s"You can buy terrain on $streetName", "Buy terrain")

@@ -33,7 +33,7 @@ object GameInputs:
   def apply(): GameInputs = UserInputs()
 
 case class UserInputs() extends GameInputs:
-  var userInput: Seq[Any] = List()
+  var userInput: Seq[Any] = Seq()
 
   def inputList: Seq[Any] = userInput
   def inputList_=(list: Seq[Any]): Unit = this.userInput = list

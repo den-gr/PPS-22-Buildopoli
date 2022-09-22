@@ -3,8 +3,8 @@ package lib.util
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.gameManagement.gameOptions.GameOptions
 import lib.gameManagement.gameSession.{GameSession, GameSessionImpl}
-import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
-import lib.gameManagement.gameTurn.DefaultGameTurn
+import lib.gameManagement.gameStore.GameStore
+import lib.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
 import lib.lap.Lap
 import lib.lap.Lap.MoneyReward
 import lib.player.Player
@@ -21,8 +21,8 @@ object GameSessionHelper:
   def DefaultGameSession(numPlayers: Int): GameSession =
     val gameOptions: GameOptions =
       GameOptions(playerInitialMoney, playerInitialCells, numPlayers, diceFaces, selector)
-    val gameStore: GameStore = GameStoreImpl()
-    val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
+    val gameStore: GameStore = GameStore()
+    val gameTurn: GameTurn = GameTurn(gameOptions, gameStore)
     val gameBank: Bank = GameBankImpl(gameStore)
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 

@@ -7,12 +7,12 @@ import lib.lap.Lap.MoneyReward
 import lib.behaviour.event.EventGroup
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.gameManagement.gameOptions.GameOptions
-import lib.gameManagement.gameSession.{GameSession, GameSessionImpl}
-import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
-import lib.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
+import lib.gameManagement.gameSession.GameSession
+import lib.gameManagement.gameStore.GameStore
+import lib.gameManagement.gameTurn.GameTurn
 import lib.lap.Lap
 import lib.player.Player
-import lib.terrain.card.{CardTerrain, DefaultCards}
+import lib.terrain.card.CardTerrain
 import lib.terrain.{Terrain, TerrainInfo}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
@@ -26,18 +26,18 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val selector: (Seq[Player], Seq[Int]) => Int =
       (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
         playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
-    val gameStore: GameStore = GameStoreImpl()
+    val gameStore: GameStore = GameStore()
     val gameOptions: GameOptions = GameOptions(200, 0, 5, 6, selector)
     val gameBank: Bank = GameBankImpl(gameStore)
-    val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
+    val gameTurn: GameTurn = GameTurn(gameOptions, gameStore)
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
 
-    gameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
+    gameSession = GameSession(gameOptions, gameBank, gameTurn, gameStore, gameLap)
 
     val t: Terrain = Terrain(TerrainInfo("carta probabilità"), Behaviour())
     val t1: Terrain = Terrain(TerrainInfo("carta imprevisti"), Behaviour())
-    probabilityTerrain = CardTerrain.apply(t)
-    surpriseTerrain = CardTerrain.apply(t1, gameSession, true)
+    probabilityTerrain = CardTerrain(t)
+    surpriseTerrain = CardTerrain(t1, gameSession, true)
     gameSession.gameStore.putTerrain(Terrain(TerrainInfo("partenza"), Behaviour()), probabilityTerrain, surpriseTerrain)
 
   test("adding 4 players to gameSession") {
@@ -55,7 +55,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
 
     val addMoneyStory: EventStory = EventStory("Test", "Add 500 money")
     val addMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(receiverId = id, 500)
-    val addMoney = DefaultCards(EventGroup(Event(addMoneyStory, addMoneyStrategy)), "add money")
+    val addMoney = Card(EventGroup(Event(addMoneyStory, addMoneyStrategy)), "add money")
     probabilityTerrain.addCards(addMoney)
 
     gameSession.movePlayer(1, steps = 1)
@@ -72,7 +72,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     gameSession.startGame()
     val removeMoneyStory: EventStory = EventStory("Test", "Remove 500 money")
     val removeMoneyStrategy: EventStrategy = id => gameSession.gameBank.makeTransaction(id, amount = 500)
-    val removeMoney = DefaultCards(EventGroup(Event(removeMoneyStory, removeMoneyStrategy)), "remove money")
+    val removeMoney = Card(EventGroup(Event(removeMoneyStory, removeMoneyStrategy)), "remove money")
     probabilityTerrain.addCards(removeMoney)
 
     gameSession.gameBank.makeTransaction(receiverId = 1, 500)

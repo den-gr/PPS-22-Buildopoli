@@ -43,7 +43,4 @@ trait Bank:
     */
   def getMoneyForPlayer(playerId: Int): Int = gameStore.getPlayer(playerId).getPlayerMoney
 
-  export debitManagement.getDebtsList, debitManagement.getDebitForPlayer
-object Bank:
-  def apply(gameStore: GameStore): Bank =
-    GameBankImpl(gameStore: GameStore)
+  export debitManagement.getDebitForPlayer

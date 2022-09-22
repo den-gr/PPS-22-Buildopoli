@@ -12,7 +12,7 @@ import scala.collection.mutable.ListBuffer
 trait GameTurn:
   /** List containing players that have already done the actual turn
     */
-  var playerWithTurn: List[Int] = List()
+  var playerWithTurn: Seq[Int] = Seq()
 
   /** @return
     *   the next players selected to play the game. Must be impossible to proceed if next turn is closed.

@@ -70,9 +70,9 @@ case class GameSessionImpl(
     val player: Player = gameStore.getPlayer(playerId)
     if gameTurn.asInstanceOf[GameJail].isPlayerBlocked(playerId) then
       val result: (Int, Boolean) = steps match
-        case 0 => setPlayerPosition(isValidLap, player.getPlayerPawnPosition, launchDice())
+        case 0 => setPlayerPosition(isValidLap, player.getPlayerPawnPosition, launchDice)
         case _ => setPlayerPosition(isValidLap, player.getPlayerPawnPosition, steps)
       player.setPlayerPawnPosition(result._1)
       if result._2 then gameLap.giveReward(playerId)
 
-  private def launchDice(): Int = this.dice.rollOneDice()
+  private def launchDice: Int = this.dice.rollOneDice()

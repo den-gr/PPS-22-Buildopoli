@@ -3,7 +3,7 @@ package lib.lap
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.lap.Lap.*
 import lib.gameManagement.gameOptions.GameOptions
-import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
+import lib.gameManagement.gameStore.GameStore
 import lib.lap.Lap
 import lib.player.{Player, PlayerImpl}
 import org.scalatest.funsuite.AnyFunSuite
@@ -16,7 +16,7 @@ class LapTest extends AnyFunSuite:
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
-  val gameStore: GameStore = GameStoreImpl()
+  val gameStore: GameStore = GameStore()
   val gameOptions: GameOptions = GameOptions(200, 2, 20, 6, selector)
   val gameBank: Bank = GameBankImpl(gameStore)
   val lap: Lap = Lap(MoneyReward(500, gameBank))

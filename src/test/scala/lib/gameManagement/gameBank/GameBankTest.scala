@@ -2,7 +2,7 @@ package lib.gameManagement.gameBank
 
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.gameManagement.gameOptions.GameOptions
-import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
+import lib.gameManagement.gameStore.GameStore
 import lib.player.{Player, PlayerImpl}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
@@ -16,7 +16,7 @@ class GameBankTest extends AnyFunSuite with BeforeAndAfterEach:
     val selector: (Seq[Player], Seq[Int]) => Int =
       (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
         playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
-    val gameStore: GameStore = GameStoreImpl()
+    val gameStore: GameStore = GameStore()
     val gameOptions: GameOptions = GameOptions(0, 2, 10, 6, selector)
     gameBank = GameBankImpl(gameStore)
     gameStore.addPlayer()
