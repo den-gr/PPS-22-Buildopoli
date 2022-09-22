@@ -10,7 +10,6 @@ import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.GameLogger
 import lib.terrain.*
 import lib.terrain.PurchasableState.*
-import org.slf4j.{Logger, LoggerFactory}
 
 /** Give access to static factory constructor of events and allows create a [[BasicEventFactory]] instance
   */
@@ -69,7 +68,7 @@ object EventFactory:
       val escapePrecondition: EventPrecondition = gameTurn.getRemainingBlockedMovements(_).nonEmpty
       Event(story, escapeStrategy, escapePrecondition)
 
-    override def BuyTerrainEvent(story: EventStory): Event =
+    override def BuyTerrainEvent(story: EventStory, notMoneyErrMsg: String): Event =
       val precondition: EventPrecondition = playerId =>
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if t.state == IN_BANK => true
@@ -80,7 +79,7 @@ object EventFactory:
         val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if playerMoney >= t.price => Result.OK
-          case _: Purchasable => Result.ERR("Not enough money")
+          case _: Purchasable => Result.ERR(notMoneyErrMsg)
 
       val interactiveStory = EventStory(story, Seq(interaction))
 

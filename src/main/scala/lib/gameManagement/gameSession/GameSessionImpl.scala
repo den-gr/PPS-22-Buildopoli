@@ -9,7 +9,6 @@ import lib.gameManagement.log.GameLogger
 import lib.lap.Lap
 import lib.player.{Player, PlayerImpl}
 import lib.terrain.{Buildable, GroupManager, Purchasable, PurchasableState, Terrain}
-import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.mutable.ListBuffer
 import scala.util.Random

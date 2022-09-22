@@ -8,7 +8,6 @@ import lib.gameManagement.gameTurn.GameTurn
 import lib.gameManagement.log.GameLogger
 import lib.lap.Lap
 import lib.terrain.{Buildable, GroupManager, Terrain}
-import org.slf4j.Logger
 
 import scala.collection.mutable.ListBuffer
 

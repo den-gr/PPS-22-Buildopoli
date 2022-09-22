@@ -7,7 +7,6 @@ lazy val root = (project in file("."))
     name := "Buildopoli",
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest-funsuite" % "3.2.13" % Test,
-      "org.scalatest" %% "scalatest-featurespec" % "3.2.13" % "test",
-      "ch.qos.logback" % "logback-classic" % "1.2.11"
+      "org.scalatest" %% "scalatest-featurespec" % "3.2.13" % "test"
     )
   )

@@ -1,7 +1,6 @@
 package lib.gameManagement.diceGenerator
 
 import lib.gameManagement.log.GameLogger
-import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.Random
 
