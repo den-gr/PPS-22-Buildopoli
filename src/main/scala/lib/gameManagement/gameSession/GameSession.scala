@@ -85,13 +85,20 @@ trait GameSession:
     */
   def getGroupManager: GroupManager
 
-  /**
-   * Give the access to the new behaviour explorer of the player that is a combination of global game behaviour and local terrain behaviour that correspond to the player position
-   * @param playerId id of player 
-   * @return behaviour explorer that allows to players interact with the game
-   */
+  /** Give the access to the new behaviour explorer of the player that is a combination of global game behaviour and
+    * local terrain behaviour that correspond to the player position
+    * @param playerId
+    *   id of player
+    * @return
+    *   behaviour explorer that allows to players interact with the game
+    */
   def getFreshBehaviourExplorer(playerId: Int): BehaviourExplorer =
     Behaviour.combineExplorers(getPlayerTerrain(playerId).behaviour, gameStore.globalBehaviour, playerId)
+
+  /** @return
+    *   if game is ended or not
+    */
+  def isGameEnded: Boolean = this.gameStore.playersList.size == 1
 
   export gameStore.getTerrain
 

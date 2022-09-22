@@ -26,31 +26,31 @@ class EndGameTest extends AnyFunSuite with BeforeAndAfterEach:
     t1 = Purchasable(Terrain(TerrainInfo("trial"), null), 500, "1", null, null, Option(2))
     gs.terrainList = Seq(t1)
 
-    eg = NoMoneyNoTerrains(gs)
+    eg = NoMoneyNoTerrains()
 
   test("A player with no terrains but money does not lose, as well as a player that owns terrains but has no money") {
     assert(gs.playersList.size == 2)
-    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs))
+    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs), gs)
     assert(gs.playersList.size == 2)
   }
 
   test("In a game session a player can lose if he has no more terrains and money") {
     assert(gs.playersList.size == 2)
     t1 changeOwner None
-    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs))
+    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs), gs)
     assert(gs.playersList.size == 1)
     gs.playersList.head.setPlayerMoney(0)
-    eg.deleteDefeatedPlayer(p1 => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p1, gs))
+    eg.deleteDefeatedPlayer(p1 => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p1, gs), gs)
     assert(gs.playersList.isEmpty)
 
   }
 
   test("When a player is defeated his terrains are given to the bank") {
-    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs))
+    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs), gs)
     assert(gs.playersList.size == 2)
     t1.mortgage()
     assert(t1.state == PurchasableState.MORTGAGED)
-    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs))
+    eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs), gs)
     assert(gs.playersList.size == 1)
     assert(t1.state == PurchasableState.IN_BANK)
     assert(t1.owner.isEmpty)

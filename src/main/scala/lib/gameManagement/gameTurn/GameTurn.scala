@@ -1,5 +1,6 @@
 package lib.gameManagement.gameTurn
 
+import lib.endGame.EndGame
 import lib.gameManagement.gameOptions.GameOptions
 import lib.gameManagement.gameStore.GameStore
 import lib.player.Player
@@ -13,11 +14,19 @@ trait GameTurn:
   /** List containing players that have already done the actual turn
     */
   var playerWithTurn: Seq[Int] = Seq()
+  
+  def endGame: EndGame
 
   /** @return
     *   the next players selected to play the game. Must be impossible to proceed if next turn is closed.
     */
-  def selectNextPlayer(): Int
+  def selectNextPlayer(): Int =
+    verifyDefeatedPlayers()
+    selectPlayer()
+  
+  def verifyDefeatedPlayers(): Unit
+  
+  def selectPlayer(): Int
 
   /** @return
     *   if the next turn is possible. So if the inputList (into gameStore) is empty or not. That list must be empty
@@ -26,4 +35,5 @@ trait GameTurn:
   protected def isNextTurnOpen: Boolean
 
 object GameTurn:
-  def apply(gameOptions: GameOptions, gameStore: GameStore): GameTurn = DefaultGameTurn(gameOptions, gameStore)
+  def apply(gameOptions: GameOptions, gameStore: GameStore): GameTurn = 
+    DefaultGameTurn(gameOptions, gameStore)

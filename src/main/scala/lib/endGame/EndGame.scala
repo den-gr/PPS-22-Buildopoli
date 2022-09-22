@@ -11,7 +11,7 @@ trait EndGame:
     * @param strategy
     *   that defines when a player is considered defeated
     */
-  def deleteDefeatedPlayer(strategy: Player => Boolean): Unit
+  def deleteDefeatedPlayer(strategy: Player => Boolean, gameStore: GameStore): Unit
 
 object EndGame:
 
@@ -30,21 +30,19 @@ object EndGame:
 
   /** Factory for EndGame implementation that removes the defeated player from the game according to the chosen
     * strategy. It also gives the terrains of the defeated players to the bank
-    * @param gameStore
-    *   that manages players and terrains
     */
-  def apply(gameStore: GameStore) = NoMoneyNoTerrains(gameStore)
+  def apply(): EndGame = NoMoneyNoTerrains()
 
   private def terrainPerPlayer(terrains: Seq[Terrain], id: Int): Int =
     terrains collect onlyPurchasable count (t => t.state == PurchasableState.OWNED && t.owner.get == id)
 
-  case class NoMoneyNoTerrains(gameStore: GameStore) extends EndGame:
+  case class NoMoneyNoTerrains() extends EndGame:
 
-    override def deleteDefeatedPlayer(strategy: Player => Boolean): Unit =
-      deleteTerrains(gameStore.playersList filter (p => strategy(p)) map (p => p.playerId))
+    override def deleteDefeatedPlayer(strategy: Player => Boolean, gameStore: GameStore): Unit =
+      deleteTerrains(gameStore.playersList filter (p => strategy(p)) map (p => p.playerId), gameStore)
       gameStore.playersList = gameStore.playersList filter (p => !strategy(p))
 
-    private def deleteTerrains(ownerIds: Seq[Int]): Unit =
+    private def deleteTerrains(ownerIds: Seq[Int], gameStore: GameStore): Unit =
       for t <- gameStore.terrainList collect onlyPurchasable filter (x =>
           x.state != PurchasableState.IN_BANK && (ownerIds contains x.owner.get)
         )

@@ -1,5 +1,6 @@
 package lib.gameManagement.gameOptions
 
+import lib.endGame.EndGame
 import lib.player.Player
 
 import scala.collection.mutable.ListBuffer
@@ -20,5 +21,6 @@ case class GameOptions(
     playerInitialCells: Int,
     nUsers: Int,
     diceFaces: Int,
-    playerTurnSelector: (Seq[Player], Seq[Int]) => Int
+    playerTurnSelector: (Seq[Player], Seq[Int]) => Int,
+    removePlayerStrategy: Player => Boolean = _ => false
 )
