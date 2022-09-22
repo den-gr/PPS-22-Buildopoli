@@ -22,7 +22,7 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
     // todo endgame control
     while true do
       val playerId = gameSession.gameTurn.selectNextPlayer()
-      view.showCurrentPlayer(playerId)
+      view.showCurrentPlayer(playerId, gameSession.gameBank.getMoneyForPlayer(playerId))
       gameSession.movePlayer(playerId)
 
       val terrain = gameSession.getPlayerTerrain(playerId)
