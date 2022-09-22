@@ -98,7 +98,7 @@ trait GameSession:
   /** @return
     *   if game is ended or not
     */
-  def isGameEnded: Boolean = this.gameStore.playersList.size == 1
+  def isGameEnded: Boolean = this.gameStore.playersList.size <= 1
 
   export gameStore.getTerrain
 
