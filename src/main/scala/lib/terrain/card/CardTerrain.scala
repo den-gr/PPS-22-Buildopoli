@@ -31,14 +31,6 @@ trait CardTerrain extends Terrain:
     */
   def removeCard(name: String): Unit
 
-  /** To get a card from the list
-    * @param name
-    *   identifying one card
-    * @return
-    *   the searched card
-    */
-  def getCard(name: String): Card
-
 object CardTerrain:
 
   /** Factory to create a terrain, without cards pre created
@@ -63,7 +55,7 @@ object CardTerrain:
     val defaultTerrain = DefaultCardTerrain(terrain)
     surprises match
       case true => defaultTerrain.cardList = createSurpriseCards(gameSession)
-      case _ => defaultTerrain.cardList = createProbabilityCards(gameSession)
+      case false => defaultTerrain.cardList = createProbabilityCards(gameSession)
     defaultTerrain
 
   /** To create some surprise cards to be added in a CardTerrain

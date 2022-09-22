@@ -10,7 +10,7 @@ case class GameStoreImpl() extends GameStore:
 
   private var listOfTerrains: Seq[Terrain] = List()
   private var listOfPLayer: Seq[Player] = List()
-  override val userInputs: GameInputs = UserInputs()
+  override val userInputs: GameInputs = GameInputs()
   private var gameStarted: Boolean = false
   private var playerIdsCounter: Int = 0
 

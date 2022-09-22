@@ -3,8 +3,8 @@ package example.controller
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.gameManagement.gameOptions.*
 import lib.gameManagement.gameSession.{GameSession, GameSessionImpl}
-import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
-import lib.gameManagement.gameTurn.DefaultGameTurn
+import lib.gameManagement.gameStore.GameStore
+import lib.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
 import lib.lap.Lap
 import lib.lap.Lap.MoneyReward
 import lib.player.*
@@ -24,8 +24,8 @@ object GameSessionInitializer extends GameSessionInitializer:
   def createDefaultGameSession(numberOfPlayers: Int): GameSession =
     val gameOptions: GameOptions =
       GameOptions(playerInitialMoney, playerInitialCells, numberOfPlayers, diceFaces, selector)
-    val gameStore: GameStore = GameStoreImpl()
-    val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
+    val gameStore: GameStore = GameStore()
+    val gameTurn: GameTurn = GameTurn(gameOptions, gameStore)
     val gameBank: Bank = GameBankImpl(gameStore)
     val gameLap: Lap = Lap(MoneyReward(gameLapMoneyReward, gameBank))
 

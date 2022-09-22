@@ -61,11 +61,11 @@ object TerrainInitializer:
 
     private def createProbabilityTerrain(): Terrain =
       val t: Terrain = Terrain(TerrainInfo("Probabilities"), Behaviour())
-      CardTerrain.apply(t, gameSession, false)
+      CardTerrain(t, gameSession, false)
 
     private def createSurprisesTerrain(): Terrain =
       val t: Terrain = Terrain(TerrainInfo("Surprises"), Behaviour())
-      CardTerrain.apply(t, gameSession, true)
+      CardTerrain(t, gameSession, true)
 
     private def createSimpleStreet(streetName: String, price: Int, group: String): Terrain =
       val buyStory = EventStory(s"You can buy terrain on $streetName", "Buy terrain")

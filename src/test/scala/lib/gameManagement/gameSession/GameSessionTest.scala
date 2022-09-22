@@ -4,8 +4,8 @@ import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import org.scalatest.funsuite.AnyFunSuite
 import lib.lap.Lap.MoneyReward
 import lib.gameManagement.gameOptions.GameOptions
-import lib.gameManagement.gameSession.{GameSession, GameSessionImpl}
-import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
+import lib.gameManagement.gameSession.GameSession
+import lib.gameManagement.gameStore.GameStore
 import lib.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
 import lib.lap.Lap
 import lib.player.{Player, PlayerImpl}
@@ -26,12 +26,12 @@ class GameSessionTest extends AnyFunSuite with BeforeAndAfterEach:
     val selector: (Seq[Player], Seq[Int]) => Int =
       (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
         playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
-    gameStore = GameStoreImpl()
+    gameStore = GameStore()
     val gameOptions: GameOptions = GameOptions(200, 2, 10, 6, selector)
     val gameBank: Bank = GameBankImpl(gameStore)
-    val gameTurn: GameTurn = DefaultGameTurn(gameOptions, gameStore)
+    val gameTurn: GameTurn = GameTurn(gameOptions, gameStore)
     val gameLap: Lap = Lap(MoneyReward(200, gameBank))
-    gameSession = GameSessionImpl(gameOptions, gameBank, gameTurn, gameStore, gameLap)
+    gameSession = GameSession(gameOptions, gameBank, gameTurn, gameStore, gameLap)
     for i <- 0 until 20 do
       val t: Terrain = Terrain(TerrainInfo("terreno" + i), null)
       val p: Purchasable = Purchasable(t, 1000, null, DividePriceMortgage(1000, 3), RentStrategyWithBonus(50, 20))

@@ -1,7 +1,7 @@
 package lib.gameManagement.gameTurn
 
 import lib.gameManagement.gameOptions.GameOptions
-import lib.gameManagement.gameStore.{GameStore, GameStoreImpl}
+import lib.gameManagement.gameStore.GameStore
 import lib.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
 import lib.player.{Player, PlayerImpl}
 import org.scalatest.funsuite.AnyFunSuite
@@ -14,7 +14,7 @@ class GameTurnTest extends AnyFunSuite:
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
-  val gameStore: GameStore = GameStoreImpl()
+  val gameStore: GameStore = GameStore()
   val gameOptions: GameOptions = GameOptions(200, 2, 10, 6, selector)
   val gameTurn: DefaultGameTurn = DefaultGameTurn(gameOptions, gameStore)
 

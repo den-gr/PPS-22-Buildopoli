@@ -20,11 +20,9 @@ case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
 
   override def removeCard(name: String): Unit = cards = cards.filterNot(el => el.name == name)
 
-  override def getCard(name: String): Card = cards.filter(el => el.name == name).head
-
   def getCasualCardFromList: Card =
     if cards.size == 1 then cards.head
-    else cards.apply(randomGenerator.nextInt(cards.size))
+    else cards(randomGenerator.nextInt(cards.size))
 
   def exchangeElement(card: Card): Unit =
     removeCard(card.name)
