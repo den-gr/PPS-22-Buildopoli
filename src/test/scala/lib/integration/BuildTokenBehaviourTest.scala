@@ -16,6 +16,9 @@ import org.scalatest.featurespec.AnyFeatureSpec
 import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, InteractiveEventStory, Result}
 import lib.util.GameSessionHelper
 
+/**
+ * Test building of tokens (buildings) on a buildable terrain. Behaviour is created by [[BehaviourFactory]] 
+ */
 class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
 

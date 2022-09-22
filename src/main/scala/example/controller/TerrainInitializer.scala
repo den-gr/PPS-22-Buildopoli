@@ -41,7 +41,9 @@ object TerrainInitializer:
 
     private def createWithdrawMoneyTerrain(amount: Int): Terrain =
       val story = EventStory(s"You spend $amount money on a party", "Oh, noo")
-      val behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, amount))
+      val behaviour = Behaviour(
+        eventFactory.WithdrawMoneyEvent(story, amount)
+      )
       Terrain(TerrainInfo("Party"), behaviour)
 
     private def createEmptyTerrain(): Terrain = Terrain(TerrainInfo("Go"), Behaviour())
@@ -49,7 +51,7 @@ object TerrainInitializer:
     private def createTransportStationTerrain(stationName: String, price: Int, group: String): Terrain =
       val buyStory = EventStory(s"You have an incredible opportunity to buy $stationName", "Buy station")
       val rentStory = EventStory(s"You are at $stationName and must pay for the ticket", "Pay for ticket")
-      val errMsg = "You have not enough money to pay for the ticket"
+      val errMsg = s"You have not enough money to buy $stationName"
       val behaviour = behaviourFactory.PurchasableTerrainBehaviour(rentStory, errMsg, buyStory)
       Purchasable(
         Terrain(TerrainInfo(stationName), behaviour),

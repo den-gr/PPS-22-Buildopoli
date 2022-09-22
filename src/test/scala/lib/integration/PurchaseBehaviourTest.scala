@@ -15,7 +15,7 @@ import lib.behaviour.event.{EventFactory, EventGroup}
 import lib.behaviour.factory.BehaviourFactory
 import lib.terrain.{GroupManager, Purchasable, Terrain, TerrainInfo}
 
-/** Test purchasable events produced by factory that allow buying terrains and pay rent to the owner
+/** Test purchasable events produced by [[BehaviourFactory]] that allow buying terrains and pay rent to the owner
   */
 class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
@@ -24,13 +24,13 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
   private var purchasableTerrain: Purchasable = _
   private val TERRAIN_PRICE = 100
   private val RENT = 50
+  val buyTerrainStory: EventStory = EventStory("Do you want but this terrain?", "Buy")
+  val rentStory: EventStory = EventStory("You need to pay rent", "Pay")
 
   private var gameSession: GameSession = _
   override def beforeEach(): Unit =
     gameSession = DefaultGameSession(2)
 
-    val buyTerrainStory: EventStory = EventStory("Do you want but this terrain?", "Buy")
-    val rentStory: EventStory = EventStory("You need to pay rent", "Pay")
     val factory = BehaviourFactory(gameSession)
     val behaviour: Behaviour = factory.PurchasableTerrainBehaviour(rentStory, "Not enough money", buyTerrainStory)
 
@@ -111,20 +111,12 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       When("player 2 arrived on the terrain")
       val explorer = gameSession.getFreshBehaviourExplorer(PLAYER_2)
 
-      Then("event interaction return OK if player 2 has money to pay rent")
+      Then("player 2 see pay rent event that cannot be skipped")
       assert(explorer.currentEvents.nonEmpty)
-      val interactiveStory =
-        explorer.currentStories.head.head.asInstanceOf[InteractiveEventStory]
-      assert(interactiveStory.interactions.head(explorer.playerId) == Result.OK)
-
-      Then("event interaction return ERR if player 2 cannot pay rent")
-      gameSession.gameBank.makeTransaction(explorer.playerId, amount = GameSessionHelper.playerInitialMoney)
-      assert(interactiveStory.interactions.head(explorer.playerId) match
-        case Result.ERR(_) => true
-        case _ => false
-      )
+      assert(explorer.currentStories.head.head == rentStory)
+      assert(!explorer.canEndExploring)
     }
-
+    
     Scenario("Player 2 pay rent to player 1") {
       Given("player 1 buys the terrain")
       gameSession.getFreshBehaviourExplorer(PLAYER_1).next()

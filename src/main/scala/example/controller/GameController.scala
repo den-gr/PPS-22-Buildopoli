@@ -15,11 +15,11 @@ trait GameController:
 
 class GameControllerImpl(gameSession: GameSession, view: View) extends GameController:
   override def start(): Unit =
-    gameSession.startGame()
-    val observer: Observer = (msg: String) => view.printLog(msg)
-    gameSession.logger.registerObserver(observer)
+    gameSession.logger.registerObserver((msg: String) => view.printLog(msg))
 
-    while gameSession.isGameEnded do
+    gameSession.startGame()
+
+    while !gameSession.isGameEnded do
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId, gameSession.gameBank.getMoneyOfPlayer(playerId))
       gameSession.movePlayer(playerId)

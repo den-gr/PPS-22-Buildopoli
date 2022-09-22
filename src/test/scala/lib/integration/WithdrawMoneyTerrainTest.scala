@@ -13,6 +13,8 @@ import lib.behaviour.factory.BehaviourFactory
 import lib.terrain.{Terrain, TerrainInfo}
 import org.scalatest.featurespec.AnyFeatureSpec
 
+/** Test a terrain that withdraw money from player that is on it. Behaviour is created by [[BehaviourFactory]]
+  */
 class WithdrawMoneyTerrainTest extends AnyFeatureSpec with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1
   private val AMOUNT = 100

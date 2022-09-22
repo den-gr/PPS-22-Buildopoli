@@ -15,8 +15,8 @@ import lib.terrain.PurchasableState.*
   */
 object EventFactory:
   /** A simple type for generating personalized messages. Typically take in input player id and return a personalized
-    * event message
-    */
+   * event message
+   */
   type EventLogMsg = String => String
 
   /** @param gameSession
@@ -46,8 +46,10 @@ object EventFactory:
 
     private def groupMng: GroupManager = gameSession.getGroupManager
 
-    override def WithdrawMoneyEvent(story: EventStory, amount: Int): Event =
-      val withdrawalStrategy: EventStrategy = playerId => bank.makeTransaction(playerId, amount = amount)
+    override def WithdrawMoneyEvent(story: EventStory, amount: Int, resultOfWithdrawingMsg: EventLogMsg): Event =
+      val withdrawalStrategy: EventStrategy = playerId =>
+        bank.makeTransaction(playerId, amount = amount)
+        logger.log(resultOfWithdrawingMsg(playerId.toString) + bank.getMoneyOfPlayer(playerId))
       Event(story, withdrawalStrategy)
 
     override def ImprisonEvent(story: EventStory, blockingTurns: Int): Event =
@@ -99,21 +101,12 @@ object EventFactory:
 
       Event(interactiveStory, strategy, precondition)
 
-    override def GetRentEvent(story: EventStory, notMoneyErrMsg: String): Event =
+    override def GetRentEvent(story: EventStory): Event =
       val precondition: EventPrecondition = playerId =>
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if t.state == OWNED && t.owner.get != playerId => true
           case _: Purchasable => false
           case t => throw IllegalStateException(s"GetRentEvent is not compatible with ${t.getClass}")
-
-      val interaction: Interaction = playerId =>
-        val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
-        gameSession.getPlayerTerrain(playerId) match
-          case t: Purchasable if playerMoney >= t.computeTotalRent(groupMng) =>
-            Result.OK
-          case _: Purchasable => Result.ERR(notMoneyErrMsg)
-
-      val interactiveStory = EventStory(story, Seq(interaction))
 
       val strategy: EventStrategy = playerId =>
         val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
@@ -126,7 +119,7 @@ object EventFactory:
             )
           case _ => throw IllegalStateException("Not enough money for pay the rent")
 
-      Event(interactiveStory, strategy, precondition)
+      Event(story, strategy, precondition)
 
     override def BuildTokenEvent(
         terrainSelectionStory: String,

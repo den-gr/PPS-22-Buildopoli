@@ -3,7 +3,7 @@ package lib.behaviour.event
 import EventModule.EventPrecondition
 import lib.behaviour.event.story.EventStoryModule.EventStory
 import EventModule.*
-import EventFactory.EventLogMsg
+import lib.behaviour.event.EventFactory.EventLogMsg
 
 /** Allows easily to create basic events
   */
@@ -13,10 +13,17 @@ trait BasicEventFactory:
     *   event description
     * @param amount
     *   of money that will be withdraw from player
+    * @param resultOfWithdrawingMsg
+    *   a message for the game log that will inform how many money remain on player bank account, the number will be
+    *   added after the message
     * @return
     *   event that withdraw money of player
     */
-  def WithdrawMoneyEvent(story: EventStory, amount: Int): Event
+  def WithdrawMoneyEvent(
+      story: EventStory,
+      amount: Int,
+      resultOfWithdrawingMsg: EventLogMsg = playerId => s"Now player $playerId balance is "
+  ): Event
 
   /** @param story
     *   event description
@@ -49,12 +56,10 @@ trait BasicEventFactory:
 
   /** @param story
     *   event description, story choice will be united with a story interaction
-    * @param notMoneyErrMsg
-    *   If a player has not enough money to pay rent, he will see this msg after click on story choice
     * @return
     *   Event that force to pay rent to the terrain owner
     */
-  def GetRentEvent(story: EventStory, notMoneyErrMsg: String): Event
+  def GetRentEvent(story: EventStory): Event
 
   def BuildTokenEvent(
       terrainSelectionStory: String,

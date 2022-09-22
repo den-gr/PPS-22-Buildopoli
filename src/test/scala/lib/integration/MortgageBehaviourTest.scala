@@ -19,6 +19,9 @@ import lib.terrain.PurchasableState
 
 import scala.collection.immutable.Seq
 
+/**
+ * Test putting a owned terrain to mortgage and retrieving it from the mortgage. Behaviour is created by [[BehaviourFactory]]
+ */
 class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
   private var globalMortgageEvent: Event = _

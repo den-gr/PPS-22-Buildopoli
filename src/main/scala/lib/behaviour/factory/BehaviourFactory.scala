@@ -36,5 +36,5 @@ object BehaviourFactory:
         buyTerrainStory: EventStoryModule.EventStory
     ): Behaviour =
       val buyTerrainEvent = eventFactory.BuyTerrainEvent(buyTerrainStory, notMoneyErrMsg)
-      val rentTerrainEvent = eventFactory.GetRentEvent(payRentStory, notMoneyErrMsg)
+      val rentTerrainEvent = eventFactory.GetRentEvent(payRentStory)
       Behaviour(Seq(EventGroup(buyTerrainEvent), EventGroup(Seq(rentTerrainEvent), isMandatory = true)))
