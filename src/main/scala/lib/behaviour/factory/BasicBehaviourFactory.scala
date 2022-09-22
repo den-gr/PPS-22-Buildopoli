@@ -18,5 +18,15 @@ trait BasicBehaviourFactory:
     *   from prison
     */
   def JailBehaviour(input: JailBehaviourInput = JailBehaviourDefaultInput()): Behaviour
-  
-  def PurchasableTerrainBehaviour(payRentStory: EventStory, notMoneyErrMsg: String, buyTerrainStory: EventStory): Behaviour
+
+  /** @param payRentStory
+    *   event story for the event that request pay rent to the terrain owner 
+    * @param notMoneyErrMsg error message that will be displayed when a player has not money to buy a terrain
+    * @param buyTerrainStory event story for the event allows to buy a terrain
+    * @return behaviour for purchasable terrain that allows buy it and get rent payments
+    */
+  def PurchasableTerrainBehaviour(
+      payRentStory: EventStory,
+      notMoneyErrMsg: String,
+      buyTerrainStory: EventStory
+  ): Behaviour

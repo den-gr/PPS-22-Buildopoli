@@ -61,6 +61,17 @@ trait BasicEventFactory:
     */
   def GetRentEvent(story: EventStory): Event
 
+  /** @param terrainSelectionStory
+    *   explain to player that he must select a terrain where will be built a token (building)
+    * @param tokenSelectionStory
+    *   explain to player that he must select a building type to build
+    * @param numberOfTokenSelectionStory
+    *   explain to player that he must select the number of tokens ot build
+    * @param notEnoughMoneyMsgErr
+    *   error message that will be returned to the player if he have not money to build the a token
+    * @return
+    *   event that allows to user build token in any its terrain that is in a group
+    */
   def BuildTokenEvent(
       terrainSelectionStory: String,
       tokenSelectionStory: String,
@@ -68,6 +79,18 @@ trait BasicEventFactory:
       notEnoughMoneyMsgErr: String
   ): Event
 
+  /** @param eventDescription
+    *   explain to the player can give in mortgage its terrain for give some money
+    * @return
+    *   event that allows to block an owned terrain and receive a compensation from the bank
+    */
   def MortgageEvent(eventDescription: String): Event
 
+  /** @param eventDescription
+    *   explain to the player that he can retrieve its terrain from mortgage by paying some money
+    * @param notMoneyErrMsg
+    *   error message that will be returned to the player if he have not money to retrieve the terrain from mortgage
+    * @return
+    *   event that allows retrieve a terrain from mortgage
+    */
   def RetrieveFromMortgageEvent(eventDescription: String, notMoneyErrMsg: String): Event
