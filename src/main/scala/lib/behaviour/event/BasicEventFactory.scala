@@ -40,10 +40,12 @@ trait BasicEventFactory:
 
   /** @param story
     *   event description, story choice will be united with a story interaction
+    * @param notMoneyErrMsg
+    *   message visualized to the player if he has not money for buying the terrain
     * @return
     *   event that allows to player to buy terrain to became its owner
     */
-  def BuyTerrainEvent(story: EventStory): Event
+  def BuyTerrainEvent(story: EventStory, notMoneyErrMsg: String): Event
 
   /** @param story
     *   event description, story choice will be united with a story interaction
@@ -54,8 +56,13 @@ trait BasicEventFactory:
     */
   def GetRentEvent(story: EventStory, notMoneyErrMsg: String): Event
 
-  def BuildTokenEvent(terrainSelectionStory: String, tokenSelectionStory: String, numberOfTokenSelectionStory: String,  notEnoughMoneyMsgErr: String): Event
+  def BuildTokenEvent(
+      terrainSelectionStory: String,
+      tokenSelectionStory: String,
+      numberOfTokenSelectionStory: String,
+      notEnoughMoneyMsgErr: String
+  ): Event
 
   def MortgageEvent(eventDescription: String): Event
-  
+
   def RetrieveFromMortgageEvent(eventDescription: String, notMoneyErrMsg: String): Event

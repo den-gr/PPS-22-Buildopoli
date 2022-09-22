@@ -6,7 +6,6 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import lib.util.mock.BankHelper.BankMock
 import lib.util.mock.BankHelper.BankAccount.*
-import lib.behaviour.BehaviourModule.*
 import lib.behaviour.event.*
 import lib.behaviour.event.EventModule.*
 import lib.behaviour.event.story.EventStoryModule.*
@@ -125,4 +124,8 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
     explorer.next()
     assert(explorer.currentStories.head.head.isInstanceOf[InteractiveEventStory])
+  }
+
+  test("test of custom exception") {
+    assertThrows[EventInputException](throw new EventInputException("my test"))
   }

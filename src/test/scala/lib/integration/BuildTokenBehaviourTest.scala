@@ -4,7 +4,7 @@ import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventModule.Event
 import lib.behaviour.event.{EventFactory, EventGroup}
-import lib.behaviour.event.story.EventStoryModule.EventStory
+import lib.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
 import lib.behaviour.factory.BehaviourFactory
 import lib.gameManagement.gameSession.GameSession
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
@@ -14,7 +14,7 @@ import lib.terrain.RentStrategy.BasicRentStrategyFactor
 import lib.terrain.{Buildable, Purchasable, Terrain, TerrainInfo, Token}
 import lib.util.GameSessionHelper.DefaultGameSession
 import org.scalatest.featurespec.AnyFeatureSpec
-import lib.behaviour.event.story.InteractiveEventStoryModule.{InteractiveEventStory, Result}
+import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, InteractiveEventStory, Result}
 import lib.util.GameSessionHelper
 
 class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
@@ -58,7 +58,7 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
     val purchasableTerrain2 =
       Purchasable(t2, TERRAIN_PRICE, "fucsia2", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
 
-    val token = Token(Seq(HOUSE, HOTEL), Seq(2, 1), Seq(Seq(20, 30), Seq(100)), Seq(25, 50))
+    val token = Token(Seq(HOUSE, HOTEL), Seq(2, 1), Seq(Seq(20, 30), Seq(100)), Seq(100, 50))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain, token))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain2, token))
     gameSession.startGame()
@@ -105,33 +105,26 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
 
       When("player select the terrain where he wants to build a building")
       explorer = getFreshExplorer
-      assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) == Result.OK
-      )
+      assert(getInteractions(explorer).head(explorer.playerId) == Result.OK)
       explorer.next()
 
       Then(s"player see only $HOUSE as a choice")
       assert(explorer.currentStories.head.head.choices.head == HOUSE)
 
       Then(s"player select this $HOUSE")
-      assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) == Result.OK
-      )
+      assert(getInteractions(explorer).head(explorer.playerId) == Result.OK)
       explorer.next()
 
-      Then("player select to build 1 house")
+      When("player select ot build 2 houses")
+      Then("error message appears")
       assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) == Result.OK
+        getInteractions(explorer)(1)(explorer.playerId) match
+          case Result.ERR(_) => true
+          case _ => false
       )
+
+      When("player select to build 1 house")
+      assert(getInteractions(explorer).head(explorer.playerId) == Result.OK)
       explorer.next()
 
       Then("player become owner of terrain")
@@ -148,13 +141,12 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
 
       Then("Player can not proceed with terrain selection")
       explorer = getFreshExplorer
-      assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) match
-          case Result.ERR(_) => true
-          case _ => false
+      assert(getInteractions(explorer).head(explorer.playerId) match
+        case Result.ERR(_) => true
+        case _ => false
       )
     }
   }
+
+  private def getInteractions(explorer: BehaviourExplorer): Seq[Interaction] =
+    explorer.currentStories.head.head.asInstanceOf[InteractiveEventStory].interactions

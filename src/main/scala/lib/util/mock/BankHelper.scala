@@ -37,7 +37,9 @@ object BankHelper extends App:
 
       def acceptPayment(from: BankAccount, to: BankAccount): Unit =
         paymentRequests.find(t => t._1 == from && t._2 == to).get match
-          case (_, Bank, am) => decrement(am)
+          case (_, Bank, am) =>
+            decrement(am)
             paymentRequests = paymentRequests.filter(_ != (from, to, am))
           case (_, t: BankAccount, am) if t == Bank => // TODO make payment
             paymentRequests = paymentRequests.filter(_ != (from, to, am))
+          case _ => throw IllegalStateException()
