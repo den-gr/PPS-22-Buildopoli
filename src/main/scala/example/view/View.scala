@@ -12,16 +12,19 @@ enum PlayerChoice:
 
 trait View:
 
-  def showCurrentPlayer(playerID: Int): Unit
+  def showCurrentPlayer(playerID: Int, money: Int): Unit
   def showCurrentTerrain(terrain: Terrain, position: Int): Unit
   def showStoryOptions(story: Seq[StoryGroup]): Unit
+  def showError(msgError: String): Unit
   def printLog(log: String): Unit
   def getUserChoices(story: Seq[StoryGroup]): PlayerChoice
 
 case class GameView() extends View:
 
   def END_TURN: Int = -1
-  def showCurrentPlayer(playerID: Int): Unit = println(s"* It is player $playerID turn *")
+  def showCurrentPlayer(playerID: Int, playerMoney: Int): Unit = println(
+    s"\n\n* It is player $playerID turn * \n* Available money: $playerMoney *"
+  )
   def showCurrentTerrain(terrain: Terrain, position: Int): Unit = println(
     s"* We are currently in >>>${terrain.basicInfo.name}<<< at position number $position *"
   )
@@ -32,12 +35,12 @@ case class GameView() extends View:
       result += s"Group Choice $i \n";
       storyGroup.zipWithIndex.foreach((story, i) =>
         result += s"\t Event Choice $i: ${story.description} \n\t\t Available actions:\n";
-        story.choices.zipWithIndex.foreach((e, i) => result += s"\t\t\t Action Choice $i: $e")
-        result +=
-          "\n"
+        story.choices.zipWithIndex.foreach((e, i) => result += s"\t\t\t Action Choice $i: $e\n")
       )
     )
     println(result)
+
+  override def showError(msgError: String): Unit = println(s"!!! ERROR !!! $msgError")
 
   def printLog(log: String): Unit = println(s"The log message says ----> $log")
   def checkInput(s: String): Option[Int] =
