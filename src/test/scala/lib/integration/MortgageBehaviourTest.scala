@@ -5,7 +5,7 @@ import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventFactory
 import lib.behaviour.event.EventModule.Event
 import lib.behaviour.event.story.EventStoryModule.EventStory
-import lib.behaviour.event.story.InteractiveEventStoryModule.{InteractiveEventStory, Result}
+import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, InteractiveEventStory, Result}
 import lib.behaviour.factory.BehaviourFactory
 import lib.gameManagement.gameSession.GameSession
 import lib.terrain.Mortgage.*
@@ -21,7 +21,6 @@ import scala.collection.immutable.Seq
 
 class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
-  private var globalBehaviour: Behaviour = _
   private var globalMortgageEvent: Event = _
   private var globalRetrieveMortgageEvent: Event = _
   private val TERRAIN_PRICE = 50
@@ -39,8 +38,6 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       "You have not enough money to retrieve the terrain"
     )
 
-    globalBehaviour = Behaviour(globalMortgageEvent, globalRetrieveMortgageEvent)
-
     val buyTerrainStory: EventStory = EventStory("Do you want but this terrain?", "Buy")
     val rentStory: EventStory = EventStory("You need to pay rent", "Pay")
     val behaviourFactory = BehaviourFactory(gameSession)
@@ -53,10 +50,10 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
     val token = Token(Seq("house"), Seq(4), Seq(Seq(20, 20, 20, 20)), Seq(25))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain, token))
+    gameSession.gameStore.globalBehaviour = Behaviour(globalMortgageEvent, globalRetrieveMortgageEvent)
     gameSession.startGame()
 
-  def getFreshExplorer: BehaviourExplorer =
-    Behaviour.combineExplorers(gameSession.getPlayerTerrain(PLAYER_1).behaviour, globalBehaviour, PLAYER_1)
+  def getFreshExplorer: BehaviourExplorer = gameSession.getFreshBehaviourExplorer(PLAYER_1)
 
   Feature("Player is able to mortgage his terrains for receive money") {
     Scenario("When terrain is not bought player do not see build mortgage event") {
@@ -78,23 +75,13 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       var explorer = getFreshExplorer
 
       When("player buy first terrain")
-      assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) == Result.OK
-      )
+      assert(runFirstEventStoryInteraction(explorer) == Result.OK)
       explorer.next()
 
       Then("player mortgage this terrain")
       explorer = getFreshExplorer
       assert(explorer.currentStories.head.head.choices.length == 1)
-      assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) == Result.OK
-      )
+      assert(runFirstEventStoryInteraction(explorer) == Result.OK)
       explorer.next()
 
       Then("the state of terrain changed and player receive money")
@@ -111,10 +98,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       var explorer = getFreshExplorer
       explorer.next()
       explorer = getFreshExplorer
-      explorer.currentStories.head.head
-        .asInstanceOf[InteractiveEventStory]
-        .interactions
-        .head(explorer.playerId)
+      runFirstEventStoryInteraction(explorer)
       explorer.next()
 
       When("player check available events")
@@ -132,13 +116,9 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       )
 
       Then("it is not possible to retrieve the terrain")
-      assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) match
-          case Result.ERR(_) => true
-          case Result.OK => false
+      assert(runFirstEventStoryInteraction(explorer) match
+        case Result.ERR(_) => true
+        case Result.OK => false
       )
 
       When("player have money")
@@ -146,12 +126,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       gameSession.gameBank.makeTransaction(receiverId = explorer.playerId, amount = aLotOfMoney)
 
       Then("terrain is retrieved successfully")
-      assert(
-        explorer.currentStories.head.head
-          .asInstanceOf[InteractiveEventStory]
-          .interactions
-          .head(explorer.playerId) == Result.OK
-      )
+      assert(runFirstEventStoryInteraction(explorer) == Result.OK)
       explorer.next()
       assert(gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Purchasable].state == PurchasableState.OWNED)
       assert(
@@ -162,3 +137,6 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       )
     }
   }
+
+  private def runFirstEventStoryInteraction(explorer: BehaviourExplorer): Result =
+    explorer.currentStories.head.head.asInstanceOf[InteractiveEventStory].interactions.head(explorer.playerId)

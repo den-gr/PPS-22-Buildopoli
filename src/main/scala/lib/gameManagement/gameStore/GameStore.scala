@@ -1,5 +1,6 @@
 package lib.gameManagement.gameStore
 
+import lib.behaviour.BehaviourModule.Behaviour
 import lib.gameManagement.gameStore.gameInputs.GameInputs
 import lib.player.Player
 import lib.terrain.{Purchasable, Terrain}
@@ -52,6 +53,16 @@ trait GameStore:
   def getTypeOfTerrains(predicate: Terrain => Boolean): Seq[Terrain] = terrainList.filter(predicate)
 
   def startGame(): Unit
+
+//  /** Set new game behaviour. Can be set after the game start
+//    * @param behaviour new global behavior of the game 
+//    */
+//  def setGlobalBehaviour(behaviour: Behaviour): Unit
+
+  /**
+   * @return global behaviour of the game
+   */
+  var globalBehaviour: Behaviour
 
 object GameStore:
   def apply(): GameStore =

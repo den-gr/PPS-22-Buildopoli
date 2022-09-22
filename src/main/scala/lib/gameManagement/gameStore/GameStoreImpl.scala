@@ -1,5 +1,7 @@
 package lib.gameManagement.gameStore
 
+import lib.behaviour.BehaviourModule
+import lib.behaviour.BehaviourModule.Behaviour
 import lib.gameManagement.gameStore.gameInputs.{GameInputs, UserInputs}
 import lib.player.{Player, PlayerImpl}
 import lib.terrain.Terrain
@@ -13,6 +15,7 @@ case class GameStoreImpl() extends GameStore:
   override val userInputs: GameInputs = UserInputs()
   private var gameStarted: Boolean = false
   private var playerIdsCounter: Int = 0
+  private var _globalBehaviour: Behaviour = Behaviour()
 
   def playersList: Seq[Player] = listOfPLayer
   def playersList_=(list: Seq[Player]): Unit = this.listOfPLayer = list
@@ -36,3 +39,7 @@ case class GameStoreImpl() extends GameStore:
     this.gameStarted = true
   private def checkGameStarted(): Unit =
     if gameStarted then throw new InterruptedException("Game already started !")
+
+  def globalBehaviour_=(behaviour: Behaviour): Unit = _globalBehaviour = behaviour
+
+  def globalBehaviour: Behaviour = _globalBehaviour

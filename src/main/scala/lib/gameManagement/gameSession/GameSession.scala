@@ -1,5 +1,7 @@
 package lib.gameManagement.gameSession
 
+import lib.behaviour.BehaviourExplorer
+import lib.behaviour.BehaviourModule.Behaviour
 import lib.gameManagement.diceGenerator.Dice
 import lib.gameManagement.gameBank.Bank
 import lib.gameManagement.gameOptions.GameOptions
@@ -82,6 +84,14 @@ trait GameSession:
     *   current instance of GroupManager
     */
   def getGroupManager: GroupManager
+
+  /**
+   * Give the access to the new behaviour explorer of the player that is a combination of global game behaviour and local terrain behaviour that correspond to the player position
+   * @param playerId id of player 
+   * @return behaviour explorer that allows to players interact with the game
+   */
+  def getFreshBehaviourExplorer(playerId: Int): BehaviourExplorer =
+    Behaviour.combineExplorers(getPlayerTerrain(playerId).behaviour, gameStore.globalBehaviour, playerId)
 
   export gameStore.getTerrain
 

@@ -8,7 +8,6 @@ import lib.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
 import lib.behaviour.factory.BehaviourFactory
 import lib.gameManagement.gameSession.GameSession
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
-import org.scalatest.funsuite.AnyFunSuite
 import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.BasicRentStrategyFactor
 import lib.terrain.{Buildable, Purchasable, Terrain, TerrainInfo, Token}
@@ -19,11 +18,8 @@ import lib.util.GameSessionHelper
 
 class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
-  private val POSITION_0 = 0
-//  private var terrainBehaviour: Buildable = _
 
   private var globalBuildableEvent: Event = _
-  private var globalBehaviour: Behaviour = _
   private val TERRAIN_PRICE = 50
   private val RENT = 50
   private val ROMA = "Roma"
@@ -43,7 +39,6 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
       "Select number of building",
       "Not enough money for"
     )
-    globalBehaviour = Behaviour(globalBuildableEvent)
 
     val buyTerrainStory: EventStory = EventStory("Do you want but this terrain?", "Buy")
     val rentStory: EventStory = EventStory("You need to pay rent", "Pay")
@@ -61,10 +56,10 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
     val token = Token(Seq(HOUSE, HOTEL), Seq(2, 1), Seq(Seq(20, 30), Seq(100)), Seq(100, 50))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain, token))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain2, token))
+    gameSession.gameStore.globalBehaviour = Behaviour(globalBuildableEvent)
     gameSession.startGame()
 
-  def getFreshExplorer: BehaviourExplorer =
-    Behaviour.combineExplorers(gameSession.getPlayerTerrain(PLAYER_1).behaviour, globalBehaviour, PLAYER_1)
+  def getFreshExplorer: BehaviourExplorer = gameSession.getFreshBehaviourExplorer(PLAYER_1)
 
   Feature("Buildable terrain allows to players to build tokens (building)") {
     Scenario("When terrain is not bought player do not see build token event") {

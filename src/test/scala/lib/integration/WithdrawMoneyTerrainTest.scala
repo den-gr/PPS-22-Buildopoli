@@ -36,13 +36,13 @@ class WithdrawMoneyTerrainTest extends AnyFeatureSpec with BeforeAndAfterEach:
   Feature("Player arrived in the terrain with a behaviour that withdraw player money") {
     Scenario("Use behaviour of a terrain where player is located") {
       assert(gameSession.getPlayerPosition(PLAYER_1) == 0)
-      val explorer = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
+      val explorer = gameSession.getFreshBehaviourExplorer(PLAYER_1)
       testAmount(explorer, AMOUNT)
     }
 
     Scenario("Player moves to a second terrain and its behaviour withdraws another amount of money") {
       gameSession.movePlayer(PLAYER_1, steps = 1)
-      val explorer = gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1)
+      val explorer = gameSession.getFreshBehaviourExplorer(PLAYER_1)
       testAmount(explorer, AMOUNT2)
     }
   }
