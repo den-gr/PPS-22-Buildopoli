@@ -95,6 +95,15 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE)
     }
 
+    Scenario("Player  has not money to buy the terrain") {
+      Given("player lose its money")
+      gameSession.gameBank.makeTransaction(PLAYER_1, amount = GameSessionHelper.playerInitialMoney)
+      When("player try to buy terrain")
+      Then("exception is lunched")
+      assertThrows[IllegalStateException](gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1).next())
+
+    }
+
     Scenario("When terrain is bought another player on this terrain must see the rent event") {
       Given("player 1 buys the terrain")
       gameSession.getPlayerTerrain(PLAYER_1).getBehaviourExplorer(PLAYER_1).next()
