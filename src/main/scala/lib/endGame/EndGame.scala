@@ -15,6 +15,8 @@ trait EndGame:
 
 object EndGame:
 
+  import lib.terrain.TerrainUtils.onlyPurchasable
+
   /** A possible strategy that considers a player defeated if he has no more money and if he does not own any terrain
     * @param player
     *   that we want to check
@@ -47,7 +49,3 @@ object EndGame:
           x.state != PurchasableState.IN_BANK && (ownerIds contains x.owner.get)
         )
       do t.changeOwner(None)
-
-  private def onlyPurchasable = new PartialFunction[Terrain, Purchasable]:
-    def apply(t: Terrain): Purchasable = t.asInstanceOf[Purchasable]
-    def isDefinedAt(t: Terrain): Boolean = t.isInstanceOf[Purchasable]

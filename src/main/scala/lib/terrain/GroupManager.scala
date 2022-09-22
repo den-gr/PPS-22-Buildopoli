@@ -26,6 +26,7 @@ trait GroupManager:
   def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable]
 
 object GroupManager:
+  import lib.terrain.TerrainUtils.onlyPurchasable
 
   /** The group manager implementation that works with the complete sequence of terrains
     * @param terrains
@@ -48,7 +49,3 @@ object GroupManager:
         case t: Buildable => isGroupComplete(ownerID, t.group)
         case _ => false
     ) map (t => t.asInstanceOf[Buildable])
-
-    private def onlyPurchasable = new PartialFunction[Terrain, Purchasable]:
-      def apply(t: Terrain): Purchasable = t.asInstanceOf[Purchasable]
-      def isDefinedAt(t: Terrain): Boolean = t.isInstanceOf[Purchasable]
