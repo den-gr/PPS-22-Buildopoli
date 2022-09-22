@@ -20,7 +20,7 @@ trait TerrainInitializer:
 object TerrainInitializer:
   def apply(gameSession: GameSession): TerrainInitializer = TerrainInitializerImpl(gameSession)
 
-  private case class TerrainInitializerImpl(gameSession: GameSession) extends TerrainInitializer:
+  private class TerrainInitializerImpl(gameSession: GameSession) extends TerrainInitializer:
     private val eventFactory = EventFactory(gameSession)
     private val behaviourFactory = BehaviourFactory(gameSession)
 
