@@ -76,7 +76,7 @@ object EventFactory:
           case t => throw IllegalStateException(s"BuyTerrainEvent is not compatible with ${t.getClass}")
 
       val interaction: Interaction = playerId =>
-        val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
+        val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if playerMoney >= t.price => Result.OK
           case _: Purchasable => Result.ERR(notMoneyErrMsg)
@@ -88,12 +88,12 @@ object EventFactory:
           case t: Purchasable if t.state != IN_BANK =>
             throw IllegalStateException("Player can not buy already purchased terrain")
           case t: Purchasable =>
-            if bank.getMoneyForPlayer(playerId) >= t.price then
+            if bank.getMoneyOfPlayer(playerId) >= t.price then
               bank.makeTransaction(playerId, amount = t.price)
               t.changeOwner(Some(playerId))
             else
               throw IllegalStateException(
-                s"Player $playerId has not enough money =>  ${bank.getMoneyForPlayer(playerId)} but need ${t.price}"
+                s"Player $playerId has not enough money =>  ${bank.getMoneyOfPlayer(playerId)} but need ${t.price}"
               )
           case t => throw IllegalStateException(s"BuyTerrainEvent is not compatible with ${t.getClass}")
 
@@ -107,7 +107,7 @@ object EventFactory:
           case t => throw IllegalStateException(s"GetRentEvent is not compatible with ${t.getClass}")
 
       val interaction: Interaction = playerId =>
-        val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
+        val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if playerMoney >= t.computeTotalRent(groupMng) =>
             Result.OK
@@ -116,7 +116,7 @@ object EventFactory:
       val interactiveStory = EventStory(story, Seq(interaction))
 
       val strategy: EventStrategy = playerId =>
-        val playerMoney = gameSession.gameBank.getMoneyForPlayer(playerId)
+        val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable if playerMoney >= t.computeTotalRent(groupMng) =>
             bank.makeTransaction(
@@ -143,13 +143,13 @@ object EventFactory:
           for terrain <- groupMng.terrainsOwnerCanBuildOn(playerId).filter(_.canBuild(groupMng))
           yield
             val interaction = (_: Int) =>
-              if terrain.listAvailableToken().forall(terrain.tokenBuyingPrice(_) > bank.getMoneyForPlayer(playerId))
+              if terrain.listAvailableToken().forall(terrain.tokenBuyingPrice(_) > bank.getMoneyOfPlayer(playerId))
               then
                 Result.ERR(
                   terrain
                     .listAvailableToken()
                     .map(e =>
-                      notEnoughMoneyMsgErr + s" => $e (${bank.getMoneyForPlayer(playerId)}/${terrain.tokenBuyingPrice(e)})"
+                      notEnoughMoneyMsgErr + s" => $e (${bank.getMoneyOfPlayer(playerId)}/${terrain.tokenBuyingPrice(e)})"
                     )
                     .mkString("\n")
                 )
@@ -167,9 +167,9 @@ object EventFactory:
               for tokenName <- terrain.listAvailableToken()
               yield
                 val interaction = (_: Int) =>
-                  if terrain.tokenBuyingPrice(tokenName) > bank.getMoneyForPlayer(playerId) then
+                  if terrain.tokenBuyingPrice(tokenName) > bank.getMoneyOfPlayer(playerId) then
                     Result.ERR(
-                      notEnoughMoneyMsgErr + s" => $tokenName (${bank.getMoneyForPlayer(playerId)}/${terrain.tokenBuyingPrice(tokenName)})"
+                      notEnoughMoneyMsgErr + s" => $tokenName (${bank.getMoneyOfPlayer(playerId)}/${terrain.tokenBuyingPrice(tokenName)})"
                     )
                   else
                     gameStore.userInputs.addTailInputEvent(tokenName)
@@ -194,9 +194,9 @@ object EventFactory:
           for n <- 1 to terrain.remainingTokens(tokenName)
           yield
             val interaction = (_: Int) =>
-              if terrain.tokenBuyingPrice(tokenName) * n > bank.getMoneyForPlayer(playerId) then
+              if terrain.tokenBuyingPrice(tokenName) * n > bank.getMoneyOfPlayer(playerId) then
                 Result.ERR(
-                  notEnoughMoneyMsgErr + s"(${bank.getMoneyForPlayer(playerId) * n}/${terrain.tokenBuyingPrice(tokenName)})"
+                  notEnoughMoneyMsgErr + s"(${bank.getMoneyOfPlayer(playerId) * n}/${terrain.tokenBuyingPrice(tokenName)})"
                 )
               else
                 gameStore.userInputs.addTailInputEvent(n)
@@ -279,7 +279,7 @@ object EventFactory:
           for terrain <- mortgagedTerrains
           yield
             val interaction = (_: Int) =>
-              if bank.getMoneyForPlayer(playerId) < terrain.computeMortgage then Result.ERR(notMoneyErrMsg)
+              if bank.getMoneyOfPlayer(playerId) < terrain.computeMortgage then Result.ERR(notMoneyErrMsg)
               else
                 gameStore.userInputs.addTailInputEvent(terrain)
                 Result.OK

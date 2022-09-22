@@ -19,10 +19,9 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
     val observer: Observer = (msg: String) => view.printLog(msg)
     gameSession.logger.registerObserver(observer)
 
-    // todo endgame control
-    while true do
+    while gameSession.isGameEnded do
       val playerId = gameSession.gameTurn.selectNextPlayer()
-      view.showCurrentPlayer(playerId, gameSession.gameBank.getMoneyForPlayer(playerId))
+      view.showCurrentPlayer(playerId, gameSession.gameBank.getMoneyOfPlayer(playerId))
       gameSession.movePlayer(playerId)
 
       val terrain = gameSession.getPlayerTerrain(playerId)
@@ -43,5 +42,3 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
           case PlayerChoice.EndTurn if behaviourExplorer.canEndExploring => behaviourExplorer.endExploring()
           case PlayerChoice.EndTurn =>
             view.printLog(s"Player $playerId can not end turn because have to explore mandatory events")
-
-  

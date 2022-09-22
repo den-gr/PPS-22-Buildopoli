@@ -63,7 +63,7 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
       When("when player have money to buy the terrain")
       val terrainPrice = terrain.asInstanceOf[Purchasable].price
-      assert(gameSession.gameBank.getMoneyForPlayer(explorer.playerId) >= terrainPrice)
+      assert(gameSession.gameBank.getMoneyOfPlayer(explorer.playerId) >= terrainPrice)
 
       Then("event interaction return OK")
       assert(interactiveStory.interactions.head(explorer.playerId) == Result.OK)
@@ -81,7 +81,7 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
     Scenario("Player 1 buy a terrain") {
       Given("Terrain has not an owner and player 1 has money to buy explorer ")
       val terrainPrice = gameSession.getPlayerTerrain(PLAYER_1).asInstanceOf[Purchasable].price
-      assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) >= terrainPrice)
+      assert(gameSession.gameBank.getMoneyOfPlayer(PLAYER_1) >= terrainPrice)
       assert(purchasableTerrain.owner.isEmpty)
 
       When("player buy the terrain")
@@ -92,7 +92,7 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       assert(purchasableTerrain.owner.get == PLAYER_1)
 
       Then("player 1 spend his money")
-      assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE)
+      assert(gameSession.gameBank.getMoneyOfPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE)
     }
 
     Scenario("Player  has not money to buy the terrain") {
@@ -135,8 +135,8 @@ class PurchaseBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
       Then("player 2 loses his money and player 1 receives the payment")
       assert(
-        gameSession.gameBank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE + RENT
+        gameSession.gameBank.getMoneyOfPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - TERRAIN_PRICE + RENT
       )
-      assert(gameSession.gameBank.getMoneyForPlayer(PLAYER_2) == GameSessionHelper.playerInitialMoney - RENT)
+      assert(gameSession.gameBank.getMoneyOfPlayer(PLAYER_2) == GameSessionHelper.playerInitialMoney - RENT)
     }
   }

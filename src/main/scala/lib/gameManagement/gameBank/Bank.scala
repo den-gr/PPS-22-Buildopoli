@@ -41,6 +41,6 @@ trait Bank:
     * @return
     *   money value
     */
-  def getMoneyForPlayer(playerId: Int): Int = gameStore.getPlayer(playerId).getPlayerMoney
+  def getMoneyOfPlayer(playerId: Int): Int = gameStore.getPlayer(playerId).getPlayerMoney
 
-  export debitManagement.getDebitForPlayer
+  export debitManagement.getDebitOfPlayer

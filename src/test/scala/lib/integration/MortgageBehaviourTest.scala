@@ -85,7 +85,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       explorer.next()
 
       Then("the state of terrain changed and player receive money")
-      assert(gameSession.gameBank.getMoneyForPlayer(explorer.playerId) > GameSessionHelper.playerInitialMoney)
+      assert(gameSession.gameBank.getMoneyOfPlayer(explorer.playerId) > GameSessionHelper.playerInitialMoney)
       assert(
         gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Purchasable].state == PurchasableState.MORTGAGED
       )
@@ -112,7 +112,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       When("player has not money")
       gameSession.gameBank.makeTransaction(
         explorer.playerId,
-        amount = gameSession.gameBank.getMoneyForPlayer(explorer.playerId)
+        amount = gameSession.gameBank.getMoneyOfPlayer(explorer.playerId)
       )
 
       Then("it is not possible to retrieve the terrain")
@@ -130,7 +130,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       explorer.next()
       assert(gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Purchasable].state == PurchasableState.OWNED)
       assert(
-        gameSession.gameBank.getMoneyForPlayer(explorer.playerId) == aLotOfMoney - gameSession
+        gameSession.gameBank.getMoneyOfPlayer(explorer.playerId) == aLotOfMoney - gameSession
           .getPlayerTerrain(explorer.playerId)
           .asInstanceOf[Purchasable]
           .computeMortgage

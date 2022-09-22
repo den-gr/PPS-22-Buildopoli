@@ -48,7 +48,7 @@ class WithdrawMoneyTerrainTest extends AnyFeatureSpec with BeforeAndAfterEach:
   }
 
   private def testAmount(explorer: BehaviourExplorer, amount: Int): Unit =
-    assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)
+    assert(bank.getMoneyOfPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney)
     explorer.next()
-    assert(bank.getMoneyForPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - amount)
+    assert(bank.getMoneyOfPlayer(PLAYER_1) == GameSessionHelper.playerInitialMoney - amount)
     assert(!explorer.hasNext)

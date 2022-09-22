@@ -13,8 +13,6 @@ case class GameBankImpl(override val gameStore: GameStore) extends Bank:
   override def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit = (senderId, receiverId) match
     case (0, _) => increasePlayerMoney(receiverId, amount)
     case (_, 0) => decreasePlayerMoney(senderId, amount)
-    case (send, _) if debitManagement.getDebitForPlayer(send) != 0 || getMoneyForPlayer(send) < amount =>
-      throw new IllegalStateException("The sender has debit, so can only sell")
     case (send, receive) =>
       decreasePlayerMoney(send, amount)
       increasePlayerMoney(receive, amount)
@@ -33,7 +31,7 @@ case class GameBankImpl(override val gameStore: GameStore) extends Bank:
 
   def increasePlayerMoney(playerId: Int, amount: Int): Unit =
     val player: Player = gameStore.getPlayer(playerId)
-    val debts = debitManagement.getDebitForPlayer(playerId)
+    val debts = debitManagement.getDebitOfPlayer(playerId)
     if debts > 0 then this.increasePlayerMoneyWithDebts(debts, amount, player)
     else player.setPlayerMoney(player.getPlayerMoney + amount)
 
@@ -50,4 +48,4 @@ case class GameBankImpl(override val gameStore: GameStore) extends Bank:
       this.debitManagement.increaseDebit(playerId, amount - player.getPlayerMoney)
       player.setPlayerMoney(0)
 
-  private def playerHasEnoughMoney(player: Player, amount: Int): Boolean = getMoneyForPlayer(player.playerId) > amount
+  private def playerHasEnoughMoney(player: Player, amount: Int): Boolean = getMoneyOfPlayer(player.playerId) > amount

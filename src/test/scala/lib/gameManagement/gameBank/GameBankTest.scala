@@ -25,74 +25,79 @@ class GameBankTest extends AnyFunSuite with BeforeAndAfterEach:
 
   test("player has incremented money") {
     gameBank.makeTransaction(receiverId = 1, 1000)
-    assert(gameBank.getMoneyForPlayer(1) === 1000)
+    assert(gameBank.getMoneyOfPlayer(1) === 1000)
   }
 
   test("player has decremented money") {
     gameBank.makeTransaction(receiverId = 1, amount = 1000)
     gameBank.makeTransaction(senderId = 1, amount = 100)
-    assert(gameBank.getMoneyForPlayer(1) === 900)
+    assert(gameBank.getMoneyOfPlayer(1) === 900)
   }
 
   test("two players make a transaction") {
     gameBank.makeTransaction(receiverId = 1, 1000)
     gameBank.makeTransaction(receiverId = 2, 500)
     gameBank.makeTransaction(2, 1, 300)
-    assert(gameBank.getMoneyForPlayer(2) === 200)
-    assert(gameBank.getMoneyForPlayer(1) === 1300)
+    assert(gameBank.getMoneyOfPlayer(2) === 200)
+    assert(gameBank.getMoneyOfPlayer(1) === 1300)
   }
 
   test("player has debit (and zero money) after decreasing money") {
     gameBank.makeTransaction(receiverId = 1, 500)
     gameBank.makeTransaction(1, amount = 600)
-    assert(gameBank.getDebitForPlayer(1) === 100)
-    assert(gameBank.getMoneyForPlayer(1) === 0)
+    assert(gameBank.getDebitOfPlayer(1) === 100)
+    assert(gameBank.getMoneyOfPlayer(1) === 0)
   }
 
   test("player has decreased debit after money increase") {
     gameBank.makeTransaction(receiverId = 1, 500)
     gameBank.makeTransaction(1, amount = 600)
-    assert(gameBank.getDebitForPlayer(1) === 100)
-    assert(gameBank.getMoneyForPlayer(1) === 0)
+    assert(gameBank.getDebitOfPlayer(1) === 100)
+    assert(gameBank.getMoneyOfPlayer(1) === 0)
     gameBank.makeTransaction(receiverId = 1, 50)
-    assert(gameBank.getDebitForPlayer(1) === 50)
+    assert(gameBank.getDebitOfPlayer(1) === 50)
   }
 
   test("player has increased debit after money decrease") {
     gameBank.makeTransaction(receiverId = 1, 500)
     gameBank.makeTransaction(1, amount = 600)
-    assert(gameBank.getDebitForPlayer(1) === 100)
-    assert(gameBank.getMoneyForPlayer(1) === 0)
+    assert(gameBank.getDebitOfPlayer(1) === 100)
+    assert(gameBank.getMoneyOfPlayer(1) === 0)
     gameBank.makeTransaction(1, amount = 150)
-    assert(gameBank.getDebitForPlayer(1) === 250)
+    assert(gameBank.getDebitOfPlayer(1) === 250)
   }
 
   test("player has zero debit") {
     gameBank.makeTransaction(receiverId = 1, 500)
     gameBank.makeTransaction(1, amount = 600)
-    assert(gameBank.getDebitForPlayer(1) === 100)
-    assert(gameBank.getMoneyForPlayer(1) === 0)
+    assert(gameBank.getDebitOfPlayer(1) === 100)
+    assert(gameBank.getMoneyOfPlayer(1) === 0)
     gameBank.makeTransaction(receiverId = 1, 200)
-    assert(gameBank.getDebitForPlayer(1) === 0)
-    assert(gameBank.getMoneyForPlayer(1) === 100)
+    assert(gameBank.getDebitOfPlayer(1) === 0)
+    assert(gameBank.getMoneyOfPlayer(1) === 100)
   }
 
-  test("throw exception when debit not enabled and player does not have enough money") {
+  test("debit enabled and player does not have enough money") {
     gameBank.makeTransaction(receiverId = 1, 100)
     gameBank.makeTransaction(receiverId = 2, 400)
-    assert(gameBank.getMoneyForPlayer(1) === 100)
-    assert(gameBank.getMoneyForPlayer(2) === 400)
-    assertThrows[IllegalStateException](gameBank.makeTransaction(1, 2, 200))
+    assert(gameBank.getMoneyOfPlayer(1) === 100)
+    assert(gameBank.getMoneyOfPlayer(2) === 400)
+    gameBank.makeTransaction(1, 2, 200)
+    assert(gameBank.getMoneyOfPlayer(1) === 0)
+    assert(gameBank.getMoneyOfPlayer(2) === 600)
+    assert(gameBank.getDebitOfPlayer(1) === 100)
   }
 
-  test("player with debit cannot make transaction") {
+  test("player with debit can make transaction") {
     gameBank.makeTransaction(receiverId = 1, 200)
     gameBank.makeTransaction(receiverId = 2, 1000)
-    assert(gameBank.getMoneyForPlayer(1) === 200)
-    assert(gameBank.getMoneyForPlayer(2) === 1000)
+    assert(gameBank.getMoneyOfPlayer(1) === 200)
+    assert(gameBank.getMoneyOfPlayer(2) === 1000)
     gameBank.makeGlobalTransaction(receiverId = 3, 300)
-    assert(gameBank.getMoneyForPlayer(2) === 700)
-    assert(gameBank.getDebitForPlayer(1) === 100)
+    assert(gameBank.getMoneyOfPlayer(2) === 700)
+    assert(gameBank.getDebitOfPlayer(1) === 100)
+    gameBank.makeTransaction(1, 2, 100)
+    assert(gameBank.getDebitOfPlayer(1) === 200)
+    assert(gameBank.getMoneyOfPlayer(2) === 800)
 
-    assertThrows[IllegalStateException](gameBank.makeTransaction(1, 2, 100))
   }

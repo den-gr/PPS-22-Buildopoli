@@ -16,7 +16,7 @@ trait BankDebit:
     * @return
     *   debit value associated with the given player id
     */
-  def getDebitForPlayer(playerId: Int): Int
+  def getDebitOfPlayer(playerId: Int): Int
 
   /** To increase debit value of a specific player
     * @param playerId

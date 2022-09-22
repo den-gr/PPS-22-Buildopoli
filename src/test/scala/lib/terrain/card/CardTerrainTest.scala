@@ -65,7 +65,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourExplorer(1)
     behaviour.next()
 
-    assert(gameSession.gameBank.getMoneyForPlayer(1) == 700)
+    assert(gameSession.gameBank.getMoneyOfPlayer(1) == 700)
   }
 
   test("removing money from player 1, giving one card of probability") {
@@ -76,7 +76,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     probabilityTerrain.addCards(removeMoney)
 
     gameSession.gameBank.makeTransaction(receiverId = 1, 500)
-    assert(gameSession.gameBank.getMoneyForPlayer(1) == 700)
+    assert(gameSession.gameBank.getMoneyOfPlayer(1) == 700)
     assert(gameSession.getPlayerPosition(1) == 0)
     gameSession.movePlayer(1, steps = 1)
     assert(gameSession.getPlayerPosition(1) == 1)
@@ -85,7 +85,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourExplorer(1)
     behaviour.next()
 
-    assert(gameSession.gameBank.getMoneyForPlayer(1) == 200)
+    assert(gameSession.gameBank.getMoneyOfPlayer(1) == 200)
   }
 
   test("player have to do one entire lap to get an extra bonus") {
@@ -107,7 +107,7 @@ class CardTerrainTest extends AnyFunSuite with BeforeAndAfterEach:
     val behaviour = gameSession.getTerrain(gameSession.getPlayerPosition(1)).getBehaviourExplorer(1)
     behaviour.next()
 
-    assert(gameSession.gameBank.getMoneyForPlayer(1) == 400)
+    assert(gameSession.gameBank.getMoneyOfPlayer(1) == 400)
   }
 
   test("testing some surprises cards") {
