@@ -15,8 +15,8 @@ import lib.terrain.PurchasableState.*
   */
 object EventFactory:
   /** A simple type for generating personalized messages. Typically take in input player id and return a personalized
-   * event message
-   */
+    * event message
+    */
   type EventLogMsg = String => String
 
   /** @param gameSession

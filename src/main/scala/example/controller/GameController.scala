@@ -13,13 +13,20 @@ import lib.behaviour.event.story.InteractiveEventStoryModule.Result.*
 trait GameController:
   def start(): Unit
 
-class GameControllerImpl(gameSession: GameSession, view: View) extends GameController:
+class GameControllerImpl(gameSession: GameSession, view: View, val maxMoves: Int = Int.MaxValue) extends GameController:
+  private var moves = 0
+  private var started = false
+
   override def start(): Unit =
+    if started then throw IllegalStateException("Can not start a game twice")
+    started = true
+
     gameSession.logger.registerObserver((msg: String) => view.printLog(msg))
 
     gameSession.startGame()
 
-    while !gameSession.isGameEnded do
+    while !gameSession.isGameEnded && this.moves < maxMoves do
+      this.moves += 1
       val playerId = gameSession.gameTurn.selectNextPlayer()
       view.showCurrentPlayer(playerId, gameSession.gameBank.getMoneyOfPlayer(playerId))
       gameSession.movePlayer(playerId)
@@ -42,3 +49,4 @@ class GameControllerImpl(gameSession: GameSession, view: View) extends GameContr
           case PlayerChoice.EndTurn if behaviourExplorer.canEndExploring => behaviourExplorer.endExploring()
           case PlayerChoice.EndTurn =>
             view.printLog(s"Player $playerId can not end turn because have to explore mandatory events")
+    view.printLog(s"End game on $moves move")
