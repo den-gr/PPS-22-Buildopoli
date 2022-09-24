@@ -4,6 +4,7 @@ import lib.behaviour.event.EventModule.{Event, EventPrecondition, EventStrategy,
 import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, Result}
 import lib.behaviour.event.*
+import lib.behaviour.factory.constructor.{BuildTokenEventConstructor, MortgageEventConstructor}
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.GameLogger
@@ -108,7 +109,6 @@ object EventFactory:
           case t => throw IllegalStateException(s"GetRentEvent is not compatible with ${t.getClass}")
 
       val strategy: EventStrategy = playerId =>
-        val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
           case t: Purchasable =>
             bank.makeTransaction(
@@ -129,91 +129,23 @@ object EventFactory:
       val eventPrecondition: EventPrecondition = playerId =>
         groupMng.terrainsOwnerCanBuildOn(playerId).exists(_.canBuild(groupMng))
 
-      val storyGenerator: StoryGenerator = playerId =>
-        val choicesWithInteractions =
-          gameSession.gameStore.terrainList
-          for terrain <- groupMng.terrainsOwnerCanBuildOn(playerId).filter(_.canBuild(groupMng))
-          yield
-            val interaction = (_: Int) =>
-              if terrain.listAvailableToken().forall(terrain.tokenBuyingPrice(_) > bank.getMoneyOfPlayer(playerId))
-              then
-                Result.ERR(
-                  terrain
-                    .listAvailableToken()
-                    .map(e =>
-                      notEnoughMoneyMsgErr + s" => $e (${bank.getMoneyOfPlayer(playerId)}/${terrain.tokenBuyingPrice(e)})"
-                    )
-                    .mkString("\n")
-                )
-              else
-                gameStore.userInputs.addTailInputEvent(terrain)
-                Result.OK
-            val choice: String = terrain.basicInfo.name
-            (choice, interaction)
-        EventStory(terrainSelectionStory, choicesWithInteractions)
+      val storyGenerator: StoryGenerator =
+        BuildTokenEventConstructor.chooseTerrainStoryGenerator(terrainSelectionStory, notEnoughMoneyMsgErr, gameSession)
 
-      val storyGenerator2: StoryGenerator = playerId =>
-        gameStore.userInputs.getHeadElement match
-          case terrain: Buildable =>
-            val choicesWithInteractions =
-              for tokenName <- terrain.listAvailableToken()
-              yield
-                val interaction = (_: Int) =>
-                  if terrain.tokenBuyingPrice(tokenName) > bank.getMoneyOfPlayer(playerId) then
-                    Result.ERR(
-                      notEnoughMoneyMsgErr + s" => $tokenName (${bank.getMoneyOfPlayer(playerId)}/${terrain.tokenBuyingPrice(tokenName)})"
-                    )
-                  else
-                    gameStore.userInputs.addTailInputEvent(tokenName)
-                    Result.OK
-                val choice: String = tokenName
-                (choice, interaction)
-            EventStory(tokenSelectionStory, choicesWithInteractions)
-          case _ => throw EventInputException()
+      val storyGenerator2: StoryGenerator = BuildTokenEventConstructor.chooseTypeOfTokenStoryGenerator(
+        tokenSelectionStory,
+        notEnoughMoneyMsgErr,
+        gameStore,
+        bank
+      )
+      val storyGenerator3: StoryGenerator = BuildTokenEventConstructor.chooseNumberOfTokenStoryGenerator(
+        numberOfTokenSelectionStory,
+        notEnoughMoneyMsgErr,
+        gameStore.userInputs,
+        bank
+      )
 
-      val storyGenerator3: StoryGenerator = playerId =>
-        val terrainInput = gameStore.userInputs.getHeadElement
-        gameStore.userInputs.removeHeadElement()
-        val tokenNameInput = gameStore.userInputs.getHeadElement
-        gameStore.userInputs.removeHeadElement()
-        gameStore.userInputs.addTailInputEvent(terrainInput)
-        gameStore.userInputs.addTailInputEvent(tokenNameInput)
-        if !tokenNameInput.isInstanceOf[String] || !terrainInput.isInstanceOf[Buildable] then
-          throw EventInputException()
-        val terrain = terrainInput.asInstanceOf[Buildable]
-        val tokenName = tokenNameInput.asInstanceOf[String]
-        val choicesWithInteractions =
-          for n <- 1 to terrain.remainingTokens(tokenName)
-          yield
-            val interaction = (_: Int) =>
-              if terrain.tokenBuyingPrice(tokenName) * n > bank.getMoneyOfPlayer(playerId) then
-                Result.ERR(
-                  notEnoughMoneyMsgErr + s"(${bank.getMoneyOfPlayer(playerId) * n}/${terrain.tokenBuyingPrice(tokenName)})"
-                )
-              else
-                gameStore.userInputs.addTailInputEvent(n)
-                Result.OK
-            val choice: String = n.toString
-            (choice, interaction)
-        EventStory(numberOfTokenSelectionStory, choicesWithInteractions)
-
-      val eventStrategy: EventStrategy = playerId =>
-        val terrainInput = gameStore.userInputs.getHeadElement
-        gameStore.userInputs.removeHeadElement()
-        val tokenNameInput = gameStore.userInputs.getHeadElement
-        gameStore.userInputs.removeHeadElement()
-        val inputNumBuilding = gameStore.userInputs.getHeadElement
-        gameStore.userInputs.removeHeadElement()
-
-        if !tokenNameInput.isInstanceOf[String] || !terrainInput.isInstanceOf[Buildable] || !inputNumBuilding
-            .isInstanceOf[Int]
-        then throw EventInputException()
-        val numBuilding = inputNumBuilding.asInstanceOf[Int]
-        val terrain = terrainInput.asInstanceOf[Buildable]
-        val tokenName = tokenNameInput.asInstanceOf[String]
-
-        bank.makeTransaction(playerId, amount = terrain.tokenBuyingPrice(tokenName) * numBuilding)
-        terrain.addToken(tokenName, numBuilding)
+      val eventStrategy: EventStrategy = BuildTokenEventConstructor.eventStrategy(gameStore.userInputs, bank)
 
       val thirdEvent = EventGroup(Event(storyGenerator3, eventStrategy))
       val secondEvent = EventGroup(Event(storyGenerator2, nextEvent = Some(thirdEvent)))
@@ -222,52 +154,22 @@ object EventFactory:
     override def MortgageEvent(eventDescription: String): Event =
       val precondition: EventPrecondition = playerId =>
         TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, OWNED).nonEmpty
-
-      val storyGenerator: StoryGenerator = playerId =>
-        val ownedTerrains = TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, OWNED)
-        val choicesWithInteractions =
-          for terrain <- ownedTerrains
-          yield
-            val interaction = (_: Int) =>
-              gameStore.userInputs.addTailInputEvent(terrain)
-              Result.OK
-            val choice: String = terrain.basicInfo.name + s" | (+${terrain.computeMortgage} €)"
-            (choice, interaction)
-        EventStory(eventDescription, choicesWithInteractions)
-
-      val eventStrategy: EventStrategy = playerId =>
-        val terrainInput = gameStore.userInputs.getHeadElement
-        gameStore.userInputs.removeHeadElement()
-        if !terrainInput.isInstanceOf[Purchasable] then EventInputException()
-        val terrain = terrainInput.asInstanceOf[Purchasable]
-        bank.makeTransaction(receiverId = playerId, amount = terrain.computeMortgage)
-        terrain.mortgage()
-
+      val storyGenerator: StoryGenerator = MortgageEventConstructor.mortgageStoryGenerator(eventDescription, gameStore)
+      val eventStrategy: EventStrategy = MortgageEventConstructor.mortgageEventStrategy(gameStore.userInputs, bank)
       Event(storyGenerator, eventStrategy, precondition = precondition)
 
     override def RetrieveFromMortgageEvent(eventDescription: String, notMoneyErrMsg: String): Event =
       val precondition: EventPrecondition = playerId =>
         TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, MORTGAGED).nonEmpty
 
-      val storyGenerator: StoryGenerator = playerId =>
-        val mortgagedTerrains = TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, MORTGAGED)
-        val choicesWithInteractions =
-          for terrain <- mortgagedTerrains
-          yield
-            val interaction = (_: Int) =>
-              if bank.getMoneyOfPlayer(playerId) < terrain.computeMortgage then Result.ERR(notMoneyErrMsg)
-              else
-                gameStore.userInputs.addTailInputEvent(terrain)
-                Result.OK
-            val choice: String = terrain.basicInfo.name + s" | (-${terrain.computeMortgage} €)"
-            (choice, interaction)
-        EventStory(eventDescription, choicesWithInteractions)
+      val storyGenerator: StoryGenerator = MortgageEventConstructor.retrieveFromMortgageEventStory(
+        eventDescription,
+        notMoneyErrMsg,
+        gameStore,
+        bank,
+        gameStore.userInputs
+      )
 
-      val eventStrategy: EventStrategy = playerId =>
-        val terrainInput = gameStore.userInputs.getHeadElement
-        gameStore.userInputs.removeHeadElement()
-        if !terrainInput.isInstanceOf[Purchasable] then EventInputException()
-        val terrain = terrainInput.asInstanceOf[Purchasable]
-        bank.makeTransaction(playerId, amount = terrain.computeMortgage)
-        terrain.removeMortgage()
+      val eventStrategy: EventStrategy =
+        MortgageEventConstructor.retrieveMortgageEventStrategy(gameStore.userInputs, bank)
       Event(storyGenerator, eventStrategy, precondition = precondition)
