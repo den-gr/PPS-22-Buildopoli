@@ -1,15 +1,14 @@
 package lib.integration
 
-import lib.behaviour.BehaviourExplorer
+import lib.behaviour.{BehaviourExplorer, factory}
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.story.EventStoryModule.EventStory
-import lib.behaviour.event.EventFactory
 import lib.gameManagement.gameBank.Bank
 import lib.util.GameSessionHelper
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.funsuite.AnyFunSuite
 import GameSessionHelper.DefaultGameSession
-import lib.behaviour.factory.BehaviourFactory
+import lib.behaviour.factory.{BehaviourFactory, EventFactory}
 import lib.terrain.{Terrain, TerrainInfo}
 import org.scalatest.featurespec.AnyFeatureSpec
 
@@ -26,7 +25,7 @@ class WithdrawMoneyTerrainTest extends AnyFeatureSpec with BeforeAndAfterEach:
   override def beforeEach(): Unit =
     gameSession = DefaultGameSession(1)
     bank = gameSession.gameBank
-    val eventFactory = EventFactory(gameSession)
+    val eventFactory = factory.EventFactory(gameSession)
     val behaviour: Behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, AMOUNT))
     val behaviour2: Behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, AMOUNT2))
 

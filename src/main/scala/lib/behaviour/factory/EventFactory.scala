@@ -1,15 +1,14 @@
-package lib.behaviour.event
+package lib.behaviour.factory
 
+import lib.behaviour.event.EventModule.{Event, EventPrecondition, EventStrategy, StoryGenerator}
+import lib.behaviour.event.story.EventStoryModule.EventStory
+import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, Result}
 import lib.behaviour.event.*
-import lib.behaviour.event.EventModule.Event
-import lib.behaviour.event.EventModule.*
-import lib.behaviour.event.story.EventStoryModule.*
-import lib.behaviour.event.story.InteractiveEventStoryModule.{Result, *}
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.GameLogger
-import lib.terrain.*
 import lib.terrain.PurchasableState.*
+import lib.terrain.{Buildable, GroupManager, Purchasable, TerrainUtils}
 
 /** Give access to static factory constructor of events and allows create a [[BasicEventFactory]] instance
   */
