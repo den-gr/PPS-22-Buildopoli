@@ -222,18 +222,10 @@ object EventFactory:
 
     override def MortgageEvent(eventDescription: String): Event =
       val precondition: EventPrecondition = playerId =>
-        gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == OWNED)
-          .exists(_.owner.get == playerId)
+        TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, OWNED).nonEmpty
 
       val storyGenerator: StoryGenerator = playerId =>
-        val ownedTerrains = gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == OWNED)
-          .filter(_.owner.get == playerId)
+        val ownedTerrains = TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, OWNED)
         val choicesWithInteractions =
           for terrain <- ownedTerrains
           yield
@@ -256,18 +248,10 @@ object EventFactory:
 
     override def RetrieveFromMortgageEvent(eventDescription: String, notMoneyErrMsg: String): Event =
       val precondition: EventPrecondition = playerId =>
-        gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == MORTGAGED)
-          .exists(_.owner.get == playerId)
+        TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, MORTGAGED).nonEmpty
 
       val storyGenerator: StoryGenerator = playerId =>
-        val mortgagedTerrains = gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == MORTGAGED)
-          .filter(_.owner.get == playerId)
+        val mortgagedTerrains = TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, MORTGAGED)
         val choicesWithInteractions =
           for terrain <- mortgagedTerrains
           yield
