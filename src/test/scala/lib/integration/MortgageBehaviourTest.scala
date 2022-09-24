@@ -19,9 +19,9 @@ import lib.terrain.PurchasableState
 
 import scala.collection.immutable.Seq
 
-/**
- * Test putting a owned terrain to mortgage and retrieving it from the mortgage. Behaviour is created by [[BehaviourFactory]]
- */
+/** Test putting a owned terrain to mortgage and retrieving it from the mortgage. Behaviour is created by
+  * [[BehaviourFactory]]
+  */
 class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
   private var globalMortgageEvent: Event = _
@@ -51,7 +51,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
     val purchasableTerrain =
       Purchasable(t, TERRAIN_PRICE, "fucsia", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
 
-    val token = Token(Seq("house"), Seq(4), Seq(Seq(20, 20, 20, 20)), Seq(25))
+    val token = Token(Seq("house"), Seq(Seq(20, 20, 20, 20)), Seq(25))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain, token))
     gameSession.gameStore.globalBehaviour = Behaviour(globalMortgageEvent, globalRetrieveMortgageEvent)
     gameSession.startGame()

@@ -16,9 +16,8 @@ import org.scalatest.featurespec.AnyFeatureSpec
 import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, InteractiveEventStory, Result}
 import lib.util.GameSessionHelper
 
-/**
- * Test building of tokens (buildings) on a buildable terrain. Behaviour is created by [[BehaviourFactory]] 
- */
+/** Test building of tokens (buildings) on a buildable terrain. Behaviour is created by [[BehaviourFactory]]
+  */
 class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
 
@@ -56,7 +55,7 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
     val purchasableTerrain2 =
       Purchasable(t2, TERRAIN_PRICE, "fucsia2", DividePriceMortgage(1000, 3), BasicRentStrategyFactor(RENT, 1))
 
-    val token = Token(Seq(HOUSE, HOTEL), Seq(2, 1), Seq(Seq(20, 30), Seq(100)), Seq(100, 50))
+    val token = Token(Seq(HOUSE, HOTEL), Seq(Seq(20, 30), Seq(100)), Seq(100, 50))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain, token))
     gameSession.gameStore.putTerrain(Buildable(purchasableTerrain2, token))
     gameSession.gameStore.globalBehaviour = Behaviour(globalBuildableEvent)

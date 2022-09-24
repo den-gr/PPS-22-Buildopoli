@@ -29,6 +29,9 @@ trait Token:
     */
   def totalBonusPrice(name: String): Seq[Int]
 
+  /** @return
+    *   the names of the tokens the owner can build
+    */
   def listAvailableToken(): Seq[String]
 
   /** It is used to add an amount of the specific token
@@ -60,26 +63,34 @@ trait Token:
 
 object Token:
 
-  def apply(levels: Seq[String], maxNumToken: Seq[Int], rentBonuses: Seq[Seq[Int]], buyingPrices: Seq[Int]): Token =
-    TokenWithBonus(levels, maxNumToken, rentBonuses, buyingPrices, List.fill(levels.size)(0))
+  /** Factory that allows to build a simple implementation of Token based on levels and bonus. In this implementation it
+    * is not possible to build tokens of the next level if the previous level is not full
+    * @param levels
+    *   the names of the levels
+    * @param rentBonuses
+    *   for each level it specifies the sequence of bonus that each token grant
+    * @param buyingPrices
+    *   for each level it specifies how much it costs to buy a token
+    * @return
+    *   a Token structure
+    */
+  def apply(levels: Seq[String], rentBonuses: Seq[Seq[Int]], buyingPrices: Seq[Int]): Token =
+    TokenWithBonus(levels, rentBonuses, buyingPrices, List.fill(levels.size)(0))
 
   private case class TokenWithBonus(
       private val levels: Seq[String],
-      private val maxNumToken: Seq[Int],
       private val rentBonuses: Seq[Seq[Int]],
       private val buyingPrices: Seq[Int],
       private val numToken: Seq[Int]
   ) extends Token:
 
     if levels.size != levels.distinct.size then throw Exception("Levels must have different names!!!")
-    if !(levels.size == maxNumToken.size && levels.size == rentBonuses.size && rentBonuses.size == buyingPrices.size && rentBonuses.size == numToken.size)
+    if !(levels.size == rentBonuses.size && rentBonuses.size == buyingPrices.size && rentBonuses.size == numToken.size)
     then throw Exception("Arrays size do not match!!!")
-    for l <- levels do
-      if maxNumToken(l) != totalBonusPrice(l).size then throw Exception("Arrays size or map size do not match!!!")
 
     override def tokenNames: Seq[String] = levels
     override def listAvailableToken(): Seq[String] = tokenNames filter (l => canBuildToken(l))
-    override def maxNumToken(name: String): Int = maxNumToken(fromLevelNameToNumber(name))
+    override def maxNumToken(name: String): Int = rentBonuses(fromLevelNameToNumber(name)).size
     override def buyingPrice(name: String): Int = buyingPrices(fromLevelNameToNumber(name))
     override def totalBonusPrice(name: String): Seq[Int] = rentBonuses(fromLevelNameToNumber(name))
     override def getNumToken(name: String): Int = numToken(fromLevelNameToNumber(name))

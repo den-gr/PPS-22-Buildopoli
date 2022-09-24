@@ -53,7 +53,7 @@ class BuildableTest extends AnyFunSuite with BeforeAndAfterEach:
   var gm: GroupManager = _
 
   override def beforeEach(): Unit =
-    token = Token(Seq(t1, t2), Seq(4, 1), Seq(Seq(250, 500, 1125, 375), Seq(500)), Seq(25, 50))
+    token = Token(Seq(t1, t2), Seq(Seq(250, 500, 1125, 375), Seq(500)), Seq(25, 50))
     b1 = Buildable(p1, token)
     b2 = Buildable(p2, token)
     b3 = Buildable(p3, token)

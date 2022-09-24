@@ -81,5 +81,5 @@ object TerrainInitializer:
         DividePriceMortgage(price, 2),
         lib.terrain.RentStrategy.BasicRentStrategyFactor(100, 2)
       )
-      val token = Token(Seq("house", "hotel"), Seq(2, 1), Seq(Seq(50, 50), Seq(100)), Seq(25, 50))
+      val token = Token(Seq("house", "hotel"), Seq(Seq(50, 50), Seq(100)), Seq(25, 50))
       Buildable(purchasableTerrain, token)

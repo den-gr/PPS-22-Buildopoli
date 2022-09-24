@@ -11,20 +11,11 @@ class TokenTest extends AnyFunSuite with BeforeAndAfterEach:
   var token: Token = _
 
   override def beforeEach(): Unit =
-    token = Token(Seq(l1, l2), Seq(4, 1), Seq(Seq(10, 20, 30, 40), Seq(200)), Seq(10, 20))
+    token = Token(Seq(l1, l2), Seq(Seq(10, 20, 30, 40), Seq(200)), Seq(10, 20))
 
   test("A token where the array size is not coherent is not valid") {
     assertThrows[Exception](
-      Token(Seq(l1, l2), Seq(4, 1, 3), Seq(Seq(250, 500, 1125, 375), Seq(500)), Seq(25, 50))
-    )
-    assertThrows[Exception](
-      Token(Seq(l1, l2), Seq(4, 1), Seq(Seq(250, 500, 1125, 375)), Seq(25, 50))
-    )
-  }
-
-  test("A token where the number of bonus is not the same as the max is not valid") {
-    assertThrows[Exception](
-      Token(Seq(l1, l2), Seq(4, 1), Seq(Seq(250, 500, 1125), Seq(500)), Seq(25, 50))
+      Token(Seq(l1, l2), Seq(Seq(250, 500, 1125, 375)), Seq(25, 50))
     )
   }
 
