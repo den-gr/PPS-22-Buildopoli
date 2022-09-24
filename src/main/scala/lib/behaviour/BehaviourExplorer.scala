@@ -2,7 +2,7 @@ package lib.behaviour
 
 import BehaviourModule.*
 import lib.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
-import lib.behaviour.event.{EventGroup, GenericBehaviourExplorer}
+import lib.behaviour.event.EventGroup
 
 import scala.collection.mutable
 

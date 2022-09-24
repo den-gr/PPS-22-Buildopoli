@@ -1,11 +1,11 @@
 package lib.integration
 
-import lib.behaviour.BehaviourExplorer
+import lib.behaviour.{BehaviourExplorer, factory}
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.EventModule.Event
-import lib.behaviour.event.{EventFactory, EventGroup}
+import lib.behaviour.event.EventGroup
 import lib.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
-import lib.behaviour.factory.BehaviourFactory
+import lib.behaviour.factory.{BehaviourFactory, EventFactory}
 import lib.gameManagement.gameSession.GameSession
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import lib.terrain.Mortgage.DividePriceMortgage
@@ -16,9 +16,8 @@ import org.scalatest.featurespec.AnyFeatureSpec
 import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, InteractiveEventStory, Result}
 import lib.util.GameSessionHelper
 
-/**
- * Test building of tokens (buildings) on a buildable terrain. Behaviour is created by [[BehaviourFactory]] 
- */
+/** Test building of tokens (buildings) on a buildable terrain. Behaviour is created by [[BehaviourFactory]]
+  */
 class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfterEach:
   private val PLAYER_1 = 1
 

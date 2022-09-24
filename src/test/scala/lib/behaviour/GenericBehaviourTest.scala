@@ -1,9 +1,8 @@
 package lib.behaviour
 
 import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.EventFactory
 import lib.behaviour.event.story.EventStoryModule.EventStory
-import lib.behaviour.factory.BehaviourFactory
+import lib.behaviour.factory.{BehaviourFactory, EventFactory}
 import lib.util.GameSessionHelper.DefaultGameSession
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -11,7 +10,7 @@ class GenericBehaviourTest extends AnyFunSuite:
   private val PLAYER_1 = 1
   private val gameSession = DefaultGameSession(1)
   private val bFactory = BehaviourFactory(gameSession)
-  private val eFactory = EventFactory(gameSession)
+  private val eFactory = factory.EventFactory(gameSession)
   private val AMOUNT = 100
 
   test("Combination of two behaviours iterators") {

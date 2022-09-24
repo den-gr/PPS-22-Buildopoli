@@ -1,7 +1,9 @@
 package example.controller
 
 import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.{EventFactory, EventGroup}
+import lib.behaviour.event.EventGroup
+import lib.behaviour.factory
+import lib.behaviour.factory.EventFactory
 import lib.gameManagement.gameSession.GameSession
 
 trait GlobalBehaviourInitializer:

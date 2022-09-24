@@ -3,7 +3,6 @@ package lib.behaviour.factory
 import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.Behaviour
 import lib.behaviour.event.story.EventStoryModule.EventStory
-import lib.behaviour.event.EventFactory
 import lib.gameManagement.gameBank.Bank
 import lib.util.GameSessionHelper
 import org.scalatest.BeforeAndAfterEach

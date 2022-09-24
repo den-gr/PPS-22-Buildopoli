@@ -1,9 +1,8 @@
-package lib.behaviour.event
+package lib.behaviour.factory
 
-import EventModule.EventPrecondition
+import lib.behaviour.event.EventModule.Event
 import lib.behaviour.event.story.EventStoryModule.EventStory
-import EventModule.*
-import lib.behaviour.event.EventFactory.EventLogMsg
+import lib.behaviour.factory.EventFactory.EventLogMsg
 
 /** Allows easily to create basic events
   */
