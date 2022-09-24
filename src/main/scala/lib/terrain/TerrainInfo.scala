@@ -5,11 +5,14 @@ import lib.behaviour.BehaviourModule.Behaviour
 /** It encapsulates the information that a Terrain needs
   */
 trait TerrainInfo:
+  /** The name of the terrain
+    * @return
+    */
   def name: String
 
 object TerrainInfo:
 
-  /** A factory to create a simple implementation of BasicInfo
+  /** A factory to create a simple implementation of information
     * @param name
     *   the name of the terrain
     */

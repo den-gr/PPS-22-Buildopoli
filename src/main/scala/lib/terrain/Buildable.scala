@@ -33,6 +33,9 @@ trait Buildable extends Purchasable:
     */
   def getNumToken(name: String): Int
 
+  /** @return
+    *   the names of the tokens the owner can build
+    */
   def listAvailableToken(): Seq[String]
 
   /** It is used to add a token
@@ -58,6 +61,12 @@ trait Buildable extends Purchasable:
     */
   def tokenSellingPrice(name: String): Int
 
+  /** Given a token name it tells how many token can be built
+    * @param name
+    *   of the token
+    * @return
+    *   the number of tokens that can still be built
+    */
   def remainingTokens(name: String): Int
 
 object Buildable:
@@ -96,5 +105,4 @@ object Buildable:
     override def tokenBuyingPrice(name: String): Int = token.buyingPrice(name)
     override def tokenSellingPrice(name: String): Int = token.buyingPrice(name) / 2
     override def listAvailableToken(): Seq[String] = token.listAvailableToken()
-
     override def remainingTokens(name: String): Int = token.maxNumToken(name) - getNumToken(name)

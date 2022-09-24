@@ -23,6 +23,12 @@ trait GroupManager:
     */
   def sameGroupTerrainsOwned(ownerID: Int, group: String): Int
 
+  /** It tells for a owner which are the terrains he can build tokens on
+    * @param ownerID
+    *   id of the owner we are considering
+    * @return
+    *   the list of terrains that meet the condition
+    */
   def terrainsOwnerCanBuildOn(ownerID: Int): Seq[Buildable]
 
 object GroupManager:
