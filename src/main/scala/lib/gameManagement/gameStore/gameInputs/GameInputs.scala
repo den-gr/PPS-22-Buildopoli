@@ -32,7 +32,7 @@ trait GameInputs:
 object GameInputs:
   def apply(): GameInputs = UserInputs()
 
-case class UserInputs() extends GameInputs:
+private case class UserInputs() extends GameInputs:
   var userInput: Seq[Any] = Seq()
 
   def inputList: Seq[Any] = userInput

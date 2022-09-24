@@ -10,7 +10,7 @@ import lib.behaviour.event.*
 import lib.behaviour.event.EventModule.*
 import lib.behaviour.event.story.EventStoryModule.*
 import lib.behaviour.event.story.InteractiveEventStoryModule.Result.*
-import lib.behaviour.event.EventFactory.*
+import lib.behaviour.factory.EventFactory.*
 import EventOperation.*
 import lib.behaviour.BehaviourExplorer
 import lib.behaviour.BehaviourModule.*

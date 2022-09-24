@@ -1,9 +1,9 @@
 package example.controller
 
 import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.{BasicEventFactory, EventFactory}
 import lib.behaviour.event.story.EventStoryModule.EventStory
-import lib.behaviour.factory.{BasicBehaviourFactory, BehaviourFactory}
+import lib.behaviour.factory
+import lib.behaviour.factory.{BasicBehaviourFactory, BasicEventFactory, BehaviourFactory, EventFactory}
 import lib.gameManagement.gameSession.GameSession
 import lib.terrain.Mortgage.DividePriceMortgage
 import lib.terrain.RentStrategy.RentStrategyPreviousPriceMultiplier
@@ -22,7 +22,7 @@ object TerrainInitializer:
   def apply(gameSession: GameSession): TerrainInitializer = TerrainInitializerImpl(gameSession)
 
   private class TerrainInitializerImpl(gameSession: GameSession) extends TerrainInitializer:
-    private val eventFactory = EventFactory(gameSession)
+    private val eventFactory = factory.EventFactory(gameSession)
     private val behaviourFactory = BehaviourFactory(gameSession)
 
     override def buildGameTerrains(): Seq[Terrain] =

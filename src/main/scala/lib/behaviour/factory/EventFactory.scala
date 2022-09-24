@@ -1,22 +1,21 @@
-package lib.behaviour.event
+package lib.behaviour.factory
 
+import lib.behaviour.event.EventModule.{Event, EventPrecondition, EventStrategy, StoryGenerator}
+import lib.behaviour.event.story.EventStoryModule.EventStory
+import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, Result}
 import lib.behaviour.event.*
-import lib.behaviour.event.EventModule.Event
-import lib.behaviour.event.EventModule.*
-import lib.behaviour.event.story.EventStoryModule.*
-import lib.behaviour.event.story.InteractiveEventStoryModule.{Result, *}
 import lib.gameManagement.gameSession.GameSession
 import lib.gameManagement.gameTurn.GameJail
 import lib.gameManagement.log.GameLogger
-import lib.terrain.*
 import lib.terrain.PurchasableState.*
+import lib.terrain.{Buildable, GroupManager, Purchasable, TerrainUtils}
 
 /** Give access to static factory constructor of events and allows create a [[BasicEventFactory]] instance
   */
 object EventFactory:
   /** A simple type for generating personalized messages. Typically take in input player id and return a personalized
-   * event message
-   */
+    * event message
+    */
   type EventLogMsg = String => String
 
   /** @param gameSession
@@ -111,7 +110,7 @@ object EventFactory:
       val strategy: EventStrategy = playerId =>
         val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
-          case t: Purchasable if playerMoney >= t.computeTotalRent(groupMng) =>
+          case t: Purchasable =>
             bank.makeTransaction(
               playerId,
               t.owner.get,
@@ -222,18 +221,10 @@ object EventFactory:
 
     override def MortgageEvent(eventDescription: String): Event =
       val precondition: EventPrecondition = playerId =>
-        gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == OWNED)
-          .exists(_.owner.get == playerId)
+        TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, OWNED).nonEmpty
 
       val storyGenerator: StoryGenerator = playerId =>
-        val ownedTerrains = gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == OWNED)
-          .filter(_.owner.get == playerId)
+        val ownedTerrains = TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, OWNED)
         val choicesWithInteractions =
           for terrain <- ownedTerrains
           yield
@@ -256,18 +247,10 @@ object EventFactory:
 
     override def RetrieveFromMortgageEvent(eventDescription: String, notMoneyErrMsg: String): Event =
       val precondition: EventPrecondition = playerId =>
-        gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == MORTGAGED)
-          .exists(_.owner.get == playerId)
+        TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, MORTGAGED).nonEmpty
 
       val storyGenerator: StoryGenerator = playerId =>
-        val mortgagedTerrains = gameStore.terrainList
-          .filter(_.isInstanceOf[Purchasable])
-          .map(_.asInstanceOf[Purchasable])
-          .filter(_.state == MORTGAGED)
-          .filter(_.owner.get == playerId)
+        val mortgagedTerrains = TerrainUtils.filterPurchasable(gameStore.terrainList, playerId, MORTGAGED)
         val choicesWithInteractions =
           for terrain <- mortgagedTerrains
           yield

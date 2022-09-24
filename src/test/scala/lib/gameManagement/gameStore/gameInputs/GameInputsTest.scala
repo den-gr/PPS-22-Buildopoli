@@ -49,5 +49,5 @@ class GameInputsTest extends AnyFunSuite:
     gameStore.userInputs.removeHeadElement()
     assert(gameStore.userInputs.isListEmpty)
     assert(gameTurn.selectNextPlayer() === 2)
-    assert(gameTurn.playerWithTurn.isEmpty)
+    assert(gameTurn.playerWithTurn.size == 2)
   }

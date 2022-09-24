@@ -1,12 +1,11 @@
 package lib.integration
 
-import lib.behaviour.BehaviourExplorer
+import lib.behaviour.{BehaviourExplorer, factory}
 import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.EventFactory
 import lib.behaviour.event.EventModule.Event
 import lib.behaviour.event.story.EventStoryModule.EventStory
 import lib.behaviour.event.story.InteractiveEventStoryModule.{Interaction, InteractiveEventStory, Result}
-import lib.behaviour.factory.BehaviourFactory
+import lib.behaviour.factory.{BehaviourFactory, EventFactory}
 import lib.gameManagement.gameSession.GameSession
 import lib.terrain.Mortgage.*
 import lib.terrain.RentStrategy.BasicRentStrategyFactor

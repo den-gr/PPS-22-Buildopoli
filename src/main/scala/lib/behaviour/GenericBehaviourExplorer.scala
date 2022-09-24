@@ -1,4 +1,4 @@
-package lib.behaviour.event
+package lib.behaviour
 
 /** Allows correctly navigate between events of a behaviour
   * @tparam T

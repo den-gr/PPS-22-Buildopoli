@@ -11,8 +11,8 @@ import lib.util.GameSessionHelper
 import org.scalatest.featurespec.AnyFeatureSpec
 import GameSessionHelper.DefaultGameSession
 import lib.behaviour.event.story.InteractiveEventStoryModule.*
-import lib.behaviour.event.{EventFactory, EventGroup}
-import lib.behaviour.factory.BehaviourFactory
+import lib.behaviour.event.EventGroup
+import lib.behaviour.factory.{BehaviourFactory, EventFactory}
 import lib.terrain.{GroupManager, Purchasable, Terrain, TerrainInfo}
 
 /** Test purchasable events produced by [[BehaviourFactory]] that allow buying terrains and pay rent to the owner

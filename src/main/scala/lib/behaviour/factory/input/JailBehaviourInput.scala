@@ -1,7 +1,7 @@
 package lib.behaviour.factory.input
 
 import lib.behaviour.BehaviourModule
-import lib.behaviour.event.EventFactory.EventLogMsg
+import lib.behaviour.factory.EventFactory.EventLogMsg
 import lib.behaviour.event.story.EventStoryModule
 import lib.behaviour.event.story.EventStoryModule.EventStory
 
