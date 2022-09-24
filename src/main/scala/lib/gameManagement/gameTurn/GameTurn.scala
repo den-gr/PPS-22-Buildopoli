@@ -14,7 +14,7 @@ trait GameTurn:
   /** List containing players that have already done the actual turn
     */
   var playerWithTurn: Seq[Int] = Seq()
-  
+
   def endGame: EndGame
 
   /** @return
@@ -23,9 +23,9 @@ trait GameTurn:
   def selectNextPlayer(): Int =
     verifyDefeatedPlayers()
     selectPlayer()
-  
+
   def verifyDefeatedPlayers(): Unit
-  
+
   def selectPlayer(): Int
 
   /** @return
@@ -35,5 +35,5 @@ trait GameTurn:
   protected def isNextTurnOpen: Boolean
 
 object GameTurn:
-  def apply(gameOptions: GameOptions, gameStore: GameStore): GameTurn = 
+  def apply(gameOptions: GameOptions, gameStore: GameStore): GameTurn =
     DefaultGameTurn(gameOptions, gameStore)
