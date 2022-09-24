@@ -16,8 +16,6 @@ trait GameSessionInitializer:
 object GameSessionInitializer extends GameSessionInitializer:
   private val selector: (Seq[Player], Seq[Int]) => Int =
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
-      println(s"playerList len: ${playerList.length}")
-      println(s"playerWithTurn len: ${playerWithTurn.length}")
       playerList.find(el => !playerWithTurn.contains(el.playerId)).head.playerId
   private val playerInitialMoney = 200
   private val playerInitialCells = 0
