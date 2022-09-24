@@ -16,6 +16,7 @@ trait EndGame:
 object EndGame:
 
   import lib.terrain.TerrainUtils.onlyPurchasable
+  import lib.gameManagement.gameBank.Bank
 
   /** A possible strategy that considers a player defeated if he has no more money and if he does not own any terrain
     * @param player
@@ -25,8 +26,9 @@ object EndGame:
     * @return
     *   a value that says if the player has lost
     */
-  def defeatedForNoMoneyAndNoTerrainsOwned(player: Player, gameStore: GameStore): Boolean =
-    player.getPlayerMoney == 0 && terrainPerPlayer(gameStore.terrainList, player.playerId) == 0
+  def defeatedForNoMoneyAndNoTerrainsOwned(player: Player, gameStore: GameStore, bank: Bank): Boolean =
+    bank.debitManagement.getDebitOfPlayer(player.playerId) > 0 ||
+      player.getPlayerMoney == 0 && terrainPerPlayer(gameStore.terrainList, player.playerId) == 0
 
   /** Factory for EndGame implementation that removes the defeated player from the game according to the chosen
     * strategy. It also gives the terrains of the defeated players to the bank
