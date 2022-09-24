@@ -16,7 +16,7 @@ class GameTest extends AnyFunSuite with BeforeAndAfterEach:
   override def beforeEach(): Unit =
     mockView = new GameView:
       override def getUserChoices(stories: Seq[StoryGroup]): PlayerChoice =
-        if Math.random() > 0.5 then
+        if Math.random() > 0.3 then
           val groupIndex = Random.nextInt(stories.length)
           val storyIndex = Random.nextInt(stories(groupIndex).length)
           val choiceIndex = Random.nextInt(stories(groupIndex)(storyIndex).choices.length)

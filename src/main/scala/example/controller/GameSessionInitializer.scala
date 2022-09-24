@@ -18,8 +18,8 @@ object GameSessionInitializer extends GameSessionInitializer:
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
   private val playerInitialMoney = 200
   private val playerInitialCells = 0
-  private val diceFaces = 2
-  private val gameLapMoneyReward = 200
+  private val diceFaces = 3
+  private val gameLapMoneyReward = 100
 
   def createDefaultGameSession(numberOfPlayers: Int): GameSession =
     val gameOptions: GameOptions =

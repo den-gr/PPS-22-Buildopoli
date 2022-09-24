@@ -111,7 +111,7 @@ object EventFactory:
       val strategy: EventStrategy = playerId =>
         val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
         gameSession.getPlayerTerrain(playerId) match
-          case t: Purchasable if playerMoney >= t.computeTotalRent(groupMng) =>
+          case t: Purchasable =>
             bank.makeTransaction(
               playerId,
               t.owner.get,
