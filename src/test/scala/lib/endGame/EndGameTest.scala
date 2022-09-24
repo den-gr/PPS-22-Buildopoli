@@ -45,7 +45,13 @@ class EndGameTest extends AnyFunSuite with BeforeAndAfterEach:
     gs.playersList.head.setPlayerMoney(0)
     eg.deleteDefeatedPlayer(p1 => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p1, gs, b), gs)
     assert(gs.playersList.isEmpty)
+  }
 
+  test("It is possible to know the id of the defeated players") {
+    assert(eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs, b), gs).toSet == Set())
+    t1 changeOwner None
+    gs.playersList.head.setPlayerMoney(0)
+    assert(eg.deleteDefeatedPlayer(p => EndGame.defeatedForNoMoneyAndNoTerrainsOwned(p, gs, b), gs).toSet == Set(1, 2))
   }
 
   test("When a player is defeated his terrains are given to the bank") {
