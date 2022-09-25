@@ -54,14 +54,9 @@ trait GameStore:
 
   def startGame(): Unit
 
-//  /** Set new game behaviour. Can be set after the game start
-//    * @param behaviour new global behavior of the game 
-//    */
-//  def setGlobalBehaviour(behaviour: Behaviour): Unit
-
-  /**
-   * @return global behaviour of the game
-   */
+  /** @return
+    *   global behaviour of the game
+    */
   var globalBehaviour: Behaviour
 
 object GameStore:

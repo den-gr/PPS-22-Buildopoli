@@ -1,6 +1,6 @@
 package lib.gameManagement.gameBank.bankDebit
 
-case class BankDebitImpl() extends BankDebit :
+private case class BankDebitImpl() extends BankDebit:
 
   var debtsList: Map[Int, Int] = Map()
 

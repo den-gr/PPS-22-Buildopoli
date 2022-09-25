@@ -8,20 +8,25 @@ import lib.terrain.Terrain
 
 import scala.collection.mutable.ListBuffer
 
-case class GameStoreImpl() extends GameStore:
+private case class GameStoreImpl() extends GameStore:
 
   private var listOfTerrains: Seq[Terrain] = List()
   private var listOfPLayer: Seq[Player] = List()
+
   override val userInputs: GameInputs = GameInputs()
+  private var _globalBehaviour: Behaviour = Behaviour()
+
   private var gameStarted: Boolean = false
   private var playerIdsCounter: Int = 0
-  private var _globalBehaviour: Behaviour = Behaviour()
 
   def playersList: Seq[Player] = listOfPLayer
   def playersList_=(list: Seq[Player]): Unit = this.listOfPLayer = list
 
   def terrainList: Seq[Terrain] = listOfTerrains
   def terrainList_=(list: Seq[Terrain]): Unit = this.listOfTerrains = list
+
+  def globalBehaviour_=(behaviour: Behaviour): Unit = _globalBehaviour = behaviour
+  def globalBehaviour: Behaviour = _globalBehaviour
 
   override def getPlayer(playerId: Int): Player = playersList.find(p => p.playerId.equals(playerId)).get
   override def addPlayer(): Unit =
@@ -30,7 +35,6 @@ case class GameStoreImpl() extends GameStore:
     playersList = playersList :+ PlayerImpl(this.playerIdsCounter)
 
   override def getTerrain(position: Int): Terrain = terrainList(position)
-
   override def putTerrain(terrain: Terrain*): Unit =
     this.checkGameStarted()
     terrainList = terrainList ++: terrain
@@ -39,7 +43,3 @@ case class GameStoreImpl() extends GameStore:
     this.gameStarted = true
   private def checkGameStarted(): Unit =
     if gameStarted then throw new InterruptedException("Game already started !")
-
-  def globalBehaviour_=(behaviour: Behaviour): Unit = _globalBehaviour = behaviour
-
-  def globalBehaviour: Behaviour = _globalBehaviour

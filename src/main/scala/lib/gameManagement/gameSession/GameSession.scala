@@ -66,7 +66,7 @@ trait GameSession:
     * @return
     *   the actual position of that player
     */
-  def getPlayerPosition(playerId: Int): Int = gameStore.getPlayer(playerId).getPlayerPawnPosition
+  def getPlayerPosition(playerId: Int): Int = this.gameStore.getPlayer(playerId).getPlayerPawnPosition
 
   /** Using getTerrain function exported by gameStore instance
     * @param playerId
@@ -74,7 +74,7 @@ trait GameSession:
     * @return
     *   the Terrain object of where the player is positioned
     */
-  def getPlayerTerrain(playerId: Int): Terrain = getTerrain(getPlayerPosition(playerId))
+  def getPlayerTerrain(playerId: Int): Terrain = getTerrain(this.getPlayerPosition(playerId))
 
   /** Used to start the game. Creating GroupManager and impeding creation of new terrains and players.
     */

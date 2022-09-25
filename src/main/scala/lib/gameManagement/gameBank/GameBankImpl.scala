@@ -1,15 +1,15 @@
 package lib.gameManagement.gameBank
 
-import lib.gameManagement.gameBank.bankDebit.{BankDebit, BankDebitImpl}
+import lib.gameManagement.gameBank.bankDebit.BankDebit
 import lib.gameManagement.gameOptions.GameOptions
 import lib.gameManagement.gameStore.GameStore
 import lib.player.Player
 
 import scala.collection.mutable.ListBuffer
 
-case class GameBankImpl(override val gameStore: GameStore) extends Bank:
+private case class GameBankImpl(override val gameStore: GameStore) extends Bank:
 
-  override val debitManagement: BankDebit = BankDebitImpl()
+  override val debitManagement: BankDebit = BankDebit()
   override def makeTransaction(senderId: Int, receiverId: Int, amount: Int): Unit = (senderId, receiverId) match
     case (0, _) => increasePlayerMoney(receiverId, amount)
     case (_, 0) => decreasePlayerMoney(senderId, amount)

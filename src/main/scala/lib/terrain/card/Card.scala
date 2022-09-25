@@ -21,7 +21,7 @@ object Card:
   def apply(consequences: EventGroup, name: String): Card =
     DefaultCards(consequences, name)
 
-case class DefaultCards(
+private case class DefaultCards(
     override val consequences: EventGroup,
     override val name: String
 ) extends Card

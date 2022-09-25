@@ -4,7 +4,7 @@ import lib.gameManagement.log.GameLogger
 
 import scala.util.Random
 
-case class SingleDice(sides: Int, logger: GameLogger) extends Dice:
+private case class SingleDice(sides: Int, logger: GameLogger) extends Dice:
   override val random: Random = new Random()
   var tempValue = 0
 

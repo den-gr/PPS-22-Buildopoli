@@ -12,20 +12,19 @@ case class DefaultGameTurn(gameOptions: GameOptions, gameStore: GameStore) exten
   override val endGame: EndGame = EndGame()
 
   override def selectPlayer(): Int =
-    if !isNextTurnOpen then throw new RuntimeException("Previous player input values not emptied")
-    this.everyoneHasDoneOneTurn()
     val selection: Int = gameOptions.playerTurnSelector(gameStore.playersList, playerWithTurn)
     playerWithTurn = playerWithTurn :+ selection
     selection
 
-  override def verifyDefeatedPlayers(): Unit =
-    val previousPlayerListSize = gameStore.playersList.size
-    this.endGame.deleteDefeatedPlayer(gameOptions.removePlayerStrategy, gameStore)
-    val afterPlayerListSize = gameStore.playersList.size
-    if afterPlayerListSize < previousPlayerListSize then
-      this.playerWithTurn = this.playerWithTurn.dropRight(previousPlayerListSize - afterPlayerListSize)
+  override def checkToProceedWithNextTurn(): Unit =
+    if !isNextTurnOpen then throw new RuntimeException("Previous player input values not emptied")
+    this.everyoneHasDoneOneTurn()
 
-  override protected def isNextTurnOpen: Boolean = gameStore.userInputs.isListEmpty
+  override def verifyDefeatedPlayers(): Unit =
+    val defeatedPlayers: Seq[Int] = this.endGame.deleteDefeatedPlayer(gameOptions.removePlayerStrategy, gameStore)
+    this.playerWithTurn = this.playerWithTurn.filterNot(pl => defeatedPlayers.contains(pl))
+
+  private def isNextTurnOpen: Boolean = gameStore.userInputs.isListEmpty
 
   private def everyoneHasDoneOneTurn(): Unit =
     if playerWithTurn.size == (gameStore.playersList.size - blockingList.size) then

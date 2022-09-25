@@ -15,6 +15,8 @@ import scala.collection.mutable.ListBuffer
   *   Number of faces in the dice used to play the game
   * @param playerTurnSelector
   *   Lambda function used by GameTurn to select the next player that should play during the game
+  * @param removePlayerStrategy
+  *   Lambda function used by EndGame structure, to define the strategy to defeat players and estimate a winner
   */
 case class GameOptions(
     playerInitialMoney: Int,

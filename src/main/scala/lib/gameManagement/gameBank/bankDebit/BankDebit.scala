@@ -33,3 +33,6 @@ trait BankDebit:
     *   of debit to reduce from the previous value
     */
   def decreaseDebit(playerId: Int, amount: Int): Unit
+
+object BankDebit:
+  def apply(): BankDebit = BankDebitImpl()

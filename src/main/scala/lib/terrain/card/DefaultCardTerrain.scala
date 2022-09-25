@@ -5,7 +5,7 @@ import lib.terrain.{Terrain, TerrainInfo}
 
 import scala.util.Random
 
-case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
+private case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
   export terrain.{basicInfo, behaviour}
 
   private var cards: List[Card] = List()
