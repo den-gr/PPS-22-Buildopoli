@@ -1,28 +1,35 @@
 package lib.lap
 
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.BeforeAndAfterEach
 import lib.gameManagement.gameBank.{Bank, GameBankImpl}
 import lib.lap.Lap.*
 import lib.gameManagement.gameOptions.GameOptions
 import lib.gameManagement.gameStore.GameStore
 import lib.lap.Lap
 import lib.player.{Player, PlayerImpl}
-import org.scalatest.funsuite.AnyFunSuite
-
 import scala.collection.mutable.ListBuffer
 
-class LapTest extends AnyFunSuite:
+class LapTest extends AnyFunSuite with BeforeAndAfterEach:
 
   val selector: (Seq[Player], Seq[Int]) => Int =
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.filter(el => !playerWithTurn.contains(el.playerId)).head.playerId
 
-  val gameStore: GameStore = GameStore()
   val gameOptions: GameOptions = GameOptions(200, 2, 20, 6, selector)
-  val gameBank: Bank = GameBankImpl(gameStore)
-  val lap: Lap = Lap(MoneyReward(500, gameBank))
 
   val nCells: Int = 20
   val currentPosition = 17
+
+  var gameStore: GameStore = _
+  var gameBank: Bank = _
+  var lap: Lap = _
+
+  override def beforeEach(): Unit =
+    gameStore = GameStore()
+    gameBank = GameBankImpl(gameStore)
+    lap = Lap(MoneyReward(500, gameBank))
+
   test("The game lap checks if a player has completed a lap and can return the new position") {
     assert(lap.isNewLap(true, currentPosition, 2, nCells)._1 == 19)
     assert(!lap.isNewLap(true, currentPosition, 2, nCells)._2)
@@ -47,7 +54,6 @@ class LapTest extends AnyFunSuite:
   }
 
   test("The game lap can give a reward to the player that has completed a lap") {
-    gameStore.addPlayer()
     gameStore.addPlayer()
 
     lap.giveReward(1)

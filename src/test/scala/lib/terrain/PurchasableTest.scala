@@ -18,9 +18,11 @@ class PurchasableTest extends AnyFunSuite with BeforeAndAfterEach:
   test("A property has a buying price") {
     assert(p.price == 1000)
   }
+
   test("A property has a group") {
     assert(p.group == "fucsia")
   }
+
   test("A property can be bought") {
     assert(p.state == PurchasableState.IN_BANK)
     assert(p.owner.isEmpty)
@@ -31,6 +33,7 @@ class PurchasableTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(p.owner.get == 2)
     assert(p.state == PurchasableState.OWNED)
   }
+
   test("A property can be mortgaged by its owner") {
     p.changeOwner(Some(2))
     assert(p.owner.get == 2)
@@ -46,5 +49,4 @@ class PurchasableTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(p.state == PurchasableState.MORTGAGED)
     p.removeMortgage()
     assert(p.state == PurchasableState.OWNED)
-
   }

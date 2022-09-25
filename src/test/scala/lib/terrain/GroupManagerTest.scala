@@ -9,6 +9,7 @@ import lib.terrain.Buildable.*
 import lib.terrain.{Buildable, GroupManager, Purchasable, Terrain, TerrainInfo}
 
 class GroupManagerTest extends AnyFunSuite:
+
   val t0: Terrain = Terrain(TerrainInfo("safe zone"), null)
   val t1: Purchasable =
     Purchasable(Terrain(TerrainInfo("purple 1"), null), 500, "purple", null, null, Some(2), PurchasableState.OWNED)
