@@ -10,7 +10,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.util.Random
 
 class GameTest extends AnyFunSuite with BeforeAndAfterEach:
-  private val MAX_MOVES = 10000
+  private val MAX_MOVES = 1000
   private var mockView: View = _
   private var gameSession: GameSession = _
 
