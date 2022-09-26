@@ -35,7 +35,7 @@ class GameControllerImpl(gameSession: GameSession, view: View, val maxMoves: Int
       val terrain = gameSession.getPlayerTerrain(playerId)
       view.showCurrentTerrain(terrain, gameSession.getPlayerPosition(playerId))
 
-      val behaviourExplorer = gameSession.getFreshBehaviourExplorer(playerId)
+      var behaviourExplorer = gameSession.getFreshBehaviourExplorer(playerId)
 
       while behaviourExplorer.hasNext do
         val stories = behaviourExplorer.currentStories
@@ -44,10 +44,12 @@ class GameControllerImpl(gameSession: GameSession, view: View, val maxMoves: Int
           case PlayerChoice.Choice(groupIdx, eventIdx, choiceIdx)
               if stories(groupIdx)(eventIdx).isInstanceOf[InteractiveEventStory] =>
             stories(groupIdx)(eventIdx).asInstanceOf[InteractiveEventStory].interactions(choiceIdx)(playerId) match
-              case OK => behaviourExplorer.next((groupIdx, eventIdx))
+              case OK => behaviourExplorer = behaviourExplorer.next((groupIdx, eventIdx))
               case ERR(msg) => view.printLog(msg)
-          case PlayerChoice.Choice(groupIdx, eventIdx, _) => behaviourExplorer.next((groupIdx, eventIdx))
-          case PlayerChoice.EndTurn if behaviourExplorer.canEndExploring => behaviourExplorer.endExploring()
+          case PlayerChoice.Choice(groupIdx, eventIdx, _) =>
+            behaviourExplorer = behaviourExplorer.next((groupIdx, eventIdx))
+          case PlayerChoice.EndTurn if behaviourExplorer.canEndExploring =>
+            behaviourExplorer = behaviourExplorer.endExploring()
           case PlayerChoice.EndTurn =>
             view.printLog(s"Player $playerId can not end turn because have to explore mandatory events")
     view.printLog(s"End game on $moves move")

@@ -92,37 +92,37 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("Check casino behaviour when choose lose game event") {
-    val explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
-    explorer.next()
+    var explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
+    explorer = explorer.next()
     val events = explorer.currentEvents
     assert(events.length == 2)
     assert(events.head.length == 1)
     val story = events.head.head.eventStory(PLAYER_1).asInstanceOf[InteractiveEventStory]
     assert(story.choices.length == NUMBER_CHOICES)
     assert(story.interactions.head(PLAYER_1) == Result.OK) // run story interaction
-    explorer.next()
+    explorer = explorer.next()
     assert(!explorer.hasNext)
   }
 
   test("Check casino behaviour when choose win game event") {
-    val explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
-    explorer.next((1, 0))
+    var explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
+    explorer = explorer.next((1, 0))
     val events = explorer.currentEvents
     assert(events.length == 1) // second event group is ignored
     assert(events.head.length == 1)
     val story = events.head.head.eventStory(PLAYER_1).asInstanceOf[InteractiveEventStory]
     assert(story.choices.length == NUMBER_CHOICES)
     assert(story.interactions.head(PLAYER_1) == Result.OK) // run story interaction
-    explorer.next()
+    explorer = explorer.next()
     assert(explorer.hasNext)
   }
 
   test("EventStory of casino must have interactions") {
-    val explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
+    var explorer: BehaviourExplorer = casinoBehaviour.getBehaviourExplorer(PLAYER_1)
     val interactions: Seq[StoryGroup] = explorer.currentStories
     assert(interactions.head.head.isInstanceOf[EventStory])
     assert(!interactions.head.head.isInstanceOf[InteractiveEventStory])
-    explorer.next()
+    explorer = explorer.next()
     assert(explorer.currentStories.head.head.isInstanceOf[InteractiveEventStory])
   }
 

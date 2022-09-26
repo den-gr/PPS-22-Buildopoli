@@ -64,7 +64,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
       assert(explorer.currentEvents.length == 1)
 
       When("player buy the terrain")
-      explorer.next()
+      explorer = explorer.next()
       assert(!explorer.hasNext)
 
       Then("player start to see the global event for mortgage event")
@@ -78,13 +78,13 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
       When("player buy first terrain")
       assert(runFirstEventStoryInteraction(explorer) == Result.OK)
-      explorer.next()
+      explorer = explorer.next()
 
       Then("player mortgage this terrain")
       explorer = getFreshExplorer
       assert(explorer.currentStories.head.head.choices.length == 1)
       assert(runFirstEventStoryInteraction(explorer) == Result.OK)
-      explorer.next()
+      explorer = explorer.next()
 
       Then("the state of terrain changed and player receive money")
       assert(gameSession.gameBank.getMoneyOfPlayer(explorer.playerId) > GameSessionHelper.playerInitialMoney)
@@ -98,10 +98,10 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
     Scenario("Player put and remove terrain from mortgage") {
       Given("player buy and mortgage a terrain")
       var explorer = getFreshExplorer
-      explorer.next()
+      explorer = explorer.next()
       explorer = getFreshExplorer
       runFirstEventStoryInteraction(explorer)
-      explorer.next()
+      explorer = explorer.next()
 
       When("player check available events")
       explorer = getFreshExplorer
@@ -129,7 +129,7 @@ class MortgageBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Befor
 
       Then("terrain is retrieved successfully")
       assert(runFirstEventStoryInteraction(explorer) == Result.OK)
-      explorer.next()
+      explorer = explorer.next()
       assert(gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Purchasable].state == PurchasableState.OWNED)
       assert(
         gameSession.gameBank.getMoneyOfPlayer(explorer.playerId) == aLotOfMoney - gameSession

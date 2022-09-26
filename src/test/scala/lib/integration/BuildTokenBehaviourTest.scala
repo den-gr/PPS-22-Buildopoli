@@ -70,7 +70,7 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
       assert(explorer.currentEvents.length == 1)
 
       When("player buy the terrain")
-      explorer.next()
+      explorer = explorer.next()
       assert(!explorer.hasNext)
 
       Then("player start to see the global event for token building")
@@ -83,10 +83,10 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
       var explorer = getFreshExplorer
 
       When("player buy two terrains")
-      explorer.next()
+      explorer = explorer.next()
       gameSession.movePlayer(explorer.playerId, steps = 1)
       explorer = getFreshExplorer
-      explorer.next()
+      explorer = explorer.next()
 
       Then("player is can choose in which terrain build a house")
       explorer = getFreshExplorer
@@ -98,19 +98,19 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
     Scenario("Player can build a house") {
       Given("player bought the terrain")
       var explorer = getFreshExplorer
-      explorer.next()
+      explorer = explorer.next()
 
       When("player select the terrain where he wants to build a building")
       explorer = getFreshExplorer
       assert(getInteractions(explorer).head(explorer.playerId) == Result.OK)
-      explorer.next()
+      explorer = explorer.next()
 
       Then(s"player see only $HOUSE as a choice")
       assert(explorer.currentStories.head.head.choices.head == HOUSE)
 
       Then(s"player select this $HOUSE")
       assert(getInteractions(explorer).head(explorer.playerId) == Result.OK)
-      explorer.next()
+      explorer = explorer.next()
 
       When("player select ot build 2 houses")
       Then("error message appears")
@@ -122,7 +122,7 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
 
       When("player select to build 1 house")
       assert(getInteractions(explorer).head(explorer.playerId) == Result.OK)
-      explorer.next()
+      explorer = explorer.next()
 
       Then("player become owner of terrain")
       assert(gameSession.getPlayerTerrain(explorer.playerId).asInstanceOf[Buildable].owner.get == explorer.playerId)
@@ -131,7 +131,7 @@ class BuildTokenBehaviourTest extends AnyFeatureSpec with GivenWhenThen with Bef
     Scenario("Player cen not proceed to token choosing when he have not money to build") {
       Given("player bought the terrain")
       var explorer = getFreshExplorer
-      explorer.next()
+      explorer = explorer.next()
 
       When("player have not money")
       gameSession.gameBank.makeTransaction(explorer.playerId, amount = GameSessionHelper.playerInitialMoney)

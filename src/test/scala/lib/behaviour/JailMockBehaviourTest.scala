@@ -38,7 +38,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assertThrows[IllegalArgumentException](explorer.next((0, 1)))
 
     explorer = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)
-    explorer.next((0, 0))
+    explorer = explorer.next()
     assert(!explorer.hasNext)
   }
 
@@ -49,10 +49,10 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   }
 
   test("If event group is not mandatory a player can skip all events") {
-    val explorer = Behaviour(EventGroup(Seq(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
+    var explorer = Behaviour(EventGroup(Seq(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
     assert(explorer.hasNext)
     assert(explorer.canEndExploring)
-    explorer.endExploring()
+    explorer = explorer.endExploring()
     assert(!explorer.hasNext)
   }
 

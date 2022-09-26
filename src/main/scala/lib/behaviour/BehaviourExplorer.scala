@@ -4,7 +4,8 @@ import BehaviourModule.*
 import lib.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
 import lib.behaviour.event.EventGroup
 
-import scala.collection.mutable
+import scala.::
+import scala.collection.{IndexedSeqView, immutable}
 
 /** Allows correctly navigate between event groups and their successors of a Behaviour. Encapsulate a sequence of
   * [[EventGroup]]
@@ -18,7 +19,7 @@ trait BehaviourExplorer extends GenericBehaviourExplorer[Seq[EventGroup]] with S
     * @param index
     *   is a double tuple where first element is event group index, and second is an event index. Default value (0, 0)
     */
-  override def next(index: (Int, Int) = (0, 0)): Unit
+  override def next(index: (Int, Int) = (0, 0)): BehaviourExplorer
 
 /** Allows extract stories from event groups
   */
@@ -34,6 +35,7 @@ trait StoryConverter:
     ex.currentEvents.map(eventGroup => eventGroup.map(m => m.eventStory(ex.playerId)))
 
 object BehaviourExplorer:
+  private type ExplorerStack = List[Seq[EventGroup]]
 
   /** Constructor of behaviour explorer
     * @param events
@@ -43,8 +45,8 @@ object BehaviourExplorer:
     * @return
     *   behaviour explorer that allows to a player to use game events
     */
-  def apply(events: Seq[EventGroup], playerId: Int): BehaviourExplorer with StoryConverter =
-    BehaviourExplorerImpl(events, playerId)
+  def apply(events: Seq[EventGroup], playerId: Int): BehaviourExplorer =
+    apply(List(events), playerId)
 
   /** Add a new event group to the current event groups of behaviour explorer. Can be useful if behaviour can has random
     * events. It is better to use this constructor if behaviour explorer was not used
@@ -59,37 +61,39 @@ object BehaviourExplorer:
   def apply(
       explorer: BehaviourExplorer,
       eventGroup: EventGroup
-  ): BehaviourExplorer with StoryConverter =
+  ): BehaviourExplorer =
     apply(eventGroup +: explorer.currentEvents, explorer.playerId)
 
-  private case class BehaviourExplorerImpl(events: Seq[EventGroup], override val playerId: Int)
-      extends BehaviourExplorer
-      with StoryConverter:
+  private def apply(explorerStateStack: ExplorerStack, playerId: Int): BehaviourExplorer =
+    BehaviourExplorerImpl(explorerStateStack, playerId)
 
-    val eventStack: mutable.Stack[Seq[EventGroup]] = mutable.Stack(events)
+  private case class BehaviourExplorerImpl(explorerStateStack: ExplorerStack, override val playerId: Int)
+      extends BehaviourExplorer:
 
-    override def hasNext: Boolean = eventStack.nonEmpty && eventStack.head.nonEmpty
+    override def hasNext: Boolean = explorerStateStack.nonEmpty && explorerStateStack.head.nonEmpty
 
-    override def next(index: Index): Unit =
-      val groups = eventStack.pop()
+    override def next(index: Index): BehaviourExplorer =
+      var newStack: ExplorerStack = explorerStateStack.tail
+      val groups: Seq[EventGroup] = explorerStateStack.head
       index match
         case (groupIndex: Int, eventIndex: Int)
             if groupIndex < 0 || groupIndex >= groups.length || eventIndex >= groups(groupIndex).length =>
-          eventStack.push(groups) // redo pop
           throw IllegalArgumentException(s"Chose index point to a not existing event. -> $index")
 
         case (groupIndex: Int, eventIndex: Int) =>
           val newGroup = chooseEvent(groups(groupIndex))(playerId, eventIndex)
           if groups(groupIndex).isAtomic then
-            eventStack.push(groups.patch(groupIndex, Nil, 1))
-            if newGroup.nonEmpty then eventStack.push(Seq(newGroup.get))
-          else if newGroup.nonEmpty then eventStack.push(newGroup.get +: groups.patch(groupIndex, Nil, 1))
+            newStack = groups.patch(groupIndex, Nil, 1) :: newStack
+            if newGroup.nonEmpty then newStack = Seq(newGroup.get) :: newStack
+          else if newGroup.nonEmpty then newStack = (newGroup.get +: groups.patch(groupIndex, Nil, 1)) :: newStack
+      this.copy(explorerStateStack = newStack)
 
-    override def currentEvents: Seq[EventGroup] = eventStack.head
+    override def currentEvents: Seq[EventGroup] = explorerStateStack.head
 
-    override def canEndExploring: Boolean = eventStack.size <= 1 && !eventStack.head.exists(_.isMandatory)
+    override def canEndExploring: Boolean =
+      explorerStateStack.size <= 1 && !explorerStateStack.head.exists(_.isMandatory)
 
-    override def endExploring(): Unit = eventStack.clear()
+    override def endExploring(): BehaviourExplorer = this.copy(explorerStateStack = List())
 
     private def chooseEvent(eventGroup: EventGroup)(playerId: Int, index: Int): Option[EventGroup] =
       try

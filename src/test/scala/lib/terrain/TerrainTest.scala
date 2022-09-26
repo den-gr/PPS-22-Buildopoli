@@ -28,6 +28,6 @@ class TerrainTest extends AnyFunSuite:
   test("A terrain can trigger a behaviour") {
     p.setPlayerMoney(500)
     assert(p.getPlayerMoney == 500)
-    t.getBehaviourExplorer(10).next(0, 0)
+    t.getBehaviourExplorer(10).next()
     assert(p.getPlayerMoney == 1000)
   }

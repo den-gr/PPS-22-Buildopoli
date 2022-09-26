@@ -32,14 +32,14 @@ class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assertThrows[IllegalArgumentException](explorer.next((0, 1)))
 
     explorer = behaviour.getBehaviourExplorer(PLAYER_1)
-    explorer.next()
+    explorer = explorer.next()
     assert(!explorer.hasNext)
   }
 
   test("On the next turns player must be released from the Jail") {
-    val explorer = behaviour.getBehaviourExplorer(PLAYER_1)
+    var explorer = behaviour.getBehaviourExplorer(PLAYER_1)
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).isEmpty)
-    explorer.next()
+    explorer = explorer.next()
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME)
     gameTurn.doTurn()
     assert(gameTurn.getRemainingBlockedMovements(PLAYER_1).get == BLOCKING_TIME - 1)

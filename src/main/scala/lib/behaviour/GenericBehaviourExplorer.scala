@@ -22,7 +22,7 @@ trait GenericBehaviourExplorer[T]:
     * @param index
     *   define what event will be selected
     */
-  def next(index: Index): Unit
+  def next(index: Index): BehaviourExplorer
 
   /** @return
     *   events available to the player
@@ -36,4 +36,4 @@ trait GenericBehaviourExplorer[T]:
 
   /** Empty explorer
     */
-  def endExploring(): Unit
+  def endExploring(): BehaviourExplorer
