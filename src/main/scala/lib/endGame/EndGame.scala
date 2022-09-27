@@ -38,12 +38,12 @@ object EndGame:
   /** Factory for EndGame implementation that removes the defeated player from the game according to the chosen
     * strategy. It also gives the terrains of the defeated players to the bank
     */
-  def apply(): EndGame = NoMoneyNoTerrains()
+  def apply(): EndGame = EndGameImpl()
 
   private def terrainPerPlayer(terrains: Seq[Terrain], id: Int): Int =
     terrains collect onlyPurchasable count (t => t.state == PurchasableState.OWNED && t.owner.get == id)
 
-  case class NoMoneyNoTerrains() extends EndGame:
+  case class EndGameImpl() extends EndGame:
 
     override def deleteDefeatedPlayer(strategy: Player => Boolean, gameStore: GameStore): Seq[Int] =
       val defeatedIDs = gameStore.playersList filter (p => strategy(p)) map (p => p.playerId)
