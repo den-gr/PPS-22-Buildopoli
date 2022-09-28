@@ -1,14 +1,14 @@
 package example.controller
 
-import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.story.EventStoryModule.EventStory
-import lib.behaviour.factory
-import lib.behaviour.factory.{BasicBehaviourFactory, BasicEventFactory, BehaviourFactory, EventFactory}
-import lib.gameManagement.gameSession.GameSession
-import lib.terrain.Mortgage.DividePriceMortgage
-import lib.terrain.RentStrategy.RentStrategyPreviousPriceMultiplier
-import lib.terrain.card.CardTerrain
-import lib.terrain.{Buildable, Purchasable, Terrain, TerrainInfo, Token}
+import buildopoli.behaviour.BehaviourModule.Behaviour
+import buildopoli.behaviour.event.story.EventStoryModule.EventStory
+import buildopoli.behaviour.factory
+import buildopoli.behaviour.factory.{BasicBehaviourFactory, BasicEventFactory, BehaviourFactory, EventFactory}
+import buildopoli.gameManagement.gameSession.GameSession
+import buildopoli.terrain.Mortgage.DividePriceMortgage
+import buildopoli.terrain.RentStrategy.RentStrategyPreviousPriceMultiplier
+import buildopoli.terrain.card.CardTerrain
+import buildopoli.terrain.{Buildable, Purchasable, Terrain, TerrainInfo, Token}
 
 /** Create terrain for one specific game setup
   */
@@ -79,7 +79,7 @@ object TerrainInitializer:
         price,
         group,
         DividePriceMortgage(price, 2),
-        lib.terrain.RentStrategy.BasicRentStrategyFactor(100, 2)
+        buildopoli.terrain.RentStrategy.BasicRentStrategyFactor(100, 2)
       )
       val token = Token(Seq("house", "hotel"), Seq(2, 1), Seq(Seq(50, 50), Seq(100)), Seq(25, 50))
       Buildable(purchasableTerrain, token)

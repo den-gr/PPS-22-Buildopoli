@@ -1,8 +1,8 @@
 package example.controller
 
 import example.view.{GameView, PlayerChoice, View}
-import lib.behaviour.event.story.EventStoryModule.StoryGroup
-import lib.gameManagement.gameSession.GameSession
+import buildopoli.behaviour.event.story.EventStoryModule.StoryGroup
+import buildopoli.gameManagement.gameSession.GameSession
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.funsuite.AnyFunSuite

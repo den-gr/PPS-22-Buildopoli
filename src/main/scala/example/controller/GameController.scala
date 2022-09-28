@@ -1,15 +1,15 @@
 package example.controller
 
 import example.view.{PlayerChoice, View}
-import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.EventGroup
-import lib.behaviour.{BehaviourExplorer, StoryConverter}
-import lib.gameManagement.gameSession.GameSession
-import lib.gameManagement.gameTurn.GameJail
-import lib.gameManagement.log.Observer
-import lib.behaviour.event.story.InteractiveEventStoryModule.InteractiveEventStory
-import lib.behaviour.event.story.InteractiveEventStoryModule.Result.*
-import lib.behaviour.factory.EventFactory
+import buildopoli.behaviour.BehaviourModule.Behaviour
+import buildopoli.behaviour.event.EventGroup
+import buildopoli.behaviour.{BehaviourExplorer, StoryConverter}
+import buildopoli.gameManagement.gameSession.GameSession
+import buildopoli.gameManagement.gameTurn.GameJail
+import buildopoli.gameManagement.log.Observer
+import buildopoli.behaviour.event.story.InteractiveEventStoryModule.InteractiveEventStory
+import buildopoli.behaviour.event.story.InteractiveEventStoryModule.Result.*
+import buildopoli.behaviour.factory.EventFactory
 
 trait GameController:
   def start(): Unit
