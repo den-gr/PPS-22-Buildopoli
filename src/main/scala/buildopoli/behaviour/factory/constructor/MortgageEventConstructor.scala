@@ -10,7 +10,7 @@ import buildopoli.gameManagement.gameStore.GameStore
 import buildopoli.behaviour.event.*
 import buildopoli.gameManagement.gameStore.gameInputs.GameInputs
 
-object MortgageEventConstructor:
+private[factory] object MortgageEventConstructor:
   def mortgageStoryGenerator(
       eventDescription: String,
       gameStore: GameStore

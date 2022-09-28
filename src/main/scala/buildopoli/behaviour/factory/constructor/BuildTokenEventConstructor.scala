@@ -10,7 +10,7 @@ import buildopoli.terrain.{Buildable, TerrainUtils}
 import buildopoli.behaviour.event.*
 import buildopoli.gameManagement.gameStore.gameInputs.{GameInputs, UserInputs}
 
-object BuildTokenEventConstructor:
+private[factory] object BuildTokenEventConstructor:
 
   def chooseTerrainStoryGenerator(
       baseStoryDescription: String,
@@ -72,8 +72,8 @@ object BuildTokenEventConstructor:
       bank: Bank
   ): StoryGenerator =
     playerId =>
-      val terrainInput =  getInput(userInputs)
-      val tokenNameInput =  getInput(userInputs)
+      val terrainInput = getInput(userInputs)
+      val tokenNameInput = getInput(userInputs)
 
       userInputs.addTailInputEvent(terrainInput)
       userInputs.addTailInputEvent(tokenNameInput)
@@ -102,15 +102,15 @@ object BuildTokenEventConstructor:
       val inputNumBuilding = getInput(userInputs)
 
       if !tokenNameInput.isInstanceOf[String] || !terrainInput.isInstanceOf[Buildable] || !inputNumBuilding
-        .isInstanceOf[Int]
+          .isInstanceOf[Int]
       then throw EventInputException()
       val numBuilding = inputNumBuilding.asInstanceOf[Int]
       val terrain = terrainInput.asInstanceOf[Buildable]
       val tokenName = tokenNameInput.asInstanceOf[String]
 
       bank.makeTransaction(playerId, amount = terrain.tokenBuyingPrice(tokenName) * numBuilding)
-      terrain.addToken(tokenName, numBuilding)  
-      
+      terrain.addToken(tokenName, numBuilding)
+
   private def getInput(gameInputs: GameInputs): Any =
     val input = gameInputs.getHeadElement
     gameInputs.removeHeadElement()
