@@ -4,9 +4,6 @@ import BehaviourModule.*
 import lib.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
 import lib.behaviour.event.EventGroup
 
-import scala.::
-import scala.collection.{IndexedSeqView, immutable}
-
 /** Allows correctly navigate between event groups and their successors of a Behaviour. Encapsulate a sequence of
   * [[EventGroup]]
   */
@@ -15,11 +12,19 @@ trait BehaviourExplorer extends GenericBehaviourExplorer[Seq[EventGroup]] with S
     */
   override type Index = (Int, Int)
 
-  /** Choice of next event
+  /** Triggers selected by index event and update explorer state
+    *
     * @param index
     *   is a double tuple where first element is event group index, and second is an event index. Default value (0, 0)
+    * @return
+    *   a new explorer with updated state
     */
   override def next(index: (Int, Int) = (0, 0)): BehaviourExplorer
+
+  /** @return
+    *   empty explorer
+    */
+  override def endExploring(): BehaviourExplorer
 
 /** Allows extract stories from event groups
   */

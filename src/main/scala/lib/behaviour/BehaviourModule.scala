@@ -64,7 +64,8 @@ object BehaviourModule:
       *   second behaviour
       * @param playerId
       *   player for which the behaviour explorer will be created
-      * @return a combination of two behaviour explorers
+      * @return
+      *   a combination of two behaviour explorers
       */
     def combineExplorers(b1: Behaviour, b2: Behaviour, playerId: Int): BehaviourExplorer =
       Behaviour(

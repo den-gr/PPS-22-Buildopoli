@@ -45,7 +45,7 @@ object EventGroup:
     * @param isAtomic
     *   define if event chain of this event group is atomic
     * @param isMandatory
-    *   true if player can not start new turn when this event group is not explored 
+    *   true if player can not start new turn when this event group is not explored
     * @return
     *   an instantiated event group
     */

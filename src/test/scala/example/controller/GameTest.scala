@@ -32,7 +32,7 @@ class GameTest extends AnyFunSuite with BeforeAndAfterEach:
     gameSession.gameStore.terrainList ++= terrains
     gameSession.gameStore.globalBehaviour = GlobalBehaviourInitializer(gameSession).buildGlobalBehaviour()
 
-  test(s"Game not throw exception if it is played randomly (max $MAX_MOVES moves)") {
+  ignore(s"Game not throw exception if it is played randomly (max $MAX_MOVES moves)") {
     val controller = GameControllerImpl(gameSession, mockView, MAX_MOVES)
     assert({ controller.start(); true })
   }

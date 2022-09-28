@@ -18,11 +18,14 @@ trait GenericBehaviourExplorer[T]:
     */
   def hasNext: Boolean
 
-  /** Triggers the selected event and update [[GenericBehaviourExplorer.currentEvents]]
+  /** Triggers selected by index event and update explorer state
+    *
     * @param index
     *   define what event will be selected
+    * @return
+    *   a new explorer with updated state
     */
-  def next(index: Index): BehaviourExplorer
+  def next(index: Index): GenericBehaviourExplorer[T]
 
   /** @return
     *   events available to the player
@@ -34,6 +37,7 @@ trait GenericBehaviourExplorer[T]:
     */
   def canEndExploring: Boolean
 
-  /** Empty explorer
+  /** @return
+    *   empty explorer
     */
-  def endExploring(): BehaviourExplorer
+  def endExploring(): GenericBehaviourExplorer[T]
