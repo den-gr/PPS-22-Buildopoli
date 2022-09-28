@@ -1,14 +1,14 @@
 package example.controller
 
-import lib.endGame.EndGame
-import lib.gameManagement.gameBank.{Bank, GameBankImpl}
-import lib.gameManagement.gameOptions.*
-import lib.gameManagement.gameSession.{GameSession, GameSessionImpl}
-import lib.gameManagement.gameStore.GameStore
-import lib.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
-import lib.lap.Lap
-import lib.lap.Lap.MoneyReward
-import lib.player.*
+import buildopoli.endGame.EndGame
+import buildopoli.gameManagement.gameBank.{Bank, GameBankImpl}
+import buildopoli.gameManagement.gameOptions.*
+import buildopoli.gameManagement.gameSession.{GameSession, GameSessionImpl}
+import buildopoli.gameManagement.gameStore.GameStore
+import buildopoli.gameManagement.gameTurn.{DefaultGameTurn, GameTurn}
+import buildopoli.lap.Lap
+import buildopoli.lap.Lap.MoneyReward
+import buildopoli.player.*
 
 trait GameSessionInitializer:
   def createDefaultGameSession(numberOfPlayer: Int): GameSession

@@ -1,10 +1,10 @@
 package example.controller
 
-import lib.behaviour.BehaviourModule.Behaviour
-import lib.behaviour.event.EventGroup
-import lib.behaviour.factory
-import lib.behaviour.factory.EventFactory
-import lib.gameManagement.gameSession.GameSession
+import buildopoli.behaviour.BehaviourModule.Behaviour
+import buildopoli.behaviour.event.EventGroup
+import buildopoli.behaviour.factory
+import buildopoli.behaviour.factory.EventFactory
+import buildopoli.gameManagement.gameSession.GameSession
 
 trait GlobalBehaviourInitializer:
 

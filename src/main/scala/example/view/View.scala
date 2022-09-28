@@ -1,7 +1,7 @@
 package example.view
 
-import lib.behaviour.event.story.EventStoryModule.*
-import lib.terrain.Terrain
+import buildopoli.behaviour.event.story.EventStoryModule.*
+import buildopoli.terrain.Terrain
 
 import scala.annotation.tailrec
 import scala.io.StdIn.*

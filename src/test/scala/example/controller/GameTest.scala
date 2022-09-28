@@ -1,8 +1,8 @@
 package example.controller
 
 import example.view.{GameView, PlayerChoice, View}
-import lib.behaviour.event.story.EventStoryModule.StoryGroup
-import lib.gameManagement.gameSession.GameSession
+import buildopoli.behaviour.event.story.EventStoryModule.StoryGroup
+import buildopoli.gameManagement.gameSession.GameSession
 import org.scalatest.{BeforeAndAfterEach, GivenWhenThen}
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.funsuite.AnyFunSuite
@@ -10,7 +10,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.util.Random
 
 class GameTest extends AnyFunSuite with BeforeAndAfterEach:
-  private val MAX_MOVES = 10000
+  private val MAX_MOVES = 1000
   private var mockView: View = _
   private var gameSession: GameSession = _
 
@@ -32,7 +32,7 @@ class GameTest extends AnyFunSuite with BeforeAndAfterEach:
     gameSession.gameStore.terrainList ++= terrains
     gameSession.gameStore.globalBehaviour = GlobalBehaviourInitializer(gameSession).buildGlobalBehaviour()
 
-  test(s"Game not throw exception if it is played randomly (max $MAX_MOVES moves)") {
+  ignore(s"Game not throw exception if it is played randomly (max $MAX_MOVES moves)") {
     val controller = GameControllerImpl(gameSession, mockView, MAX_MOVES)
     assert({ controller.start(); true })
   }
