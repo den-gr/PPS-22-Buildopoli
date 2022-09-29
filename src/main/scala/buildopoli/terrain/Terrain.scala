@@ -16,11 +16,6 @@ trait Terrain:
     */
   def behaviour: Behaviour
 
-  /** @return
-    *   the object representing the correct sequence of events that need to be triggered
-    */
-  def getBehaviourExplorer(playerID: Int): BehaviourExplorer
-
 object Terrain:
 
   /** A factory to create a simple implementation of Terrain
@@ -30,5 +25,4 @@ object Terrain:
   def apply(basicInfo: TerrainInfo, behaviour: Behaviour): Terrain = BasicTerrain(basicInfo, behaviour)
 
   private case class BasicTerrain(override val basicInfo: TerrainInfo, override val behaviour: Behaviour)
-      extends Terrain:
-    export behaviour.getBehaviourExplorer
+      extends Terrain

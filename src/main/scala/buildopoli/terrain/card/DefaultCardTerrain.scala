@@ -1,12 +1,13 @@
 package buildopoli.terrain.card
 
 import buildopoli.behaviour.BehaviourExplorer
+import buildopoli.behaviour.BehaviourModule.Behaviour
 import buildopoli.terrain.{Terrain, TerrainInfo}
 
 import scala.util.Random
 
 private case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
-  export terrain.{basicInfo, behaviour}
+  export terrain.{basicInfo}
 
   private var cards: List[Card] = List()
   private val randomGenerator: Random = new Random()
@@ -28,7 +29,7 @@ private case class DefaultCardTerrain(terrain: Terrain) extends CardTerrain:
     removeCard(card.name)
     addCards(card)
 
-  override def getBehaviourExplorer(playerID: Int): BehaviourExplorer =
+  override def behaviour: Behaviour =
     val card: Card = getCasualCardFromList
     exchangeElement(card)
-    BehaviourExplorer.apply(terrain.getBehaviourExplorer(playerID), card.consequences)
+    terrain.behaviour.addEventGroups(Seq(card.consequences))

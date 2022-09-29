@@ -7,6 +7,7 @@ import buildopoli.behaviour.event.EventModule.Event
 import buildopoli.behaviour.event.story.EventStoryModule.EventStory
 
 import scala.annotation.targetName
+import scala.collection.immutable.Seq
 
 object BehaviourModule:
 
@@ -21,6 +22,8 @@ object BehaviourModule:
       *   a fresh behaviour explorer
       */
     def getBehaviourExplorer(playerId: Int): BehaviourExplorer
+    
+    def addEventGroups(events: Seq[EventGroup]): Behaviour
 
   object Behaviour:
     /** Constructor a [[Behaviour]] based on a sequence of event groups
@@ -48,9 +51,12 @@ object BehaviourModule:
       */
     def apply(eventsOfSingleEventGroup: Event*): Behaviour = apply(EventGroup(eventsOfSingleEventGroup))
 
-    private case class BehaviourImpl(private val initialEvents: Seq[EventGroup]) extends Behaviour:
+    private case class BehaviourImpl(initialEvents: Seq[EventGroup]) extends Behaviour:
+
       override def getBehaviourExplorer(playerId: Int): BehaviourExplorer =
         BehaviourExplorer(getInitialEvents(playerId), playerId)
+
+      override def addEventGroups(events: Seq[EventGroup]): Behaviour = Behaviour(initialEvents :++ events)
 
       private def getInitialEvents(playerId: Int): Seq[EventGroup] =
         initialEvents
