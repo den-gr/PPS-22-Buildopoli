@@ -7,6 +7,9 @@ import org.scalatest.funsuite.AnyFunSuite
 import buildopoli.util.mock.BankHelper.BankMock
 import buildopoli.util.mock.BankHelper.BankAccount.*
 
+/**
+ * Test [[EventStory]] and [[InteractiveEventStory]] with a mock
+ */
 class EventStoryTest extends AnyFunSuite with BeforeAndAfterEach:
   private val bank = BankMock()
   private val PLAYER_1 = 1

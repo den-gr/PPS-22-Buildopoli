@@ -17,7 +17,7 @@ import buildopoli.behaviour.BehaviourModule.*
 import buildopoli.behaviour.event.EventGroup
 import buildopoli.behaviour.event.story.InteractiveEventStoryModule.*
 
-/** Test Behaviour by using a casino terrain behaviour. Game bank is replaces by a mock
+/** Tests [[Behaviour]] by using a casino terrain behaviour. Game bank is replaces by a mock
   */
 class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   private val PLAYER_1: Int = 1

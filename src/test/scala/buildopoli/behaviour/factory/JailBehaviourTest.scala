@@ -13,6 +13,9 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 import buildopoli.util.GameSessionHelper.DefaultGameSession
 
+/**
+ * Tests a [[Behaviour]] created by [[EventFactory]]
+ */
 class JailBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
 
   private var gameTurn: GameJail = _

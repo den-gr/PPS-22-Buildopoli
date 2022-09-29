@@ -7,6 +7,9 @@ import buildopoli.util.mock.BankHelper.*
 import buildopoli.util.mock.BankHelper.BankMock.*
 import buildopoli.behaviour.event.story.EventStoryModule.*
 
+/**
+ * Tests [[Event]] with a mock
+ */
 class EventTest extends AnyFunSuite with BeforeAndAfterEach:
 
   val MOCK_ID: Int = 0

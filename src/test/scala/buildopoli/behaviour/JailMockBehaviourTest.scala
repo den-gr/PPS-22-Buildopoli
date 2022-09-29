@@ -10,7 +10,7 @@ import buildopoli.util.mock.JailHelper.JailMock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funsuite.AnyFunSuite
 
-/** Test Behaviour by using a jail terrain behaviour. Jail is replaces by a mock
+/** Test [[Behaviour]] by using a jail terrain behaviour. Jail is replaces by a mock
   */
 class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
   var jail: JailMock = _
@@ -29,8 +29,7 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
         jail.blockPlayer(playerId, BLOCKING_TIME)
         println("Automatic end of turn") // TODO
       case _ =>
-  val imprisonEvent: Event =
-    Event(story, imprisonStrategy)
+  val imprisonEvent: Event = Event(story, imprisonStrategy)
 
   test("Behaviour with single Jail event that imprison a player") {
     var explorer = Behaviour(imprisonEvent).getBehaviourExplorer(PLAYER_1)

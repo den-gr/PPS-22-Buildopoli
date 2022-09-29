@@ -6,6 +6,8 @@ import buildopoli.behaviour.factory.{BehaviourFactory, EventFactory}
 import buildopoli.util.GameSessionHelper.DefaultGameSession
 import org.scalatest.funsuite.AnyFunSuite
 
+/** Tests [[BehaviourExplorer]]
+ */
 class GenericBehaviourTest extends AnyFunSuite:
   private val PLAYER_1 = 1
   private val gameSession = DefaultGameSession(1)

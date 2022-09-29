@@ -9,13 +9,15 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Random
 
+/** Test game example
+  */
 class GameTest extends AnyFunSuite with BeforeAndAfterEach:
   private val MAX_MOVES = 1000
   private var mockView: View = _
   private var gameSession: GameSession = _
 
   override def beforeEach(): Unit =
-    mockView = new GameView:
+    mockView = new GameView: // Custom view that can autonomously play the game
       override def getUserChoices(stories: Seq[StoryGroup]): PlayerChoice =
         if Random.nextBoolean() then
           val groupIndex = Random.nextInt(stories.length)
@@ -32,12 +34,14 @@ class GameTest extends AnyFunSuite with BeforeAndAfterEach:
     gameSession.gameStore.terrainList ++= terrains
     gameSession.gameStore.globalBehaviour = GlobalBehaviourInitializer(gameSession).buildGlobalBehaviour()
 
+  /** This test is not stable. Can be used only for very coarse verifications
+    */
   ignore(s"Game not throw exception if it is played randomly (max $MAX_MOVES moves)") {
     val controller = GameControllerImpl(gameSession, mockView, MAX_MOVES)
     assert({ controller.start(); true })
   }
 
-  test("Cannot run a game twice") {
+  test("Cannot run the game twice") {
     val controller = GameControllerImpl(gameSession, mockView, maxMoves = 1)
     controller.start()
     assertThrows[IllegalStateException](controller.start())
