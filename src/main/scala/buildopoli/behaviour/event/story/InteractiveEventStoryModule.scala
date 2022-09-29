@@ -8,7 +8,7 @@ object InteractiveEventStoryModule:
   /** [[EventStory]] extension that for each choice define an [[Interaction]]
     */
   trait StoryInteraction:
-    evSt: EventStory =>
+    eventStory: EventStory =>
 
     /** @return
       *   list of story interaction
@@ -31,8 +31,8 @@ object InteractiveEventStoryModule:
   /** Result of [[Interaction]]
     */
   enum Result:
-    case ERR(msg: String)
     case OK
+    case ERR(msg: String)
 
   /** Event interaction allows to player react to event with some action. Take in input player id
     */

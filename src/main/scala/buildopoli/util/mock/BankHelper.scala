@@ -1,6 +1,7 @@
 package buildopoli.util.mock
+import buildopoli.behaviour
 
-object BankHelper extends App:
+object BankHelper:
   enum BankAccount:
     case Bank
     case Player(id: Int)

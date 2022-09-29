@@ -77,10 +77,7 @@ object EventStoryModule:
     private class EventStoryImpl(
         override val description: String,
         override val choices: Seq[String]
-    ) extends EventStory:
-
-      override def toString: String =
-        s"$description \n\t" + choices.mkString("\n\t")
+    ) extends EventStory
 
     private class EventStoryInteractionsImpl(
         override val description: String,
