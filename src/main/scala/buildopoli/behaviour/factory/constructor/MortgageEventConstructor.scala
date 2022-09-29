@@ -27,7 +27,7 @@ private[factory] object MortgageEventConstructor:
     EventStory(eventDescription, choicesWithInteractions)
 
   def mortgageEventStrategy(gameInputs: GameInputs, bank: Bank): EventStrategy = playerId =>
-    val terrainInput = getInput((gameInputs))
+    val terrainInput = getInput(gameInputs)
     if !terrainInput.isInstanceOf[Purchasable] then EventInputException()
     val terrain = terrainInput.asInstanceOf[Purchasable]
     bank.makeTransaction(receiverId = playerId, amount = terrain.computeMortgage)
