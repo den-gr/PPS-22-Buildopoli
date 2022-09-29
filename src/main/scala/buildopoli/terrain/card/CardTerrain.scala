@@ -70,10 +70,6 @@ object CardTerrain:
       gameSession.gameBank.makeGlobalTransaction(senderId = id, amount = 500)
     val giveMoneyAll = DefaultCards(EventGroup(Event(giveMoneyAllStory, giveMoneyAllStrategy)), "give money all")
 
-    val goToPrisonStory: EventStory = EventStory("Test", "Go to prison for 2 turns")
-    val goToPrisonStrategy: EventStrategy = id => gameSession.gameTurn.asInstanceOf[GameJail].lockPlayer(id, 2)
-    val goToPrison = DefaultCards(EventGroup(Event(goToPrisonStory, goToPrisonStrategy)), "go to prison")
-
     val doOneLapWithoutRewardStory: EventStory =
       EventStory("Test", "Do One Lap and stop at the start cell without reward")
     val doOneLapWithoutRewardStrategy: EventStrategy = id =>
@@ -86,7 +82,7 @@ object CardTerrain:
       "do one lap without reward"
     )
 
-    List(giveMoneyAll, goToPrison, doOneLapWithoutReward)
+    List(giveMoneyAll, doOneLapWithoutReward)
 
   /** To create some probability cards to be added in a CardTerrain
     * @param gameSession
