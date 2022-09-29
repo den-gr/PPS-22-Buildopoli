@@ -9,15 +9,15 @@ import buildopoli.behaviour.event.story.InteractiveEventStoryModule.InteractiveE
 /** Basic elements of game events
   */
 object EventModule:
-  /** Main logic of event action. Take in input a player id
+  /** Main logic of event execution. Take in input a player id
     */
   type EventStrategy = Int => Unit
 
-  /** Precondition of event appearance to a player. Take in input a player id
+  /** Precondition of event appearance to the player. Take in input a player id
     */
   type EventPrecondition = Int => Boolean
 
-  /** Generate event story for a player. Take in input a player id
+  /** Generate an event story to the specific player. Take in input a player id
     */
   type StoryGenerator = Int => EventStory
 
@@ -28,7 +28,7 @@ object EventModule:
     /** @return
       *   successor event group
       */
-    def nextEvent: Option[EventGroup]
+    def nextEvents: Option[EventGroup]
 
     /** Execute event strategy
       * @param playerId
@@ -57,7 +57,7 @@ object EventModule:
       * @return
       *   copy of this event
       */
-    def copy(nextEv: Option[EventGroup]): Event
+    def replaceNextEventGroup(nextEv: Option[EventGroup]): Event
 
   object Event:
     private val WITHOUT_PRECONDITION: EventPrecondition = _ => true
@@ -84,7 +84,7 @@ object EventModule:
       *   main strategy of new event. Di default the strategy do nothing
       * @param precondition
       *   precondition for appearance of new event. Di default always appears
-      * @param nextEvent
+      * @param nextEvents
       *   successor event group. Di default is empty
       * @tparam T
       *   can be an [[EventStory]] or a [[StoryGenerator]]
@@ -95,14 +95,14 @@ object EventModule:
         story: T,
         eventStrategy: EventStrategy = WITHOUT_STRATEGY,
         precondition: EventPrecondition = WITHOUT_PRECONDITION,
-        nextEvent: Option[EventGroup] = None
-    ): Event = EventImpl(summon[StoryGeneratorAdapter[T]].adapt(story), eventStrategy, precondition, nextEvent)
+        nextEvents: Option[EventGroup] = None
+    ): Event = EventImpl(summon[StoryGeneratorAdapter[T]].adapt(story), eventStrategy, precondition, nextEvents)
 
     private case class EventImpl(
         storyGenerator: StoryGenerator,
         eventStrategy: EventStrategy,
         precondition: EventPrecondition,
-        nextEvent: Option[EventGroup]
+        nextEvents: Option[EventGroup]
     ) extends Event:
 
       override def run(playerId: Int): Unit = eventStrategy(playerId)
@@ -111,20 +111,21 @@ object EventModule:
 
       override def hasToRun(playerId: Int): Boolean = precondition(playerId)
 
-      override def copy(newNextEvent: Option[EventGroup]): Event = this.copy(nextEvent = newNextEvent)
+      override def replaceNextEventGroup(newNextEventGroup: Option[EventGroup]): Event =
+        this.copy(nextEvents = newNextEventGroup)
 
   /** Additional operations for [[Event]]
     */
   object EventOperation:
     extension [T <: Event](e: T)
-      @targetName("append")
+      @targetName("append next events")
       /** Append to an Event as its nextEvent an another event. Both events must be of the same type
-        * @param nextEvent
+        * @param nextEvents
         *   event that will be appended
         * @return
         *   new event with a new event successor
         */
-      def ++(nextEvent: T): T =
-        if e.getClass != nextEvent.getClass then
+      def ++(nextEvents: T): T =
+        if e.getClass != nextEvents.getClass then
           throw new IllegalArgumentException("Both event must be of the same type")
-        e.copy(Some(EventGroup(nextEvent))).asInstanceOf[T]
+        e.replaceNextEventGroup(Some(EventGroup(nextEvents))).asInstanceOf[T]

@@ -2,8 +2,7 @@ package buildopoli.behaviour.event
 
 import EventModule.Event
 
-/** Sequence of events where only one can be chosen by player. EventGroup can be atomic in case when the whole chain of
-  * events must be finished before starting choosing events from another event groups
+/** Sequence of events where only one can be chosen by player.
   */
 trait EventGroup extends Seq[Event]:
   val events: Seq[Event]
@@ -29,7 +28,7 @@ trait EventGroup extends Seq[Event]:
 
 object EventGroup:
 
-  /** Constructor of a not atomic [[EventGroup]]
+  /** Constructor of a not atomic and not mandatory [[EventGroup]]
     *
     * @param elems
     *   events of event group

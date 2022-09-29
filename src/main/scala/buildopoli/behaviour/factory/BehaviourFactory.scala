@@ -10,6 +10,9 @@ import buildopoli.gameManagement.gameSession.GameSession
 import scala.util
 import scala.util.Random
 
+/**
+ * Allows to create an instance of [[BasicBehaviourFactory]]
+ */
 object BehaviourFactory:
 
   /** Constructor for a behaviour factory for a specific game session

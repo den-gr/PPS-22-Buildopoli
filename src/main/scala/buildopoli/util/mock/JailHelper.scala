@@ -1,5 +1,7 @@
 package buildopoli.util.mock
 
+/** Is needed only for event testing. Create a mock of game jail
+ */
 object JailHelper:
   trait JailMock:
     def getRemainingBlockedMovements(playerId: Int): Option[Int]

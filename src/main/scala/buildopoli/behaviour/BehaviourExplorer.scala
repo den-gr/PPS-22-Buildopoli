@@ -4,8 +4,7 @@ import BehaviourModule.*
 import buildopoli.behaviour.event.story.EventStoryModule.{EventStory, StoryGroup}
 import buildopoli.behaviour.event.EventGroup
 
-/** Allows correctly navigate between event groups and their successors of a Behaviour. Encapsulate a sequence of
-  * [[EventGroup]]
+/** Allows correctly navigate between event groups and their successors of a Behaviour.
   */
 trait BehaviourExplorer extends GenericBehaviourExplorer[Seq[EventGroup]] with StoryConverter:
   /** Index of an event of the behaviour. It is a tuple2: (eventGroupIndex, eventIndex)
@@ -53,22 +52,6 @@ object BehaviourExplorer:
   def apply(events: Seq[EventGroup], playerId: Int): BehaviourExplorer =
     apply(List(events), playerId)
 
-  /** Add a new event group to the current event groups of behaviour explorer. Can be useful if behaviour can has random
-    * events. It is better to use this constructor if behaviour explorer was not used
-    *
-    * @param explorer
-    *   behaviour explorer that will receive a new event group
-    * @param eventGroup
-    *   new event group that will be appended to explorer
-    * @return
-    *   behaviour explorer with new event group
-    */
-  def apply(
-      explorer: BehaviourExplorer,
-      eventGroup: EventGroup
-  ): BehaviourExplorer =
-    apply(eventGroup +: explorer.currentEvents, explorer.playerId)
-
   private def apply(explorerStateStack: ExplorerStack, playerId: Int): BehaviourExplorer =
     BehaviourExplorerImpl(explorerStateStack, playerId)
 
@@ -87,10 +70,11 @@ object BehaviourExplorer:
 
         case (groupIndex: Int, eventIndex: Int) =>
           val newGroup = chooseEvent(groups(groupIndex))(playerId, eventIndex)
-          if groups(groupIndex).isAtomic then
+          if groups(groupIndex).isAtomic then // event must me explored as atomic
             newStack = groups.patch(groupIndex, Nil, 1) :: newStack
             if newGroup.nonEmpty then newStack = Seq(newGroup.get) :: newStack
-          else if newGroup.nonEmpty then newStack = (newGroup.get +: groups.patch(groupIndex, Nil, 1)) :: newStack
+          else if newGroup.nonEmpty then // event has a successor that must me added to the current list
+            newStack = (newGroup.get +: groups.patch(groupIndex, Nil, 1)) :: newStack
       this.copy(explorerStateStack = newStack)
 
     override def currentEvents: Seq[EventGroup] = explorerStateStack.head
@@ -104,8 +88,8 @@ object BehaviourExplorer:
       try
         val event = eventGroup(index)
         event.run(playerId)
-        if event.nextEvent.nonEmpty then
-          val next = event.nextEvent.get
+        if event.nextEvents.nonEmpty then
+          val next = event.nextEvents.get
           Some(next.replaceEvents(next.filter(_.hasToRun(playerId))))
         else None
       catch

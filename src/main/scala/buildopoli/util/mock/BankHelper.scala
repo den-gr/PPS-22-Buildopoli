@@ -1,6 +1,8 @@
 package buildopoli.util.mock
 import buildopoli.behaviour
 
+/** Is needed only for event testing. Create a mock of game bank
+  */
 object BankHelper:
   enum BankAccount:
     case Bank
@@ -41,6 +43,6 @@ object BankHelper:
           case (_, Bank, am) =>
             decrement(am)
             paymentRequests = paymentRequests.filter(_ != (from, to, am))
-          case (_, t: BankAccount, am) if t == Bank => // TODO make payment
+          case (_, t: BankAccount, am) if t == Bank =>
             paymentRequests = paymentRequests.filter(_ != (from, to, am))
           case _ => throw IllegalStateException()

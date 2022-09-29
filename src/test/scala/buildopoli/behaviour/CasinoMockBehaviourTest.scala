@@ -28,7 +28,7 @@ class CasinoMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     bank = BankMock()
 
   private val story = EventStory("You are in casino", "play")
-  private val infoEvent = InfoEvent(story, _ => bank.money > 100)
+  private val infoEvent = Event(story, _ => bank.money > 100)
 
   private val loseGameStrategy: EventStrategy = id =>
     bank.getPaymentRequestAmount(Player(id), Bank) match

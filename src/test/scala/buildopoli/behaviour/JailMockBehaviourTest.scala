@@ -102,11 +102,11 @@ class JailMockBehaviourTest extends AnyFunSuite with BeforeAndAfterEach:
     assert(events.head.length == 2)
   }
 
-  test("To behaviour explorer is possible to add new events") {
-    val explorer = Behaviour(Seq(EventGroup(imprisonEvent))).getBehaviourExplorer(PLAYER_1)
-    assert(explorer.currentEvents.length == 1)
+  test("To a behaviour is possible to add new events") {
+    val behaviour = Behaviour(Seq(EventGroup(imprisonEvent)))
+    assert(behaviour.getBehaviourExplorer(PLAYER_1).currentEvents.length == 1)
     val newGroup = EventGroup(Event(EventStory("dfdff", "")))
-    val newIt = BehaviourExplorer(explorer, newGroup)
+    val newIt = behaviour.addEventGroups(Seq(newGroup)).getBehaviourExplorer(PLAYER_1)
     assert(newIt.currentEvents.length == 2)
-    assert(newIt.currentEvents.head == newGroup)
+    assert(newIt.currentEvents.last == newGroup)
   }

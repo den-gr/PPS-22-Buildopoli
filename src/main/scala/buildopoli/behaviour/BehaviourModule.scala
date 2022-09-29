@@ -11,8 +11,8 @@ import scala.collection.immutable.Seq
 
 object BehaviourModule:
 
-  /** Behaviour encapsulate a sequence of game events that can be used/visualized by a player. For every new interaction
-    * (a new player turn) Behaviour supply a fresh [[BehaviourExplorer]]
+  /** Behaviour encapsulate the game events that can be used/visualized by a player. For every new player turn Behaviour
+    * supply a fresh [[BehaviourExplorer]]
     */
   trait Behaviour:
     /** Supply behaviour explorer that is needed to choose events and to see only available event to the specific player
@@ -22,7 +22,13 @@ object BehaviourModule:
       *   a fresh behaviour explorer
       */
     def getBehaviourExplorer(playerId: Int): BehaviourExplorer
-    
+
+    /** Add event groups to the behaviour
+      * @param events
+      *   events that must be added to behaviour
+      * @return
+      *   new behaviour with current and new events
+      */
     def addEventGroups(events: Seq[EventGroup]): Behaviour
 
   object Behaviour:
@@ -42,7 +48,7 @@ object BehaviourModule:
       */
     def apply(singleEventGroup: EventGroup): Behaviour = apply(Seq(singleEventGroup))
 
-    @targetName("Constructor with events of a simple single event group")
+    @targetName("Construct a Behaviour with a  single event group")
     /** Construct a [[Behaviour]] with only one event group, take in input events of this event group
       * @param eventsOfSingleEventGroup
       *   events

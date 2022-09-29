@@ -10,6 +10,8 @@ import buildopoli.lap.Lap.MoneyReward
 import buildopoli.player.Player
 
 import scala.collection.mutable.ListBuffer
+
+/** Provide fast and simple creation of [[GameSession]] for the tests */
 object GameSessionHelper:
   val selector: (Seq[Player], Seq[Int]) => Int =
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>

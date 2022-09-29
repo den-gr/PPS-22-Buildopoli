@@ -42,12 +42,12 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
     val strategy: EventStrategy = _ => bank.decrement(TAX * 2)
     val ev2: Event = Event(tempStory, strategy) ++ ev
     ev2.run(MAIN_ACTION)
-    var nextEv = ev2.nextEvent
+    var nextEv = ev2.nextEvents
 
     while nextEv.nonEmpty do
       val ev = nextEv.get.head
       ev.run(MAIN_ACTION)
-      nextEv = ev.nextEvent
+      nextEv = ev.nextEvents
     assert(bank.money == BANK_MONEY - TAX * 3)
   }
 
@@ -57,5 +57,5 @@ class EventTest extends AnyFunSuite with BeforeAndAfterEach:
     val myEvent2: Event = Event(tempStory)
     val appended = myEvent ++ myEvent2
     assert(appended.isInstanceOf[Event])
-    assert(appended.nextEvent.get.head.isInstanceOf[Event])
+    assert(appended.nextEvents.get.head.isInstanceOf[Event])
   }

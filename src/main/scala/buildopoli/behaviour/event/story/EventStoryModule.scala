@@ -2,7 +2,7 @@ package buildopoli.behaviour.event.story
 
 import buildopoli.behaviour.event.story.InteractiveEventStoryModule.*
 
-/** Define interactive and not interactive event stories
+/** Contains all event story elements that helps to describe the events
   */
 object EventStoryModule:
   /** Sequence of [[EventStory]]

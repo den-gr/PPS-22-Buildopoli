@@ -5,13 +5,13 @@ import buildopoli.behaviour.event.story.EventStoryModule.EventStory
 /** Module with all elements of interactive event stories
   */
 object InteractiveEventStoryModule:
-  /** [[EventStory]] extension that for each choice define an [[Interaction]]
+  /** [[EventStory]] self-type that for each event story choice define an [[Interaction]]
     */
   trait StoryInteraction:
     eventStory: EventStory =>
 
     /** @return
-      *   list of story interaction
+      *   list of story interactions
       */
     def interactions: Seq[Interaction]
 
@@ -34,6 +34,7 @@ object InteractiveEventStoryModule:
     case OK
     case ERR(msg: String)
 
-  /** Event interaction allows to player react to event with some action. Take in input player id
+  /** Event interaction allows to player react to event with some action. Can be used for verify that a player is able
+    * to choose some Event. Take in input player id
     */
   type Interaction = Int => Result
