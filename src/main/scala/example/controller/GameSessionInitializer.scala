@@ -10,7 +10,14 @@ import buildopoli.lap.Lap
 import buildopoli.lap.Lap.MoneyReward
 import buildopoli.player.*
 
+/**
+ * Build default [[GameSession]] 
+ */
 trait GameSessionInitializer:
+  /**
+   * @param numberOfPlayer number of player that will participate in the game
+   * @return built game session
+   */
   def createDefaultGameSession(numberOfPlayer: Int): GameSession
 
 object GameSessionInitializer extends GameSessionInitializer:

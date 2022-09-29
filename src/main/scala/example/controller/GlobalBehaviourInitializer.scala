@@ -6,8 +6,12 @@ import buildopoli.behaviour.factory
 import buildopoli.behaviour.factory.EventFactory
 import buildopoli.gameManagement.gameSession.GameSession
 
+/** Create global game [[Behaviour]]
+  */
 trait GlobalBehaviourInitializer:
-
+  /** @return
+    *   a default global game behaviour
+    */
   def buildGlobalBehaviour(): Behaviour
 
 object GlobalBehaviourInitializer:

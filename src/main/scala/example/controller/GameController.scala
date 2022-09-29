@@ -11,7 +11,14 @@ import buildopoli.behaviour.event.story.InteractiveEventStoryModule.InteractiveE
 import buildopoli.behaviour.event.story.InteractiveEventStoryModule.Result.*
 import buildopoli.behaviour.factory.EventFactory
 
+/**
+ * Simple controller of the game
+ */
 trait GameController:
+  /**
+   * Start the game. Can be called only ones
+   * @throws IllegalStateException if it is called more than one time
+   */
   def start(): Unit
 
 class GameControllerImpl(gameSession: GameSession, view: View, val maxMoves: Int = Int.MaxValue) extends GameController:
