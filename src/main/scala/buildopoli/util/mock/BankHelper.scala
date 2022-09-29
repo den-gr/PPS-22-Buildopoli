@@ -43,6 +43,4 @@ object BankHelper:
           case (_, Bank, am) =>
             decrement(am)
             paymentRequests = paymentRequests.filter(_ != (from, to, am))
-          case (_, t: BankAccount, am) if t == Bank =>
-            paymentRequests = paymentRequests.filter(_ != (from, to, am))
           case _ => throw IllegalStateException()
