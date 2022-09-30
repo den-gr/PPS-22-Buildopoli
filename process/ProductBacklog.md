@@ -20,7 +20,7 @@
         <td >I would like to define the property of the game and gamers</td>
         <td>Creation of game options</td>
         <td> Bacca </td>
-        <td>3</td>
+        <td>4</td>
         <td>0</td>
         <td>0</td>
         <td>0</td>
@@ -30,7 +30,7 @@
         <td></td>
         <td>Creation of game bank</td>
         <td>Bacca</td>
-        <td>4</td>
+        <td>5</td>
         <td>0</td>
         <td>0</td>
         <td>0</td>
@@ -40,7 +40,7 @@
         <td></td>
         <td>Creation of bank debit</td>
         <td>Bacca</td>
-        <td>3</td>
+        <td>4</td>
         <td>0</td>
         <td>0</td>
         <td>0</td>
@@ -132,22 +132,12 @@
         <td></td>
         <td>Build card terrain type</td>
         <td>Bacca</td>
-        <td>5</td>
-        <td>5</td>
+        <td>6</td>
+        <td>6</td>
         <td>4</td>
         <td>0</td>
         <td>0</td>
     </tr>
-    <!-- <tr>
-        <td></td>
-        <td>Terrain Builder/Factory</td>
-        <td>Bertoni & Bacca</td>
-        <td>8</td>
-        <td>8</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr> -->
     <tr>
         <td></td>
         <td>Integrate events with terrain</td>
@@ -198,7 +188,7 @@
         <td>5</td>
         <td>5</td>
         <td>5</td>
-        <td></td>
+        <td>0</td>
     </tr>
     <tr>
         <td></td>
@@ -208,7 +198,7 @@
         <td>3</td>
         <td>1</td>
         <td>1</td>
-        <td></td>
+        <td>0</td>
     </tr>
      <!-- 5 item-->
     <tr>
@@ -219,7 +209,7 @@
         <td>10</td>
         <td>10</td>
         <td>2</td>
-        <td></td>
+        <td>0</td>
     </tr>
         <tr>
         <td></td>
@@ -229,7 +219,7 @@
         <td>10</td>
         <td>10</td>
         <td>2</td>
-        <td></td>
+        <td>0</td>
     </tr>
      <!-- 4 item-->
     <tr>
@@ -280,6 +270,6 @@
         <td>5</td>
         <td>5</td>
         <td>1</td>
-        <td></td>
+        <td>0</td>
     </tr>
 </table>
