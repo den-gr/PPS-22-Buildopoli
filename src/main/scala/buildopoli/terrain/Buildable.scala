@@ -84,13 +84,8 @@ object Buildable:
     export terrain.{computeTotalRent as _, mortgage as _, *}
 
     override def computeTotalRent(gm: GroupManager): Int =
-      var numToken: Int = 0
-      token.tokenNames.foreach(tn => numToken = numToken + token.getNumToken(tn))
-      numToken > 0 match
-        case true =>
-          var total: Int = 0;
-          token.tokenNames.foreach(tn => total = total + token.totalBonusPrice(tn).take(token.getNumToken(tn)).sum);
-          total
+      token.tokenNames.map(n => token.getNumToken(n)).sum > 0 match
+        case true => token.tokenNames.map(n => token.totalBonusPrice(n).take(token.getNumToken(n)).sum).sum
         case false => terrain.computeTotalRent(gm)
 
     override def mortgage(): Unit =

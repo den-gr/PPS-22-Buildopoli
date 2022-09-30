@@ -1,6 +1,6 @@
 package buildopoli.endGame
 
-import buildopoli.endGame.EndGame.NoMoneyNoTerrains
+import buildopoli.endGame.EndGame
 import buildopoli.gameManagement.gameStore.GameStore
 import buildopoli.player.PlayerImpl
 import org.scalatest.BeforeAndAfterEach
@@ -29,7 +29,7 @@ class EndGameTest extends AnyFunSuite with BeforeAndAfterEach:
     gs.terrainList = Seq(t1)
     b = GameBankImpl(gs)
 
-    eg = NoMoneyNoTerrains()
+    eg = EndGame()
 
   test("A player with no terrains but money does not lose, as well as a player that owns terrains but has no money") {
     assert(gs.playersList.size == 2)
