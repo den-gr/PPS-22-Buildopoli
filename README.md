@@ -159,12 +159,104 @@ That's it. Let's continue with the next components to initialize Monopoli !
 
 ### Let's create some Terrains
 
+Now you should decide which terrains will be part of your game!
+
+Remember that Buildopoli allows you to easily create the fundamental terrains types of classic Monopoli to design the Monopoli game of your dreams!
+
+Now I’ll show you how to replicate some of the popular Monopoli’s terrains with our library.
+
+**Terrain** is meant to make simple terrains such as the starting point, all you need to do is choosing a name and specify an empty behaviour:
+```scala
+val t0: Terrain = Terrain(TerrainInfo("Go"), Behaviour())
+```
+
+It is also possible to create the “income tax” cell that drains the player's money. 
+You can easily create a WithdrawMoneyEvent provided by the library.
+```scala
+val story = EventStory(s"You spend $amount money on a party", "Oh, noo")
+val behaviour = Behaviour(eventFactory.WithdrawMoneyEvent(story, amount))
+```
+combine it and the terrain is ready!
+```scala
+val t1: Terrain = Terrain(TerrainInfo("Party"), behaviour)
+```
+
+With **Purchasable** it is easy to create terrains that players can buy but where it is NOT possible to build. 
+Let’s create our train station. 
+First we create the encapsulated terrain with the name and a PurchasableTerrainBehaviour.
+
+```scala
+val buyStory = EventStory(s"You have an incredible opportunity to buy $stationName", "Buy station")
+val rentStory = EventStory(s"You are at $stationName and must pay for the ticket", "Pay for ticket")
+val errMsg = s"You have not enough money to buy $stationName"
+val behaviour = behaviourFactory.PurchasableTerrainBehaviour(rentStory, errMsg, buyStory)
+var t2: Terrain = Terrain(TerrainInfo("Train Station"), behaviour)
+```
+Then decide the selling price, the group and the strategies to compute the Mortgage and the Rent from the ones provided by the library. 
+```scala
+t2 = Purchasable(
+        t2,
+        300,
+        "stations",
+        DividePriceMortgage(price, 2),
+        RentStrategyPreviousPriceMultiplier(50, 2)
+      )
+```
+Now you can try adding another station to the game to form a group!
+
+It is useful to use **Buildable** to create terrains such as the Monopoli’s groups of places where it is possible to build houses and hotels.
+First we need to make the Token: 
+it is possible to specify that we want two levels (house and hotels) and the maximum number for each level and their prices
+```scala
+val token = Token(Seq("house", "hotel"), Seq(Seq(50, 50), Seq(100)), Seq(25, 50))
+```
+We then combine the encapsulated Purchasable with the token.
+
+```scala
+val buyStory = EventStory(s"You can buy terrain on $streetName", "Buy terrain")
+val rentStory = EventStory(s"You ara at $streetName, you must puy rent to the owner", "Pay rent")
+val errMsg = "You have not enough money to pay for the rent"
+val behaviour = behaviourFactory.PurchasableTerrainBehaviour(rentStory, errMsg, buyStory)
+val purchasableTerrain = Purchasable(
+    Terrain(TerrainInfo("Bologna"), behaviour),
+    100,
+    "Italy",
+    DividePriceMortgage(price, 2),
+    buildopoli.terrain.RentStrategy.BasicRentStrategyFactor(100, 2)
+    )
+      
+val t3: Terrain = Buildable(purchasableTerrain, token)
+```
+
+With Buidopoli you can also add the famous **Probabilities** and **Surprises** that make the players draw a card. 
+Some cards make the player gains money while others give the player an extra lap.
+To add porbabilities to the game all you need is the encapsulated terrain with an empty behaviour, the gameSession and false.
+
+``` scala
+var t4: Terrain = Terrain(TerrainInfo("Probabilities"), Behaviour())
+CardTerrain(t4, gameSession, false)
+
+```
+Once created the desidered terrains, they must be added to the game. We create:
+``` scala
+var terrains: Seq[Terrain] = Seq()
+```
+
+to store them in the order you want them to be in the game. And now it is time to add them:
+```scala
+terrains = terrains :+ t0
+terrains = terrains :+ t1
+terrains = terrains :+ t2
+terrains = terrains :+ t3
+terrains = terrains :+ t4
+```
+
 ### What about terrain's and global Behaviours ?
 
-To have terrains is not enough! We need to implement behaviours for them. 
+To have terrains is not enough! We need to implement behaviours for them.
 Each behaviour is made by events, so let's create an event that allow to player to buy terrains
 
-At the start we must have a reference to `gameSession` to be able to get and set game state 
+At the start we must have a reference to `gameSession` to be able to get and set game state
 
 We start from creating a precondition that define when the event will be visible to player:
 ```scala
@@ -187,16 +279,16 @@ val interaction: Interaction = playerId =>
     case t: Purchasable if playerMoney >= t.price => Result.OK
     case _: Purchasable => Result.ERR("You have not enough money to buy this terrain")
 ```
-If the player has not money to buy the terrain we will send him a feedback  inside the `ERR` otherwise we return `OK` that 
-means that event can be run. 
+If the player has not money to buy the terrain we will send him a feedback  inside the `ERR` otherwise we return `OK` that
+means that event can be run.
 
 In cases where our `EventStory` return always `OK`  we do not need an `Interaction`
 
-When our interaction is ready we can combine it with our story. 
+When our interaction is ready we can combine it with our story.
 ```scala
 val interactiveStory = EventStory(story, Seq(interaction))
 ```
-For `EventStory` and other classes there are multiple constructors that can simplify use of the library.   
+For `EventStory` and other classes there are multiple constructors that can simplify use of the library.
 
 At this point we need to define main strategy of the event
 ```scala
