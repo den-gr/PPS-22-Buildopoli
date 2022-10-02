@@ -232,13 +232,13 @@ With Buidopoli you can also add the famous **Probabilities** and **Surprises** t
 Some cards make the player gains money while others give the player an extra lap.
 To add porbabilities to the game all you need is the encapsulated terrain with an empty behaviour, the gameSession and false.
 
-``` scala
+```scala
 var t4: Terrain = Terrain(TerrainInfo("Probabilities"), Behaviour())
 CardTerrain(t4, gameSession, false)
 
 ```
 Once created the desidered terrains, they must be added to the game. We create:
-``` scala
+```scala
 var terrains: Seq[Terrain] = Seq()
 ```
 
