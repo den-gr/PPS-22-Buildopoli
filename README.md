@@ -57,7 +57,7 @@ Import buildopoli and you're ready to code!
 
 In Buildopoli you can play the game in it's most basic form with some very simple steps.
 
-**Starting with initializing Game session**
+### Starting with initializing Game session
 
 From GameSession you are able to control the whole game while playing it.
 You can setup: turns, players, terrains, tha bank, the lap.
@@ -134,14 +134,7 @@ Now all major components of the game are instanced and initialized. Let's finall
 
 To summarise all the above concepts, here it is one global snapshot for **GameSession Initializer**:
 ```scala
-trait GameSessionInitializer:
-  /**
-   * @param numberOfPlayer number of player that will participate in the game
-   * @return built game session
-   */
-  def createDefaultGameSession(numberOfPlayer: Int): GameSession
-
-object GameSessionInitializer extends GameSessionInitializer:
+object GameSessionInitializer:
   private val selector: (Seq[Player], Seq[Int]) => Int =
     (playerList: Seq[Player], playerWithTurn: Seq[Int]) =>
       playerList.find(el => !playerWithTurn.contains(el.playerId)).head.playerId
@@ -164,8 +157,79 @@ object GameSessionInitializer extends GameSessionInitializer:
 ```
 That's it. Let's continue with the next components to initialize Monopoli !
 
-**Let's create some Terrains**
+### Let's create some Terrains
 
-**What about terrain's and global Behaviours ?**
+### What about terrain's and global Behaviours ?
 
-**But let's play this game finally => Game Controller !**
+To have terrains is not enough! We need to implement behaviours for them. 
+Each behaviour is made by events, so let's create an event that allow to player to buy terrains
+
+At the start we must have a reference to `gameSession` to be able to get and set game state 
+
+We start from creating a precondition that define when the event will be visible to player:
+```scala
+val precondition: EventPrecondition = playerId =>
+  gameSession.getPlayerTerrain(playerId) match
+    case t: Purchasable if t.state == IN_BANK => true
+    case _: Purchasable => false
+    case t => throw IllegalStateException(s"BuyTerrainEvent is not compatible with ${t.getClass}")
+```
+Here we check that our terrain has the correct type and state is `IN_BANK` that means that the terrain has not an owner.
+By default Event precondition is always `true` (event is always visible)
+
+When we define the availability condition of our event we need to define a story interaction.
+```scala
+val story = EventStory("You can buy this beautiful terrain", "Buy it")
+
+val interaction: Interaction = playerId =>
+  val playerMoney = gameSession.gameBank.getMoneyOfPlayer(playerId)
+  gameSession.getPlayerTerrain(playerId) match
+    case t: Purchasable if playerMoney >= t.price => Result.OK
+    case _: Purchasable => Result.ERR("You have not enough money to buy this terrain")
+```
+If the player has not money to buy the terrain we will send him a feedback  inside the `ERR` otherwise we return `OK` that 
+means that event can be run. 
+
+In cases where our `EventStory` return always `OK`  we do not need an `Interaction`
+
+When our interaction is ready we can combine it with our story. 
+```scala
+val interactiveStory = EventStory(story, Seq(interaction))
+```
+For `EventStory` and other classes there are multiple constructors that can simplify use of the library.   
+
+At this point we need to define main strategy of the event
+```scala
+
+val strategy: EventStrategy = playerId =>
+  gameSession.getPlayerTerrain(playerId) match
+    case t: Purchasable if t.state != IN_BANK =>
+      throw IllegalStateException("Player can not buy already purchased terrain")
+    case t: Purchasable => // OK
+      if bank.getMoneyOfPlayer(playerId) >= t.price then
+        bank.makeTransaction(playerId, amount = t.price) // get terrain price
+        t.changeOwner(Some(playerId)) // change terrain owner
+      else
+        throw IllegalStateException(
+          s"Player $playerId has not enough money =>  ${bank.getMoneyOfPlayer(playerId)} but need ${t.price}"
+        )
+    case t => throw IllegalStateException(s"BuyTerrainEvent is not compatible with ${t.getClass}")
+```
+For security we handle a lot of possible exceptions even if they must not happen.
+
+Finally we assemble the Event and put it inside the Behaviour
+```scala
+val event = Event(interactiveStory, strategy, precondition)
+Behaviour(event)
+```
+
+This is a typical event of Monopoly so our team make a factory that build it for you, for example:
+```scala
+val buyStory = EventStory(s"You can buy terrain on $streetName", "Buy terrain")
+val rentStory = EventStory(s"You ara at $streetName, you must puy rent to the owner", "Pay rent")
+val errMsg = "You have not enough money to pay for the rent"
+val behaviour = BehaviourFactory(gameSession).PurchasableTerrainBehaviour(rentStory, errMsg, buyStory)
+```
+This behaviour include two event: one for buying the terrain (that we saw here) and one for getting the rent from another players
+
+### But let's play this game finally => Game Controller !
