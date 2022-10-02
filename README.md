@@ -233,3 +233,55 @@ val behaviour = BehaviourFactory(gameSession).PurchasableTerrainBehaviour(rentSt
 This behaviour include two event: one for buying the terrain (that we saw here) and one for getting the rent from another players
 
 ### But let's play this game finally => Game Controller !
+We must finish to assemble our game
+```scala
+val NUMBER_OF_PLAYERS = 2
+val gameSession = GameSessionInitializer.createDefaultGameSession(NUMBER_OF_PLAYERS)
+val terrains = TerrainInitializer(gameSession).buildGameTerrains()
+gameSession.gameStore.terrainList ++= terrains
+gameSession.gameStore.globalBehaviour = GlobalBehaviourInitializer(gameSession).buildGlobalBehaviour()
+
+GameControllerImpl(gameSession, GameView()).start()
+```
+We also added a global behaviour that contains events available to players in all terrains (if event precondition allow it)
+
+So how is made our game controller?
+```scala
+class GameControllerImpl(gameSession: GameSession, view: View):
+  override def start(): Unit =
+    //we need to visualize game log to the player
+    gameSession.logger.registerObserver((msg: String) => view.printLog(msg))
+
+    gameSession.startGame()
+  
+    while !gameSession.isGameEnded do
+      //select a player
+      val playerId = gameSession.gameTurn.selectNextPlayer()
+
+      //launch dices and move the player pawn
+      gameSession.movePlayer(playerId)
+  
+      //preparing to explore available avents
+      var behaviourExplorer = gameSession.getFreshBehaviourExplorer(playerId) 
+  
+      //start exploring
+      while behaviourExplorer.hasNext do
+        val stories = behaviourExplorer.currentStories
+        view.showStoryOptions(stories)
+        view.getUserChoices(stories) match
+          case PlayerChoice.Choice(groupIdx, eventIdx, choiceIdx) 
+            if stories(groupIdx)(eventIdx).isInstanceOf[InteractiveEventStory] =>
+              val interactiveStory = stories(groupIdx)(eventIdx).asInstanceOf[InteractiveEventStory]]
+              interactiveStory.interactions(choiceIdx)(playerId) match
+                case OK => behaviourExplorer = behaviourExplorer.next((groupIdx, eventIdx))
+                case ERR(msg) => view.printLog(msg)
+          case PlayerChoice.Choice(groupIdx, eventIdx, _) =>
+            behaviourExplorer = behaviourExplorer.next((groupIdx, eventIdx))
+          case PlayerChoice.EndTurn if behaviourExplorer.canEndExploring =>
+            behaviourExplorer = behaviourExplorer.endExploring()
+          case PlayerChoice.EndTurn =>
+            view.printLog(s"Player $playerId can not end turn because have to explore mandatory events")
+```
+This is basic game controller structure that can be personalized by you!
+
+And finally we are ready to play!
